@@ -128,8 +128,8 @@ class NimblePayment extends PaymentModule
     private function postProcess()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'));
-            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'));
+            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
+            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
             Configuration::updateValue('NIMBLEPAYMENT_URLTPV', Tools::getValue('NIMBLEPAYMENT_URLTPV'));
             Configuration::updateValue('NIMBLEPAYMENT_NAME', Tools::getValue('NIMBLEPAYMENT_NAME'));
             Configuration::updateValue('NIMBLEPAYMENT_DESCRIPTION', Tools::getValue('NIMBLEPAYMENT_DESCRIPTION'));
