@@ -108,16 +108,59 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         return true;
     }
 
+    public function createOrder($paramurl)
+    {
+        $order = array();
+        $code = Tools::getValue('paymentcode');
+        $cart = (int)Tools::substr($paramurl, 0, 8);
+
+        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
+        $cart = new Cart($cart);
+        $order_num = Tools::substr($paramurl, 0, 8);
+        $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
+        $code = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
+        $status_order = Configuration::get('PENDING_NIMBLE');
+
+        if ($paramurl == $code) {
+            $total = $cart->getOrderTotal(true, Cart::BOTH);
+            $extra_vars = array();
+            $extra_vars['transaction_id'] = $this->context->cookie->nimble_transaction_id; //transaction_id in session
+            $this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
+            $nimble = new nimblepayment();
+            $nimble->validateOrder(
+                $cart->id,
+                $status_order,
+                $total,
+                $nimble->displayName,
+                null,
+                $extra_vars,
+                null,
+                false,
+                $cart->secure_key
+            );
+            $customer = new Customer($cart->id_customer);
+
+            $order['cart_id'] = $cart->id;
+            $order['nimble_id'] = $nimble->id;
+            $order['nimble_currentOrder'] = $nimble->currentOrder;
+            $order['customer_key'] = $customer->secure_key;
+        }
+        return $order;
+    }        
+    
     public function sendPayment($total, $paramurl)
     {
+        $order = array();
+        $order = $this->createOrder($paramurl);
+            
         $cart = $this->context->cart;
 
         $payment = array(
         'amount' => $total,
         'currency' => 'EUR',
         'customerData' => $cart->id,
-        'paymentSuccessUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl)),
-        'paymentErrorUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl))
+        'paymentSuccessUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl, 'order' => $order)),
+        'paymentErrorUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl, 'order' => $order))
         );
 
         try {
@@ -139,8 +182,12 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         } elseif (!isset($response['error'])) {
             if ($response['result']['code'] == 200) {
                 //save transaction_id in session. After in validateOrder (paymentok.php) we will use transaction_id
-                $this->context->cookie->__set('nimble_transaction_id', $response['data']['id']);
-
+                $this->context->cookie->__set('nimble_transaction_id', $response['data']['id']);               
+                
+                //Save transaction_id
+                $transaction_id = $response["data"]["id"];
+                Configuration::updateValue('NIMBLE_TRANSACTION_ID', $transaction_id);
+                              
                 //Tools::redirect($response['data'][0]['paymentUrl']); //old version
                 Tools::redirect($response['data']['paymentUrl']);
             } elseif ($response['result']['code'] == 401) {

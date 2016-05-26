@@ -35,10 +35,10 @@ class NimblePayment extends PaymentModule
 {
 	public function __construct()
 	{
-		$this->name = 'nimblepayment';
-		$this->tab = 'payments_gateways';
-		$this->version = '1.0.10';
-		$this->author = 'BBVA';
+        $this->name = 'nimblepayment';
+        $this->tab = 'payments_gateways';
+        $this->version = '1.0.11';
+        $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
@@ -62,6 +62,8 @@ class NimblePayment extends PaymentModule
         ) {
             return false;
         }
+        
+        $this->createOrderState('PENDING_NIMBLE','pending_nimble');
         return true;
     }
 
@@ -72,14 +74,45 @@ class NimblePayment extends PaymentModule
             || !Configuration::deleteByName('NIMBLEPAYMENT_URLTPV')
             || !Configuration::deleteByName('NIMBLEPAYMENT_NAME')
             || !Configuration::deleteByName('NIMBLEPAYMENT_DESCRIPTION')
+            || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE'))
+            || !Configuration::deleteByName('PENDING_NIMBLE')
             || !parent::uninstall()
         ) {
             return false;
         }
+
         return true;
     }
 
+    public function deleteOrderState($id_order_state) 
+    {
+        $orderState = new OrderState($id_order_state);        
+        $orderState->delete();
+    }
 
+    private function createOrderState($db_name, $name)
+    {
+        if (!Configuration::get($db_name))//if status does not exist
+        {
+            $orderState = new OrderState();
+            $orderState->name =  array_fill(0,10,$name);
+            $orderState->send_email = false;
+            $orderState->color = 'royalblue';
+            $orderState->hidden = false;
+            $orderState->delivery = false;
+            $orderState->logable = false;
+            $orderState->invoice = false;
+            if ($orderState->add())//save new order status
+            {
+                $source = dirname(__FILE__).'/../../img/os/'.(int)Configuration::get('PS_OS_COD_VALIDATION').'.gif';
+                $destination = dirname(__FILE__).'/../../img/os/'.(int)$orderState->id.'.gif';
+                copy($source, $destination);
+                
+                Configuration::updateValue($db_name, (int)$orderState->id);
+            }
+        }
+    }
+    
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {

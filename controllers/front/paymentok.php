@@ -40,38 +40,34 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         parent::initContent();
+        $order = Tools::getValue('order');
+        $cart_id             = $order['cart_id'];
+        $nimble_id           = $order['nimble_id'];
+        $nimble_currentOrder = $order['nimble_currentOrder'];
+        $customer_key        = $order['customer_key'];
+        
         $code = Tools::getValue('paymentcode');
         $cart = (int)Tools::substr($code, 0, 8);
-
-        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
+        
+        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');        
         $cart = new Cart($cart);
         $order_num = Tools::substr($code, 0, 8);
         $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
-
-        if ($paramurl == $code) {
-            $total = $cart->getOrderTotal(true, Cart::BOTH);
-            $extra_vars = array();
-            $extra_vars['transaction_id'] = $this->context->cookie->nimble_transaction_id; //transaction_id in session
-            $this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
-            $nimble = new nimblepayment();
-            $nimble->validateOrder(
-                $cart->id,
-                _PS_OS_PAYMENT_,
-                $total,
-                $nimble->displayName,
-                null,
-                $extra_vars,
-                null,
-                false,
-                $cart->secure_key
-            );
-            $customer = new Customer($cart->id_customer);
+        $this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
+        
+        if ($paramurl == $code) {         
+            $objOrder = $nimble_currentOrder;
+            $history = new OrderHistory();
+            $history->id_order = (int)$objOrder;
+            $history->changeIdOrderState((int)(Configuration::get('PS_OS_PAYMENT')), (int)($objOrder));
+            $history->save();
+            
             Tools::redirect(
-                'index.php?controller=order-confirmation&id_cart='.$cart->id
-                .'&id_module='.$nimble->module->id
-                .'&id_order='.$nimble->module->currentOrder
-                .'&key='.$customer->secure_key
+                'index.php?controller=order-confirmation&id_cart='.(int)$cart_id
+                .'&id_module='.(int)$nimble_id
+                .'&id_order='.(int)$nimble_currentOrder
+                .'&key='.$customer_key
             );
         }
     }
