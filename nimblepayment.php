@@ -60,7 +60,7 @@ class NimblePayment extends PaymentModule
             || ! $this->registerHook('payment')
             || ! $this->registerHook('paymentReturn')
             || ! $this->registerHook('actionOrderStatusPostUpdate')
-            || ! $this->registerHook('shoppingCart')
+            || ! $this->registerHook('DisplayTop')    
         ) {
             return false;
         }
@@ -86,12 +86,11 @@ class NimblePayment extends PaymentModule
         return true;
     }   
     
-    /* Hook display on shopping cart summary */
-	public function hookShoppingCart($params)
-	{
-		
-		return $this->display(__FILE__, 'shopping-cart1.tpl');
-	}
+    public function hookDisplayTop()
+    {
+        if(isset($_GET["error"]) && ! empty($_GET["error"]))
+            return $this->display(__FILE__, 'display_top.tpl');
+    }
     
     public function hookActionOrderStatusPostUpdate($params)
     {

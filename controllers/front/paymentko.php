@@ -77,8 +77,7 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
                 if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 1) {
                     Tools::redirect('index.php?controller=order-opc');
                 }
-                Tools::redirect('index.php?controller=order');
-                //$this->display(__FILE__, 'shopping-cart1.tpl');
+                Tools::redirect('index.php?controller=order?error=payment');
             }
         }
     }

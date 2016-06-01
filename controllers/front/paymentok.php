@@ -68,9 +68,6 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
                 .'&id_order='.$nimble_currentOrder
                 .'&key='.$customer_key
             );
-           /* Tools::redirect(
-                'index.php?controller=order-detail&id_order='.$nimble_currentOrder
-            );*/
         }
     }
 }
