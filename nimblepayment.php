@@ -59,6 +59,8 @@ class NimblePayment extends PaymentModule
             || ! Configuration::updateValue('NIMBLEPAYMENT_URLTPV', 'sandbox')
             || ! $this->registerHook('payment')
             || ! $this->registerHook('paymentReturn')
+            || ! $this->registerHook('actionOrderStatusPostUpdate')
+            || ! $this->registerHook('shoppingCart')
         ) {
             return false;
         }
@@ -82,8 +84,43 @@ class NimblePayment extends PaymentModule
         }
 
         return true;
+    }   
+    
+    /* Hook display on shopping cart summary */
+	public function hookShoppingCart($params)
+	{
+		
+		return $this->display(__FILE__, 'shopping-cart1.tpl');
+	}
+    
+    public function hookActionOrderStatusPostUpdate($params)
+    {
+       $transaction_id =$this->context->cookie->nimble_transaction_id;
+       $id_order = $params['id_order'];
+       if(! empty($transaction_id) && ! empty($id_order))
+           $this->save_order_transaction_id($id_order, $transaction_id);
+       
+       //reset cookie
+       $this->context->cookie->__set('nimble_transaction_id', ''); 
     }
+    
+    public function save_order_transaction_id($id_order, $transaction_id)
+    {
+        $order = new Order($id_order);
+        $collection = OrderPayment::getByOrderReference($order->reference);
 
+        if (count($collection) > 0)
+        {
+                $order_payment = $collection[0];
+                // for older versions (1.5) , we check if it hasn't been filled yet.
+                if (!$order_payment->transaction_id)
+                {
+                        $order_payment->transaction_id = $transaction_id;
+                        $order_payment->update();
+                }
+        }
+    }
+    
     public function deleteOrderState($id_order_state) 
     {
         $orderState = new OrderState($id_order_state);        
@@ -163,7 +200,7 @@ class NimblePayment extends PaymentModule
     }
 
     public function hookPayment($params)
-    {
+    {        
         if (!$this->active) {
             return;
         }
@@ -178,6 +215,95 @@ class NimblePayment extends PaymentModule
             )
         );
         return $this->display(__FILE__, 'payment.tpl');
+    }
+    public function hookPaymentReturn($params)
+    {
+        if (!$this->active)
+                return;
+
+        $state = $params['objOrder']->getCurrentState();
+        if (in_array($state, array(Configuration::get('PS_OS_PAYMENT'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
+        {
+            $id_order = (int)Tools::getValue('id_order');
+            $order = new Order($id_order);
+            if (Validate::isLoadedObject($order)){
+                $order->id_customer = $this->context->customer->id;
+                $id_order_state = (int)$order->getCurrentState();
+                $carrier = new Carrier((int)$order->id_carrier, (int)$order->id_lang);
+                $addressInvoice = new Address((int)$order->id_address_invoice);
+                $addressDelivery = new Address((int)$order->id_address_delivery);
+
+                $inv_adr_fields = AddressFormat::getOrderedAddressFields($addressInvoice->id_country);
+                $dlv_adr_fields = AddressFormat::getOrderedAddressFields($addressDelivery->id_country);
+
+                $invoiceAddressFormatedValues = AddressFormat::getFormattedAddressFieldsValues($addressInvoice, $inv_adr_fields);
+                $deliveryAddressFormatedValues = AddressFormat::getFormattedAddressFieldsValues($addressDelivery, $dlv_adr_fields);
+
+                if ($order->total_discounts > 0) {
+                    $this->context->smarty->assign('total_old', (float)$order->total_paid - $order->total_discounts);
+                }
+                $products = $order->getProducts();
+
+                /* DEPRECATED: customizedDatas @since 1.5 */
+                $customizedDatas = Product::getAllCustomizedDatas((int)$order->id_cart);
+                Product::addCustomizationPrice($products, $customizedDatas);
+
+                OrderReturn::addReturnedQuantity($products, $order->id);
+                $order_status = new OrderState((int)$id_order_state, (int)$order->id_lang);
+
+                $customer = new Customer($order->id_customer);
+                $this->context->smarty->assign(array(
+                'shop_name' => strval(Configuration::get('PS_SHOP_NAME')),
+                'order' => $order,
+                'status' => 'ok',
+                'return_allowed' => (int)$order->isReturnable(),
+                'currency' => new Currency($order->id_currency),
+                'order_state' => (int)$id_order_state,
+                'invoiceAllowed' => (int)Configuration::get('PS_INVOICE'),
+                'invoice' => (OrderState::invoiceAvailable($id_order_state) && count($order->getInvoicesCollection())),
+                'logable' => (bool)$order_status->logable,
+                'order_history' => $order->getHistory($this->context->language->id, false, true),
+                'products' => $products,
+                'discounts' => $order->getCartRules(),
+                'carrier' => $carrier,
+                'address_invoice' => $addressInvoice,
+                'invoiceState' => (Validate::isLoadedObject($addressInvoice) && $addressInvoice->id_state) ? new State($addressInvoice->id_state) : false,
+                'address_delivery' => $addressDelivery,
+                'inv_adr_fields' => $inv_adr_fields,
+                'dlv_adr_fields' => $dlv_adr_fields,
+                'invoiceAddressFormatedValues' => $invoiceAddressFormatedValues,
+                'deliveryAddressFormatedValues' => $deliveryAddressFormatedValues,
+                'deliveryState' => (Validate::isLoadedObject($addressDelivery) && $addressDelivery->id_state) ? new State($addressDelivery->id_state) : false,
+                'is_guest' => false,
+                'messages' => CustomerMessage::getMessagesByOrderId((int)$order->id, false),
+                'CUSTOMIZE_FILE' => Product::CUSTOMIZE_FILE,
+                'CUSTOMIZE_TEXTFIELD' => Product::CUSTOMIZE_TEXTFIELD,
+                'isRecyclable' => Configuration::get('PS_RECYCLABLE_PACK'),
+                'use_tax' => Configuration::get('PS_TAX'),
+                'group_use_tax' => (Group::getPriceDisplayMethod($customer->id_default_group) == PS_TAX_INC),
+                /* DEPRECATED: customizedDatas @since 1.5 */
+                /*'customizedDatas' => $customizedDatas,
+                /* DEPRECATED: customizedDatas @since 1.5 */
+                'reorderingAllowed' => !(bool)Configuration::get('PS_DISALLOW_HISTORY_REORDERING')
+                 ));
+
+                if ($carrier->url && $order->shipping_number) {
+                    $this->context->smarty->assign('followup', str_replace('@', $order->shipping_number, $carrier->url));
+                }
+                $this->context->smarty->assign('HOOK_ORDERDETAILDISPLAYED', Hook::exec('displayOrderDetail', array('order' => $order)));
+                Hook::exec('actionOrderDetail', array('carrier' => $carrier, 'order' => $order));
+
+                unset($carrier, $addressInvoice, $addressDelivery);
+            } else {
+                $this->errors[] = Tools::displayError('This order cannot be found.');
+            }
+         unset($order);
+        }
+
+        else
+                $this->smarty->assign('status', 'failed');
+        return $this->display(__FILE__, 'payment_return.tpl');
+            
     }
 
     public function checkCurrency($cart)

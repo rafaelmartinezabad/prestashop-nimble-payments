@@ -40,9 +40,9 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
         $order = Tools::getValue('order');
-        $cart_id             = $order['cart_id'];
-        $nimble_id           = $order['nimble_id'];
-        $nimble_currentOrder = $order['nimble_currentOrder'];
+        $cart_id             = (int)$order['cart_id'];
+        $nimble_id           = (int)$order['nimble_id'];
+        $nimble_currentOrder = (int)$order['nimble_currentOrder'];
         $customer_key        = $order['customer_key'];
         
         $code = Tools::getValue('paymentcode');
@@ -53,8 +53,7 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
         $order_num = Tools::substr($code, 0, 8);
         $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
-        $this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
-
+ 
         if ($paramurl == $code) {
             $objOrder = $nimble_currentOrder;
             $history = new OrderHistory();
@@ -62,12 +61,25 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
             $history->changeIdOrderState((int)(Configuration::get('PS_OS_CANCELED')), (int)($objOrder));
             $history->save();
 
-            Tools::redirect(
-                'index.php?controller=order-confirmation&id_cart='.(int)$cart_id
-                .'&id_module='.(int)$nimble_id
-                .'&id_order='.(int)$nimble_currentOrder
-                .'&key='.$customer_key
-            );
+            $oldCart = new Cart(Order::getCartIdStatic($nimble_currentOrder, $this->context->customer->id));
+            $duplication = $oldCart->duplicate();
+            if (!$duplication || !Validate::isLoadedObject($duplication['cart'])) {
+                Tools::displayError('Sorry. We cannot renew your order.');
+            } elseif (!$duplication['success']) {
+                Tools::displayError('Some items are no longer available, and we are unable to renew your order.');
+            } else {
+                $this->context->cookie->id_cart = $duplication['cart']->id;
+                $context = $this->context;
+                $context->cart = $duplication['cart'];
+                CartRule::autoAddToCart($context);
+                $this->context->cookie->write();
+                
+                if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 1) {
+                    Tools::redirect('index.php?controller=order-opc');
+                }
+                Tools::redirect('index.php?controller=order');
+                //$this->display(__FILE__, 'shopping-cart1.tpl');
+            }
         }
     }
 }

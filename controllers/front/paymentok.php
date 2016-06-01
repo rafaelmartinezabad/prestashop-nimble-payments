@@ -41,9 +41,9 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
         $order = Tools::getValue('order');
-        $cart_id             = $order['cart_id'];
-        $nimble_id           = $order['nimble_id'];
-        $nimble_currentOrder = $order['nimble_currentOrder'];
+        $cart_id             = (int)$order['cart_id'];
+        $nimble_id           = (int)$order['nimble_id'];
+        $nimble_currentOrder = (int)$order['nimble_currentOrder'];
         $customer_key        = $order['customer_key'];
         
         $code = Tools::getValue('paymentcode');
@@ -54,7 +54,6 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
         $order_num = Tools::substr($code, 0, 8);
         $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
-        $this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
         
         if ($paramurl == $code) {         
             $objOrder = $nimble_currentOrder;
@@ -64,11 +63,14 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
             $history->save();
             
             Tools::redirect(
-                'index.php?controller=order-confirmation&id_cart='.(int)$cart_id
-                .'&id_module='.(int)$nimble_id
-                .'&id_order='.(int)$nimble_currentOrder
+                'index.php?controller=order-confirmation&id_cart='.$cart_id
+                .'&id_module='.$nimble_id 
+                .'&id_order='.$nimble_currentOrder
                 .'&key='.$customer_key
             );
+           /* Tools::redirect(
+                'index.php?controller=order-detail&id_order='.$nimble_currentOrder
+            );*/
         }
     }
 }

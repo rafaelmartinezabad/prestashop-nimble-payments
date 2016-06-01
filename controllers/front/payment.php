@@ -41,9 +41,12 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     * @see FrontController::initContent()
     */
     public function initContent()
-    {
+    { 
         parent::initContent();
         $cart = $this->context->cart;
+        if($cart->nbProducts() <=0){
+            Tools::redirect('index.php?controller=order');
+        }
         if (!$this->module->checkCurrencyNimble($cart)) {
             Tools::redirect('index.php?controller=order');
         }
@@ -111,7 +114,6 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     public function createOrder($paramurl)
     {
         $order = array();
-        $code = Tools::getValue('paymentcode');
         $cart = (int)Tools::substr($paramurl, 0, 8);
 
         $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
@@ -124,10 +126,10 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         if ($paramurl == $code) {
             $total = $cart->getOrderTotal(true, Cart::BOTH);
             $extra_vars = array();
-            $extra_vars['transaction_id'] = $this->context->cookie->nimble_transaction_id; //transaction_id in session
-            $this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
+            //$extra_vars['transaction_id'] = $this->context->cookie->nimble_transaction_id; //transaction_id in session
+            //$this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
             $nimble = new nimblepayment();
-            $nimble->validateOrder(
+            $ok = $nimble->validateOrder(
                 $cart->id,
                 $status_order,
                 $total,
@@ -143,7 +145,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             $order['cart_id'] = $cart->id;
             $order['nimble_id'] = $nimble->id;
             $order['nimble_currentOrder'] = $nimble->currentOrder;
-            $order['customer_key'] = $customer->secure_key;
+            $order['customer_key'] = $customer->secure_key;            
         }
         return $order;
     }        
@@ -151,14 +153,12 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     public function sendPayment($total, $paramurl)
     {
         $order = array();
-        $order = $this->createOrder($paramurl);
-            
-        $cart = $this->context->cart;
-
+        $order = $this->createOrder($paramurl);            
+        
         $payment = array(
         'amount' => $total,
-        'currency' => 'EUR',
-        'customerData' => $cart->id,
+        'currency' => $this->getCurrency(),
+        'customerData' => $order['nimble_currentOrder'],
         'paymentSuccessUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl, 'order' => $order)),
         'paymentErrorUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl, 'order' => $order))
         );
@@ -182,12 +182,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         } elseif (!isset($response['error'])) {
             if ($response['result']['code'] == 200) {
                 //save transaction_id in session. After in validateOrder (paymentok.php) we will use transaction_id
-                $this->context->cookie->__set('nimble_transaction_id', $response['data']['id']);               
-                
-                //Save transaction_id
-                $transaction_id = $response["data"]["id"];
-                Configuration::updateValue('NIMBLE_TRANSACTION_ID', $transaction_id);
-                              
+                $this->context->cookie->__set('nimble_transaction_id', $response['data']['id']);        
                 //Tools::redirect($response['data'][0]['paymentUrl']); //old version
                 Tools::redirect($response['data']['paymentUrl']);
             } elseif ($response['result']['code'] == 401) {
@@ -218,5 +213,13 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             $this->setTemplate('payment_failed.tpl');
             Logger::addLog('NIMBLE_PAYMENTS. We have received an error from Nimble Payments (Error: '.$response['error'].')', 4);
         }
+    }
+
+    public function getCurrency(){
+        $cart = $this->context->cart;
+        $currency_order = new Currency($cart->id_currency);
+        $current_currency = $currency_order->iso_code;
+        
+        return $current_currency;
     }
 }
