@@ -23,6 +23,9 @@
  *     @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
+require_once dirname(__FILE__).'/library/sdk/lib/Nimble/base/NimbleAPI.php';
+require_once dirname(__FILE__).'/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
+require_once dirname(__FILE__).'/library/sdk/lib/Nimble/api/NimbleAPICredentials.php';
 
 if (! defined('_CAN_LOAD_FILES_')) {
     exit();
@@ -37,9 +40,10 @@ class NimblePayment extends PaymentModule
 	{
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.11';
+        $this->version = '1.1.0';
         $this->author = 'BBVA';
         $this->bootstrap = true;
+        $this->disable = true;
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
         $this->displayName = $this->l('Nimble Payments');
@@ -152,12 +156,18 @@ class NimblePayment extends PaymentModule
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            if (!Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')) {
-                $this->post_errors[] = $this->l('Client id is required.');
-            } elseif (!Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'))
-            $this->post_errors[] = $this->l('Client secret is required.');
-            elseif (!Tools::getValue('NIMBLEPAYMENT_NAME'))
-            $this->post_errors[] = $this->l('Shop name is required.');
+            if (!Tools::getValue('NIMBLEPAYMENT_NAME')){
+                $this->disable = false;    
+                $this->post_errors[] = $this->l('Shop name is required.');
+            }else if (!Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')) {
+                $this->disable = false; 
+                $this->createHeaderHtml();
+            }        
+            else if ($this->check_credentials() == false){
+                error_log("validation". $this->disable);
+                $this->disable = false; 
+                $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
+            }    
         }
     }
 
@@ -166,7 +176,6 @@ class NimblePayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
-            Configuration::updateValue('NIMBLEPAYMENT_URLTPV', Tools::getValue('NIMBLEPAYMENT_URLTPV'));
             Configuration::updateValue('NIMBLEPAYMENT_NAME', Tools::getValue('NIMBLEPAYMENT_NAME'));
             Configuration::updateValue('NIMBLEPAYMENT_DESCRIPTION', Tools::getValue('NIMBLEPAYMENT_DESCRIPTION'));
         }
@@ -206,14 +215,19 @@ class NimblePayment extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
-        $this->smarty->assign(
-            array(
-            'this_path' => $this->_path,
-            'this_path_bw' => $this->_path,
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'
-            )
-        );
-        return $this->display(__FILE__, 'payment.tpl');
+        if($this->disable == true){
+            error_log("entra: ". $this->disable);
+            
+            $this->smarty->assign(
+                array(
+                'this_path' => $this->_path,
+                'this_path_bw' => $this->_path,
+                'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'
+                )
+            );
+            
+            return $this->display(__FILE__, 'payment.tpl');
+        }    
     }
     public function hookPaymentReturn($params)
     {
@@ -323,81 +337,49 @@ class NimblePayment extends PaymentModule
     public function renderForm()
     {
         $this->fields_form[0]['form'] = array (
-         'legend' => array(
-                                'title' => $this->l('Client Details'),
-                                'icon' => 'icon-edit'
-         ),
-         'input' => array(
-           array(
-                                        'type' => 'text',
-                                        'label' => $this->l('Client id'),
-                                        'name' => 'NIMBLEPAYMENT_CLIENT_ID',
-           ),
-           array(
-             'type' => 'text',
-             'label' => $this->l('Client secret'),
-             'name' => 'NIMBLEPAYMENT_CLIENT_SECRET',
-           )
-         )
+            'legend' => array(
+            'title'  => $this->l('Client Details'),
+            'icon'   => 'icon-edit'
+            ),
+            'input' => array(
+                array(
+                 'type'  => 'text',
+                 'label' => $this->l('Client id'),
+                 'name'  => 'NIMBLEPAYMENT_CLIENT_ID',
+                ),
+                array(
+                 'type'  => 'text',
+                 'label' => $this->l('Client secret'),
+                 'name'  => 'NIMBLEPAYMENT_CLIENT_SECRET',
+                )
+            )
         );
         $options = array(
         array(
-                        'id_option' => 'real',
-                        'name' => 'Real'
-        ),
-        array(
-         'id_option' => 'sandbox',
-         'name' => $this->l('Testing')
-        ),
+            'id_option' => 'real',
+            'name'      => 'Real'
+            ),
+            array(
+             'id_option' => 'sandbox',
+             'name'      => $this->l('Testing')
+            ),
         );
         $this->fields_form[1]['form'] = array (
         'legend' => array(
                         'title' => $this->l('Shop Details'),
-                        'icon' => 'icon-edit'
+                        'icon'  => 'icon-edit'
         ),
         'input' => array(
-         array(
-                                'type' => 'text',
-                                'label' => $this->l('Shop Name'),
-                                'name' => 'NIMBLEPAYMENT_NAME',
-         ),
-         array(
-           'type' => 'textarea',
+            array(
+           'type'  => 'text',
+           'label' => $this->l('Shop Name'),
+           'name'  => 'NIMBLEPAYMENT_NAME',
+            ),
+            array(
+           'type'  => 'textarea',
            'label' => $this->l('Shop Description'),
-           'name' => 'NIMBLEPAYMENT_DESCRIPTION',
-         ),
-
-         array(
-         'type' => 'select',
-         'label' => $this->l('Url Payment'),
-         'name' => 'NIMBLEPAYMENT_URLTPV',
-         'options' => array(
-                                        'query' => $options,
-                                        'id' => 'id_option',
-                                        'name' => 'name'
-                                        ),
-         ),
-         array(
-           'type' => 'text',
-           'label' => $this->l('Shop Url OK'),
-           'name' => 'NIMBLEPAYMENT_URL_OK',
-           'desc' => $this->l(
-               'Information only, not editable. This module automatically converts this URL in execution time ,
-								 depending if "Friendly URL" is enabled or not. The language parameter is added in execution time.'
-           ),
-           'readonly' => true,
-         ),
-         array(
-           'type' => 'text',
-           'label' => $this->l('Shop Url KO'),
-           'name' => 'NIMBLEPAYMENT_URL_KO',
-           'desc' => $this->l(
-               'Information only, not editable. This module automatically converts this URL in execution time ,
-								 depending if "Friendly URL" is enabled or not. The language parameter is added in execution time.'
-           ),
-           'readonly' => true,
-
-         )
+           'name'  => 'NIMBLEPAYMENT_DESCRIPTION',
+            ),
         ),
         'submit' => array(
          'title' => $this->l('Save'),
@@ -444,13 +426,67 @@ class NimblePayment extends PaymentModule
     public function getConfigFieldsValues()
     {
         return array(
-        'NIMBLEPAYMENT_CLIENT_ID' => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID', Configuration::get('NIMBLEPAYMENT_CLIENT_ID')),
+        'NIMBLEPAYMENT_CLIENT_ID'     => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID', Configuration::get('NIMBLEPAYMENT_CLIENT_ID')),
         'NIMBLEPAYMENT_CLIENT_SECRET' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET', Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')),
-        'NIMBLEPAYMENT_URLTPV' => Tools::getValue('NIMBLEPAYMENT_URLTPV', Configuration::get('NIMBLEPAYMENT_URLTPV')),
-        'NIMBLEPAYMENT_NAME' => Tools::getValue('NIMBLEPAYMENT_NAME', Configuration::get('NIMBLEPAYMENT_NAME')),
-        'NIMBLEPAYMENT_DESCRIPTION' => Tools::getValue('NIMBLEPAYMENT_DESCRIPTION', Configuration::get('NIMBLEPAYMENT_DESCRIPTION')),
-        'NIMBLEPAYMENT_URL_OK' => Context::getContext()->link->getModuleLink('nimblepayment', 'paymentok', array()),
-        'NIMBLEPAYMENT_URL_KO' => Context::getContext()->link->getModuleLink('nimblepayment', 'paymentko', array())
+        'NIMBLEPAYMENT_NAME'          => Tools::getValue('NIMBLEPAYMENT_NAME', Configuration::get('NIMBLEPAYMENT_NAME')),
+        'NIMBLEPAYMENT_DESCRIPTION'   => Tools::getValue('NIMBLEPAYMENT_DESCRIPTION', Configuration::get('NIMBLEPAYMENT_DESCRIPTION'))
         );
+    }
+     
+    public function check_credentials()
+    {    
+        $validator = false;
+
+        try {
+            $nimbleApi = $this->getNimbleApi();
+            $response = NimbleAPICredentials::check($nimbleApi);
+            if ( isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code'] ){
+                $validator = true;
+            } else{
+                $validator = false;
+            }
+        } catch (Exception $e) {
+            $validator = false;
+        }
+
+        return $validator;
+    }
+    
+    public function createHeaderHtml()
+    {  
+        $url_nimble = $this->get_gateway_url();
+        $this->smarty->assign('url_nimble', $url_nimble);
+        $this->post_errors[] = $this->display(__FILE__, 'info_registration.tpl');
+    }
+    
+    public function get_gateway_url()
+    {
+        $platform = 'Prestashop'; 
+        $storeName = Tools::getValue('NIMBLEPAYMENT_NAME');
+        $storeURL = _PS_BASE_URL_.__PS_BASE_URI__;
+        $redirectURL = _PS_BASE_URL_.__PS_BASE_URI__.'modules/nimblepayment/oauth2callback.php';
+        
+        return NimbleAPI::getGatewayUrl($platform, $storeName, $storeURL, $redirectURL);
+    }
+    
+    public function getVersionPlugin(){
+        return $this->version;
+    }
+    
+    public function getNimbleApi(){
+
+        $params = array(
+        'clientId'     => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'),
+        'clientSecret' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'),
+        'mode'         => Tools::getValue('NIMBLEPAYMENT_URLTPV')
+        );
+
+        try {
+            $nimbleApi = new NimbleAPI($params);
+        } catch (Exception $e) {
+            throw new Exception('Error in NimbleAPI: ' . $e);
+        }
+
+        return $nimbleApi;    
     }
 }
