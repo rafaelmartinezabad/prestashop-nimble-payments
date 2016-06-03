@@ -48,6 +48,7 @@ class NimblePayment extends PaymentModule
         $this->displayName = $this->l('Nimble Payments');
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
+        $this->post_errors = array();
     }
 
     public function install()
@@ -428,7 +429,12 @@ class NimblePayment extends PaymentModule
         $validator = false;
 
         try {
-            $nimbleApi = $this->getNimbleApi();
+            $params = array(
+            'clientId' => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'),
+            'clientSecret' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')
+            );
+            
+            $nimbleApi = new NimbleAPI($params);
             $response = NimbleAPICredentials::check($nimbleApi);
             if ( isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code'] ){
                 $validator = true;
