@@ -40,10 +40,9 @@ class NimblePayment extends PaymentModule
 	{
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'BBVA';
         $this->bootstrap = true;
-        $this->disable = true;
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
         $this->displayName = $this->l('Nimble Payments');
@@ -60,7 +59,6 @@ class NimblePayment extends PaymentModule
         }
 
         if (! parent::install()
-            || ! Configuration::updateValue('NIMBLEPAYMENT_URLTPV', 'sandbox')
             || ! $this->registerHook('payment')
             || ! $this->registerHook('paymentReturn')
             || ! $this->registerHook('actionOrderStatusPostUpdate')
@@ -77,7 +75,6 @@ class NimblePayment extends PaymentModule
     {
         if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID')
             || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET')
-            || !Configuration::deleteByName('NIMBLEPAYMENT_URLTPV')
             || !Configuration::deleteByName('NIMBLEPAYMENT_NAME')
             || !Configuration::deleteByName('NIMBLEPAYMENT_DESCRIPTION')
             || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE'))
@@ -156,16 +153,12 @@ class NimblePayment extends PaymentModule
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            if (!Tools::getValue('NIMBLEPAYMENT_NAME')){
-                $this->disable = false;    
+            if (!Tools::getValue('NIMBLEPAYMENT_NAME')){ 
                 $this->post_errors[] = $this->l('Shop name is required.');
             }else if (!Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')) {
-                $this->disable = false; 
                 $this->createHeaderHtml();
             }        
             else if ($this->check_credentials() == false){
-                error_log("validation". $this->disable);
-                $this->disable = false; 
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
             }    
         }
@@ -215,9 +208,6 @@ class NimblePayment extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
-        if($this->disable == true){
-            error_log("entra: ". $this->disable);
-            
             $this->smarty->assign(
                 array(
                 'this_path' => $this->_path,
@@ -226,9 +216,9 @@ class NimblePayment extends PaymentModule
                 )
             );
             
-            return $this->display(__FILE__, 'payment.tpl');
-        }    
+            return $this->display(__FILE__, 'payment.tpl');    
     }
+    
     public function hookPaymentReturn($params)
     {
         if (!$this->active)
@@ -471,22 +461,5 @@ class NimblePayment extends PaymentModule
     
     public function getVersionPlugin(){
         return $this->version;
-    }
-    
-    public function getNimbleApi(){
-
-        $params = array(
-        'clientId'     => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'),
-        'clientSecret' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'),
-        'mode'         => Tools::getValue('NIMBLEPAYMENT_URLTPV')
-        );
-
-        try {
-            $nimbleApi = new NimbleAPI($params);
-        } catch (Exception $e) {
-            throw new Exception('Error in NimbleAPI: ' . $e);
-        }
-
-        return $nimbleApi;    
     }
 }

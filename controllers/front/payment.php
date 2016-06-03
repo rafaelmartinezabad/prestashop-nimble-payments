@@ -26,6 +26,7 @@
 
 require_once dirname(__FILE__).'/../../library/sdk/lib/Nimble/base/NimbleAPI.php';
 require_once dirname(__FILE__).'/../../library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
+require_once dirname(__FILE__).'/../../library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
 
 class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 {
@@ -33,7 +34,6 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     public $display_column_left = false;
     public $nimblepayment_client_secret = '';
     public $nimblepayment_client_id = '';
-    public $nimblepayment_urltpv = '';
     public $type_error = 0;
     public $nimbleapi;
 
@@ -41,7 +41,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     * @see FrontController::initContent()
     */
     public function initContent()
-    { 
+    {        
         parent::initContent();
         $cart = $this->context->cart;
         if($cart->nbProducts() <=0){
@@ -70,7 +70,6 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     {
         $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
         $this->nimblepayment_client_id = Configuration::get('NIMBLEPAYMENT_CLIENT_ID');
-        $this->nimblepayment_urltpv = Configuration::get('NIMBLEPAYMENT_URLTPV');
 
         if ($this->nimblepayment_client_secret == '' || $this->nimblepayment_client_id == '') {
             $this->setTemplate('payment_failed.tpl');
@@ -91,8 +90,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     {
         $params = array(
         'clientId' => $this->nimblepayment_client_id,
-        'clientSecret' => $this->nimblepayment_client_secret,
-        'mode' => $this->nimblepayment_urltpv
+        'clientSecret' => $this->nimblepayment_client_secret
         );
 
         try {
@@ -162,12 +160,12 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         );
 
         try {
-            //ADD HEADER SOURCE CALLER
-            $nimblePayment = new NimblePayment();
-            $version = $nimblePayment->getVersionPlugin();
-            $nimbleApi = $nimblePayment->getNimbleApi();
-            $nimbleApi->authorization->addHeader('source-caller', 'PRESTASHOP_'.$version);
-                
+            $params = array(
+            'clientId' => $this->nimblepayment_client_id,
+            'clientSecret' => $this->nimblepayment_client_secret
+            );
+            
+            $this->nimbleapi = new NimbleAPI($params);
             $response = NimbleAPIPayments::sendPaymentClient($this->nimbleapi, $payment);
         } catch (Exception $e) {
             //type error = 3 // problem to send payment
