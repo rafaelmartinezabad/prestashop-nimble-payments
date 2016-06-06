@@ -59,6 +59,7 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
             $history = new OrderHistory();
             $history->id_order = (int)$objOrder;
             $history->changeIdOrderState((int)(Configuration::get('PS_OS_PAYMENT')), (int)($objOrder));
+            $history->addWithemail();
             $history->save();
             
             Tools::redirect(

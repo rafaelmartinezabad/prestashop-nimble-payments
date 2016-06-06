@@ -59,6 +59,7 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
             $history = new OrderHistory();
             $history->id_order = (int)$objOrder;
             $history->changeIdOrderState((int)(Configuration::get('PS_OS_CANCELED')), (int)($objOrder));
+            $history->addWithemail();
             $history->save();
 
             $oldCart = new Cart(Order::getCartIdStatic($nimble_currentOrder, $this->context->customer->id));
