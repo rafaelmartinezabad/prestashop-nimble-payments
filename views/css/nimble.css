@@ -199,7 +199,10 @@
 
 }
 
-
+p#block_top_title{  
+  margin-top: 15px;
+  margin-bottom: -30px;
+}
 
 
 @media screen and (max-width: 500px) {
@@ -213,9 +216,4 @@
     width: 165px;
     height: 18px;
   }
-}
-
-#block_top_title{
-    margin-top: 15px;
-    margin-bottom: -30px;
 }
