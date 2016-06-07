@@ -24,9 +24,9 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-require_once dirname(__FILE__).'/../../library/sdk/lib/Nimble/base/NimbleAPI.php';
-require_once dirname(__FILE__).'/../../library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
-require_once dirname(__FILE__).'/../../library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
+require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
+require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
+require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
 
 class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 {

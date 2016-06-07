@@ -23,9 +23,10 @@
  *     @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-require_once dirname(__FILE__).'/library/sdk/lib/Nimble/base/NimbleAPI.php';
-require_once dirname(__FILE__).'/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
-require_once dirname(__FILE__).'/library/sdk/lib/Nimble/api/NimbleAPICredentials.php';
+
+require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
+require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
+require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPICredentials.php';
 
 if (! defined('_CAN_LOAD_FILES_')) {
     exit();
@@ -142,8 +143,8 @@ class NimblePayment extends PaymentModule
             $orderState->invoice = false;
             if ($orderState->add())//save new order status
             {
-                $source = dirname(__FILE__).'/../../img/os/'.(int)Configuration::get('PS_OS_COD_VALIDATION').'.gif';
-                $destination = dirname(__FILE__).'/../../img/os/'.(int)$orderState->id.'.gif';
+                $source = _PS_MODULE_DIR_.'/../img/os/'.(int)Configuration::get('PS_OS_BANKWIRE').'.gif';
+                $destination = _PS_MODULE_DIR_.'/../img/os/'.(int)$orderState->id.'.gif';
                 copy($source, $destination);
                 
                 Configuration::updateValue($db_name, (int)$orderState->id);
