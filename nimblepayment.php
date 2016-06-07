@@ -430,8 +430,8 @@ class NimblePayment extends PaymentModule
 
         try {
             $params = array(
-            'clientId' => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'),
-            'clientSecret' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')
+            'clientId' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')),
+            'clientSecret' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'))
             );
             
             $nimbleApi = new NimbleAPI($params);
