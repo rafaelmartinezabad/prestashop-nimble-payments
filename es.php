@@ -8,7 +8,7 @@ $_MODULE['<{nimblepayment}prestashop>nimblepayment_cbe0a99684b145e77f3e14174ac21
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_b7ad9b613c7149cd83ee1e424ca33951'] = 'El módulo Nimble Payments solo es compatible con versiones de PHP mayores o iguales a la 5.3';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_613cb32db1016d10e02377d41a2c8a8b'] = 'Client_id es obligatorio';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_07f2fd68a8a1e3328a254b15d507ebd2'] = 'Client secret es obligatorio';
-$_MODULE['<{nimblepayment}prestashop>nimblepayment_dd189cdaa73e88a19f495a0d6c49a61b'] = 'Nombre tienda es olbigatorio';
+$_MODULE['<{nimblepayment}prestashop>nimblepayment_dd189cdaa73e88a19f495a0d6c49a61b'] = 'Nombre tienda es obligatorio';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_c888438d14855d7d96a2724ee9c306bd'] = 'Configuración actualizada';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_d85c4d6fd5b26c919beca062b24369a5'] = 'Detalles de cliente';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_eae4c6c8dce6a00ff9af3ac60e98e0d6'] = 'Client Id';
@@ -38,3 +38,8 @@ $_MODULE['<{nimblepayment}prestashop>infos_00ead1bd1d40a16cd121370f31c50f6c'] = 
 $_MODULE['<{nimblepayment}prestashop>infos_e3350b1bbbcb10f4ff27c8557d33719b'] = '¡Pruébalo ya!';
 $_MODULE['<{nimblepayment}prestashop>payment_18303afb18c3a4d72c0424cad3cb0884'] = 'Pagar con Nimble Payments';
 $_MODULE['<{nimblepayment}prestashop>payment_33a2f873d6919b4591ed89a47a0e87dd'] = 'Pagar con tarjeta';
+$_MODULE['<{nimblepayment}prestashop>nimblepayment_1d919c419faa0b3896521840d19d7e63'] = 'Datos de pasarela no válidos para aceptar pagos. Asegúrate de que no sean de una pasarela de Test.';
+$_MODULE['<{nimblepayment}prestashop>info_registration_ad23b98ac600c216cdaea1299f1a403d'] = 'Si no estas registrado aún en Nimble Payments, puedes registrarte sin coste de forma completamente online.';
+$_MODULE['<{nimblepayment}prestashop>info_registration_7eea2a4fdfe0af7a2fbabac126fece41'] = 'Regístrate.';
+$_MODULE['<{nimblepayment}prestashop>info_registration_763294da6ee56a2c4d8e569d2ee026dc'] = 'Ya estoy registrado.';
+$_MODULE['<{nimblepayment}prestashop>display_top_bc8216d81ce81357e2a279af6a3de85e'] = 'No se ha podido procesar el pago. Se ha producido un error. Código ERR_PAG. Por favor, inténtalo mas tarde.';
