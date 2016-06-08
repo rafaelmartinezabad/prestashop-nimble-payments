@@ -77,8 +77,6 @@ class NimblePayment extends PaymentModule
     {
         if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID')
             || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET')
-            || !Configuration::deleteByName('NIMBLEPAYMENT_NAME')
-            || !Configuration::deleteByName('NIMBLEPAYMENT_DESCRIPTION')
             || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE'))
             || !Configuration::deleteByName('PENDING_NIMBLE')
             || !parent::uninstall()
@@ -155,12 +153,9 @@ class NimblePayment extends PaymentModule
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            if (!Tools::getValue('NIMBLEPAYMENT_NAME')){ 
-                $this->post_errors[] = $this->l('Shop name is required.');
-            }else if (!Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')) {
+            if (!Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')) {
                 $this->createHeaderHtml();
-            }        
-            else if ($this->check_credentials() == false){
+            }else if ($this->check_credentials() == false){
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
             }    
         }
@@ -171,8 +166,6 @@ class NimblePayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
-            Configuration::updateValue('NIMBLEPAYMENT_NAME', Tools::getValue('NIMBLEPAYMENT_NAME'));
-            Configuration::updateValue('NIMBLEPAYMENT_DESCRIPTION', Tools::getValue('NIMBLEPAYMENT_DESCRIPTION'));
         }
         return $this->displayConfirmation($this->l('Settings updated'));
     }
@@ -344,38 +337,10 @@ class NimblePayment extends PaymentModule
                  'label' => $this->l('Client secret'),
                  'name'  => 'NIMBLEPAYMENT_CLIENT_SECRET',
                 )
+            ),
+            'submit' => array(
+                'title' => $this->l('Save'),
             )
-        );
-        $options = array(
-        array(
-            'id_option' => 'real',
-            'name'      => 'Real'
-            ),
-            array(
-             'id_option' => 'sandbox',
-             'name'      => $this->l('Testing')
-            ),
-        );
-        $this->fields_form[1]['form'] = array (
-        'legend' => array(
-                        'title' => $this->l('Shop Details'),
-                        'icon'  => 'icon-edit'
-        ),
-        'input' => array(
-            array(
-           'type'  => 'text',
-           'label' => $this->l('Shop Name'),
-           'name'  => 'NIMBLEPAYMENT_NAME',
-            ),
-            array(
-           'type'  => 'textarea',
-           'label' => $this->l('Shop Description'),
-           'name'  => 'NIMBLEPAYMENT_DESCRIPTION',
-            ),
-        ),
-        'submit' => array(
-         'title' => $this->l('Save'),
-        )
         );
 
         $helper = new HelperForm();
@@ -419,9 +384,7 @@ class NimblePayment extends PaymentModule
     {
         return array(
         'NIMBLEPAYMENT_CLIENT_ID'     => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID', Configuration::get('NIMBLEPAYMENT_CLIENT_ID')),
-        'NIMBLEPAYMENT_CLIENT_SECRET' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET', Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')),
-        'NIMBLEPAYMENT_NAME'          => Tools::getValue('NIMBLEPAYMENT_NAME', Configuration::get('NIMBLEPAYMENT_NAME')),
-        'NIMBLEPAYMENT_DESCRIPTION'   => Tools::getValue('NIMBLEPAYMENT_DESCRIPTION', Configuration::get('NIMBLEPAYMENT_DESCRIPTION'))
+        'NIMBLEPAYMENT_CLIENT_SECRET' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET', Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'))
         );
     }
      
@@ -459,7 +422,7 @@ class NimblePayment extends PaymentModule
     public function get_gateway_url()
     {
         $platform = 'Prestashop'; 
-        $storeName = Tools::getValue('NIMBLEPAYMENT_NAME');
+        $storeName = Configuration::get('PS_SHOP_NAME');
         $storeURL = _PS_BASE_URL_.__PS_BASE_URI__;
         $redirectURL = _PS_BASE_URL_.__PS_BASE_URI__.'modules/nimblepayment/oauth2callback.php';
         
