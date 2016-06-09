@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>nimblepayment</name>
+	<displayName><![CDATA[Nimble Payments]]></displayName>
+	<version><![CDATA[1.1.1]]></version>
+	<description><![CDATA[Pasarela de pagos Nimble Payments]]></description>
+	<author><![CDATA[BBVA]]></author>
+	<tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[¿Está seguro de querer borrar los detalles?]]></confirmUninstall>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+</module>

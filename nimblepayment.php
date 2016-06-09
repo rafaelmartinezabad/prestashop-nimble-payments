@@ -153,9 +153,7 @@ class NimblePayment extends PaymentModule
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            if (!Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')) {
-                $this->createHeaderHtml();
-            }else if ($this->check_credentials() == false){
+            if ($this->check_credentials() == false){
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
             }    
         }
@@ -172,12 +170,21 @@ class NimblePayment extends PaymentModule
 
     private function displaynimblepayment()
     {
+        $url_nimble = $this->get_gateway_url();
+        $this->smarty->assign(
+                array(
+                'url_nimble' => $url_nimble,
+                'client'     => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'))   
+                )
+            );
         return $this->display(__FILE__, 'infos.tpl');
     }
 
     public function getContent()
     {
         $output = null;
+        Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']).'/'.
+          AdminController::$currentIndex.'&configure='. $this->name.'&token='.Tools::getAdminTokenLite('AdminModules'));
 
         if (Tools::isSubmit('btnSubmit')) {
             $this->postValidation();
