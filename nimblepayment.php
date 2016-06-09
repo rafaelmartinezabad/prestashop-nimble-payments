@@ -419,13 +419,6 @@ class NimblePayment extends PaymentModule
         return $validator;
     }
     
-    public function createHeaderHtml()
-    {  
-        $url_nimble = $this->get_gateway_url();
-        $this->smarty->assign('url_nimble', $url_nimble);
-        $this->post_errors[] = $this->display(__FILE__, 'info_registration.tpl');
-    }
-    
     public function get_gateway_url()
     {
         $platform = 'Prestashop'; 

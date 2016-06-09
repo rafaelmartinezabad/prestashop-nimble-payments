@@ -29,6 +29,7 @@
         <p class="payment_module">
             <a 
             class="nimblepayment bankwire" 
+            onclick="clickAndDisable(this);"
             href="{$link->getModuleLink('nimblepayment', 'payment')|escape:'html':'UTF-8'}" 
             title="{l s='Pay by Nimble Payments' mod='nimblepayment'}">
                 {l s='Pay by Credit card' mod='nimblepayment'} 
@@ -37,4 +38,11 @@
             </a>
         </p>
     </div>
-</div>
+</div>  
+<script type="text/javascript">
+   function clickAndDisable(link) {
+     link.onclick = function(event) {
+        event.preventDefault();
+     }
+   }   
+</script>            

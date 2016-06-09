@@ -43,3 +43,4 @@ $_MODULE['<{nimblepayment}prestashop>infos_ad23b98ac600c216cdaea1299f1a403d'] = 
 $_MODULE['<{nimblepayment}prestashop>infos_7eea2a4fdfe0af7a2fbabac126fece41'] = 'Regístrate.';
 $_MODULE['<{nimblepayment}prestashop>infos_763294da6ee56a2c4d8e569d2ee026dc'] = 'Ya estoy registrado.';
 $_MODULE['<{nimblepayment}prestashop>display_top_bc8216d81ce81357e2a279af6a3de85e'] = 'No se ha podido procesar el pago. Se ha producido un error. Código ERR_PAG. Por favor, inténtalo mas tarde.';
+$_MODULE['<{nimblepayment}prestashop>payment_return_88526efe38fd18179a127024aba8c1d7'] = 'Pedido en %s ha sido completado';
