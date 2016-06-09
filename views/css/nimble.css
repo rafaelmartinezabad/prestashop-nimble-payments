@@ -48,7 +48,7 @@
 }
 
 .nimbleHeader .text-box .btn {
-  display: block;
+  display: inline-block;
   margin-top: 25px;
   text-align: center;
   margin-bottom: 20px;
@@ -60,7 +60,7 @@
   font-weight: bold;
   letter-spacing: -1px;
   margin: 0 auto;
-  width: 175px;
+  width: 200px;
   padding: 12px;
 }
 
@@ -202,6 +202,10 @@
 p#block_top_title{  
   margin-top: 15px;
   margin-bottom: -30px;
+}
+
+.button-registration{
+    text-align: center;
 }
 
 

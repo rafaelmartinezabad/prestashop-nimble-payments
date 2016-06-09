@@ -37,13 +37,13 @@ if (! defined('_PS_VERSION_')) {
 
 class NimblePayment extends PaymentModule
 {
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
         $this->version = '1.1.1';
         $this->author = 'BBVA';
-        $this->bootstrap = true;
+        $this->bootstrap = true;        
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
         $this->displayName = $this->l('Nimble Payments');
@@ -81,6 +81,9 @@ class NimblePayment extends PaymentModule
             || !Configuration::deleteByName('NIMBLEPAYMENT_DESCRIPTION')
             || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE'))
             || !Configuration::deleteByName('PENDING_NIMBLE')
+            || !Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN')
+            || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN')
+            || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN')
             || !parent::uninstall()
         ) {
             return false;
@@ -157,12 +160,9 @@ class NimblePayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             if (!Tools::getValue('NIMBLEPAYMENT_NAME')){ 
                 $this->post_errors[] = $this->l('Shop name is required.');
-            }else if (!Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')) {
-                $this->createHeaderHtml();
-            }        
-            else if ($this->check_credentials() == false){
+            }else if ($this->check_credentials() == false){
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
-            }    
+            }
         }
     }
 
@@ -179,6 +179,13 @@ class NimblePayment extends PaymentModule
 
     private function displaynimblepayment()
     {
+        $url_nimble = $this->get_gateway_url();
+        $this->smarty->assign(
+                array(
+                'url_nimble' => $url_nimble,
+                'client'     => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'))   
+                )
+            );
         return $this->display(__FILE__, 'infos.tpl');
     }
 
@@ -186,6 +193,9 @@ class NimblePayment extends PaymentModule
     {
         $output = null;
 
+        Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']).'/'.
+          AdminController::$currentIndex.'&configure='. $this->name.'&token='.Tools::getAdminTokenLite('AdminModules'));
+        
         if (Tools::isSubmit('btnSubmit')) {
             $this->postValidation();
             if (!count($this->post_errors)) {
@@ -196,7 +206,8 @@ class NimblePayment extends PaymentModule
                 }
             }
         }
-
+        if ($this->check_credentials() == true && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN'))
+            $output .= $this->authorize3legged();
         $output .= $this->displaynimblepayment();
         $output .= '<div id="nimble-form">'.$this->renderForm().'</div>';
         return $output;
@@ -327,7 +338,7 @@ class NimblePayment extends PaymentModule
     }
 
     public function renderForm()
-    {
+    {   
         $this->fields_form[0]['form'] = array (
             'legend' => array(
             'title'  => $this->l('Client Details'),
@@ -355,7 +366,7 @@ class NimblePayment extends PaymentModule
              'id_option' => 'sandbox',
              'name'      => $this->l('Testing')
             ),
-        );
+        );      
         $this->fields_form[1]['form'] = array (
         'legend' => array(
                         'title' => $this->l('Shop Details'),
@@ -449,13 +460,6 @@ class NimblePayment extends PaymentModule
         return $validator;
     }
     
-    public function createHeaderHtml()
-    {  
-        $url_nimble = $this->get_gateway_url();
-        $this->smarty->assign('url_nimble', $url_nimble);
-        $this->post_errors[] = $this->display(__FILE__, 'info_registration.tpl');
-    }
-    
     public function get_gateway_url()
     {
         $platform = 'Prestashop'; 
@@ -466,7 +470,73 @@ class NimblePayment extends PaymentModule
         return NimbleAPI::getGatewayUrl($platform, $storeName, $storeURL, $redirectURL);
     }
     
-    public function getVersionPlugin(){
+    public function getVersionPlugin()
+    {
         return $this->version;
     }
+    
+    /**
+     * 
+     * @return $url to OAUTH 3 step or false
+     */
+    public function getOauth3Url()
+    {
+        $validator = false;    
+        try {
+            $params = array(
+            'clientId' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')),
+            'clientSecret' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'))
+            );
+            
+            $nimbleApi = new NimbleAPI($params);
+            $validator = $nimbleApi->getOauth3Url();
+        } catch (Exception $e) {
+            $validator = false;
+        }
+    
+         return $validator;
+    }
+    
+    public function authorize3legged(){
+        $this->smarty->assign('Oauth3Url' , $this->getOauth3Url());
+        return $this->display(__FILE__, 'authorize.tpl'); 
+    }
+    
+    /**
+     * Perform oAuth after security server callback returns code confirmation through NimbleAPI SDK.
+     * We are getting here automatically through oAuth redirect URL from security server (/module/nimblepayment/oauth2callback.php)
+     */
+    public function nimbleOauth2callback()
+    {
+        $oauth = 'undefined';
+
+        // Check for errors on URL parameters
+        if (Tools::getValue('error')) {
+            Logger::addLog('NIMBLE_PAYMENTS. Unknown error or timeout.', 4);
+            $oauth = 'error';
+        } elseif (Tools::getValue('code')) {
+        // Security server redirection has "code" parameter on the URL
+            // Perform oAuth
+            $params = array(
+                    'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                    'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                    'oauth_code' => Tools::getValue('code')
+            );
+            $NimbleApi = new NimbleAPI($params);
+
+            // Check if NimbleAPI object has properly perform the authorization process
+            if ($NimbleApi != null && $NimbleApi->authorization->isAccessParams()) {
+                $oauth = 'success';
+                // Set token data on PS variables
+                Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $NimbleApi->authorization->getAccessToken());
+                Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $NimbleApi->authorization->getRefreshToken());
+            } else {
+                $oauth = 'error';
+            }
+        }
+
+        // After process redirect to module settings page with oauth2callback parameter on URL
+        Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN').'&oauth2callback='.$oauth);
+    }
+
 }
