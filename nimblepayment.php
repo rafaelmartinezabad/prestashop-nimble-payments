@@ -79,6 +79,7 @@ class NimblePayment extends PaymentModule
             || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET')
             || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE'))
             || !Configuration::deleteByName('PENDING_NIMBLE')
+            || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS')   
             || !parent::uninstall()
         ) {
             return false;
@@ -218,7 +219,9 @@ class NimblePayment extends PaymentModule
                 )
             );
             
-            return $this->display(__FILE__, 'payment.tpl');    
+            $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+            if(isset($nimble_credentials) && $nimble_credentials == 1)
+                return $this->display(__FILE__, 'payment.tpl');    
     }
     
     public function hookPaymentReturn($params)
@@ -398,7 +401,8 @@ class NimblePayment extends PaymentModule
     public function check_credentials()
     {    
         $validator = false;
-
+        Configuration::updateValue('PS_NIMBLE_CREDENTIALS',0);
+        
         try {
             $params = array(
             'clientId' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')),
@@ -409,6 +413,7 @@ class NimblePayment extends PaymentModule
             $response = NimbleAPICredentials::check($nimbleApi);
             if ( isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code'] ){
                 $validator = true;
+                Configuration::updateValue('PS_NIMBLE_CREDENTIALS',1);
             } else{
                 $validator = false;
             }
