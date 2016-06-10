@@ -174,8 +174,8 @@ class NimblePayment extends PaymentModule
         $url_nimble = $this->get_gateway_url();
         $this->smarty->assign(
                 array(
-                'url_nimble' => $url_nimble,
-                'client'     => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'))   
+                'url_nimble' => $url_nimble
+                //'client'     => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'))   
                 )
             );
         return $this->display(__FILE__, 'infos.tpl');
