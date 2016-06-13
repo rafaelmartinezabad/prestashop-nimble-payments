@@ -53,8 +53,9 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
         $order_num = Tools::substr($code, 0, 8);
         $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
+        $transaction_id =$this->context->cookie->nimble_transaction_id;
         
-        if ($paramurl == $code) {         
+        if (! empty($transaction_id) && $paramurl == $code) {
             $objOrder = $nimble_currentOrder;
             $history = new OrderHistory();
             $history->id_order = (int)$objOrder;
@@ -68,6 +69,9 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
                 .'&id_order='.$nimble_currentOrder
                 .'&key='.$customer_key
             );
+        }
+        else{
+            Tools::redirect('index.php');
         }
     }
 }
