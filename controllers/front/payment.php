@@ -109,47 +109,40 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         return true;
     }
 
-    public function createOrder($paramurl)
+    public function createOrder()
     {
         $order = array();
-        $cart = (int)Tools::substr($paramurl, 0, 8);
-
-        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
-        $cart = new Cart($cart);
-        $order_num = Tools::substr($paramurl, 0, 8);
-        $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
-        $code = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
+        $cart = $this->context->cart;
         $status_order = Configuration::get('PENDING_NIMBLE');
 
-        if ($paramurl == $code) {
-            $total = $cart->getOrderTotal(true, Cart::BOTH);
-            $extra_vars = array();
-            $nimble = new NimblePayment();
-            $nimble->validateOrder(
-                $cart->id,
-                $status_order,
-                $total,
-                $nimble->displayName,
-                null,
-                $extra_vars,
-                null,
-                false,
-                $cart->secure_key
-            );
-            $customer = new Customer($cart->id_customer);
+        $total = $cart->getOrderTotal(true, Cart::BOTH);
+        $extra_vars = array();
+        $nimble = new NimblePayment();
+        $nimble->validateOrder(
+            $cart->id,
+            $status_order,
+            $total,
+            $nimble->displayName,
+            null,
+            $extra_vars,
+            null,
+            false,
+            $cart->secure_key
+        );
+        $customer = new Customer($cart->id_customer);
 
-            $order['cart_id'] = $cart->id;
-            $order['nimble_id'] = $nimble->id;
-            $order['nimble_currentOrder'] = $nimble->currentOrder;
-            $order['customer_key'] = $customer->secure_key;            
-        }
+        $order['cart_id'] = $cart->id;
+        $order['nimble_id'] = $nimble->id;
+        $order['nimble_currentOrder'] = $nimble->currentOrder;
+        $order['customer_key'] = $customer->secure_key;            
+            
         return $order;
     }        
     
     public function sendPayment($total, $paramurl)
     {
         $order = array();
-        $order = $this->createOrder($paramurl);
+        $order = $this->createOrder();
         
         $payment = array(
         'amount' => $total,
