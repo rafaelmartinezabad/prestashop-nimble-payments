@@ -2,12 +2,12 @@
     <p class="alert alert-success">{l s='Your order on %s is complete.' sprintf=$shop_name mod='nimblepayment'}</p>
     {if isset($order)}
     <div class="info-order box">
-            {if $carrier->id}<p><strong class="dark">{l s='Carrier'}</strong> {if $carrier->name == "0"}{$shop_name|escape:'html':'UTF-8'}{else}{$carrier->name|escape:'html':'UTF-8'}{/if}</p>{/if}
-            <p><strong class="dark">{l s='Payment method'}</strong> <span class="color-myaccount">{$order->payment|escape:'html':'UTF-8'}</span></p>
+            {if $carrier->id}<p><strong class="dark">{l s='Carrier' mod='nimblepayment'}</strong> {if $carrier->name == "0"}{$shop_name|escape:'html':'UTF-8'}{else}{$carrier->name|escape:'html':'UTF-8'}{/if}</p>{/if}
+            <p><strong class="dark">{l s='Payment method' mod='nimblepayment'}</strong> <span class="color-myaccount">{$order->payment|escape:'html':'UTF-8'}</span></p>
             {if $invoice AND $invoiceAllowed}
             <p>
                     <i class="icon-file-text"></i>
-                    <a target="_blank" href="{$link->getPageLink('pdf-invoice', true)}?id_order={$order->id|intval}{if $is_guest}&amp;secure_key={$order->secure_key|escape:'html':'UTF-8'}{/if}">{l s='Download your invoice as a PDF file.'}</a>
+                    <a target="_blank" href="{$link->getPageLink('pdf-invoice', true)}?id_order={$order->id|intval}{if $is_guest}&amp;secure_key={$order->secure_key|escape:'html':'UTF-8'}{/if}">{l s='Download your invoice as a PDF file.' mod='nimblepayment'}</a>
             </p>
             {/if}
             {if $order->recyclable}
@@ -28,7 +28,7 @@
             <div class="row">
                     <div class="col-xs-12 col-sm-6"{if $order->isVirtual()} style="display:none;"{/if}>
                             <ul class="address alternate_item box">
-                                    <li><h3 class="page-subheading">{l s='Delivery address'} ({$address_delivery->alias})</h3></li>
+                                    <li><h3 class="page-subheading">{l s='Delivery address' mod='nimblepayment'} ({$address_delivery->alias})</h3></li>
                                     {foreach from=$dlv_adr_fields name=dlv_loop item=field_item}
                                             {if $field_item eq "company" && isset($address_delivery->company)}<li class="address_company">{$address_delivery->company|escape:'html':'UTF-8'}</li>
                                             {elseif $field_item eq "address2" && $address_delivery->address2}<li class="address_address2">{$address_delivery->address2|escape:'html':'UTF-8'}</li>
@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6">
                             <ul class="address item {if $order->isVirtual()}full_width{/if} box">
-                                    <li><h3 class="page-subheading">{l s='Invoice address'} ({$address_invoice->alias})</h3></li>
+                                    <li><h3 class="page-subheading">{l s='Invoice address' mod='nimblepayment'} ({$address_invoice->alias})</h3></li>
                                     {foreach from=$inv_adr_fields name=inv_loop item=field_item}
                                             {if $field_item eq "company" && isset($address_invoice->company)}<li class="address_company">{$address_invoice->company|escape:'html':'UTF-8'}</li>
                                             {elseif $field_item eq "address2" && $address_invoice->address2}<li class="address_address2">{$address_invoice->address2|escape:'html':'UTF-8'}</li>
@@ -63,21 +63,21 @@
                     <thead>
                             <tr>
                                     {if $return_allowed}<th class="first_item"><input type="checkbox" /></th>{/if}
-                                    <th class="{if $return_allowed}item{else}first_item{/if}">{l s='Reference'}</th>
-                                    <th class="item">{l s='Product'}</th>
-                                    <th class="item">{l s='Quantity'}</th>
+                                    <th class="{if $return_allowed}item{else}first_item{/if}">{l s='Reference' mod='nimblepayment'}</th>
+                                    <th class="item">{l s='Product'mod='nimblepayment'}</th>
+                                    <th class="item">{l s='Quantity' mod='nimblepayment'}</th>
                                     {if $order->hasProductReturned()}
-                                            <th class="item">{l s='Returned'}</th>
+                                            <th class="item">{l s='Returned' mod='nimblepayment'}</th>
                                     {/if}
-                                    <th class="item">{l s='Unit price'}</th>
-                                    <th class="last_item">{l s='Total price'}</th>
+                                    <th class="item">{l s='Unit price' mod='nimblepayment'}</th>
+                                    <th class="last_item">{l s='Total price' mod='nimblepayment'}</th>
                             </tr>
                     </thead>
                     <tfoot>
                             {if $priceDisplay && $use_tax}
                                     <tr class="item">
                                             <td colspan="{if $return_allowed}2{else}1{/if}">
-                                                    <strong>{l s='Items (tax excl.)'}</strong>
+                                                    <strong>{l s='Items (tax excl.)' mod='nimblepayment'}</strong>
                                             </td>
                                             <td colspan="{if $order->hasProductReturned()}5{else}4{/if}">
                                                     <span class="price">{displayWtPriceWithCurrency price=$order->getTotalProductsWithoutTaxes() currency=$currency}</span>
@@ -86,7 +86,7 @@
                             {/if}
                             <tr class="item">
                                     <td colspan="{if $return_allowed}2{else}1{/if}">
-                                            <strong>{l s='Items'} {if $use_tax}{l s='(tax incl.)'}{/if} </strong>
+                                            <strong>{l s='Items' mod='nimblepayment'} {if $use_tax}{l s='(tax incl.)' mod='nimblepayment'}{/if} </strong>
                                     </td>
                                     <td colspan="{if $order->hasProductReturned()}5{else}4{/if}">
                                             <span class="price">{displayWtPriceWithCurrency price=$order->getTotalProductsWithTaxes() currency=$currency}</span>
@@ -114,7 +114,7 @@
                             {/if}
                             <tr class="item">
                                     <td colspan="{if $return_allowed}2{else}1{/if}">
-                                            <strong>{l s='Shipping & handling'} {if $use_tax}{l s='(tax incl.)'}{/if} </strong>
+                                            <strong>{l s='Shipping & handling' mod='nimblepayment'} {if $use_tax}{l s='(tax incl.)' mod='nimblepayment'}{/if} </strong>
                                     </td>
                                     <td colspan="{if $order->hasProductReturned()}5{else}4{/if}">
                                             <span class="price-shipping">{displayWtPriceWithCurrency price=$order->total_shipping currency=$currency}</span>

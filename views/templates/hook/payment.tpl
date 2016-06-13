@@ -39,12 +39,12 @@
         </p>
     </div>
 </div>
-<script language="JavaScript" type="text/JavaScript"> 
+<script language="JavaScript" type="text/JavaScript">
 
     function clickAndDisable(link) {
         link.onclick = function(event) {
            event.preventDefault();
         }
-    } 
-    
-</script>    
+    }
+
+</script>
