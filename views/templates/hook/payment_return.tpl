@@ -64,7 +64,7 @@
                             <tr>
                                     {if $return_allowed}<th class="first_item"><input type="checkbox" /></th>{/if}
                                     <th class="{if $return_allowed}item{else}first_item{/if}">{l s='Reference' mod='nimblepayment'}</th>
-                                    <th class="item">{l s='Product'mod='nimblepayment'}</th>
+                                    <th class="item">{l s='Product' mod='nimblepayment'}</th>
                                     <th class="item">{l s='Quantity' mod='nimblepayment'}</th>
                                     {if $order->hasProductReturned()}
                                             <th class="item">{l s='Returned' mod='nimblepayment'}</th>
@@ -114,7 +114,7 @@
                             {/if}
                             <tr class="item">
                                     <td colspan="{if $return_allowed}2{else}1{/if}">
-                                            <strong>{l s='Shipping & handling' mod='nimblepayment'} {if $use_tax}{l s='(tax incl.)' mod='nimblepayment'}{/if} </strong>
+                                            <strong>{l s='Shipping and handling' mod='nimblepayment'} {if $use_tax}{l s='(tax incl.)' mod='nimblepayment'}{/if} </strong>
                                     </td>
                                     <td colspan="{if $order->hasProductReturned()}5{else}4{/if}">
                                             <span class="price-shipping">{displayWtPriceWithCurrency price=$order->total_shipping currency=$currency}</span>

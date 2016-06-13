@@ -55,7 +55,7 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
         $transaction_id =$this->context->cookie->nimble_transaction_id;
          
-        if (! empty($transaction_id) && $paramurl == $code) {       
+        if (! empty($transaction_id) && $paramurl == $code) {
             $objOrder = $nimble_currentOrder;
             $history = new OrderHistory();
             $history->id_order = (int)$objOrder;

@@ -27,7 +27,7 @@
 <div class="row">
 	<div class="col-xs-12 col-md-6">
         <p class="payment_module">
-            <a    
+            <a
             class="nimblepayment bankwire" 
             onclick="clickAndDisable(this);"
             href="{$link->getModuleLink('nimblepayment', 'payment')|escape:'html':'UTF-8'}" 
