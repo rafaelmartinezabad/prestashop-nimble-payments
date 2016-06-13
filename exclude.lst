@@ -1,0 +1,11 @@
+nimblepayment/.git
+nimblepayment/.git/*
+nimblepayment/vendor
+nimblepayment/vendor/*
+nimblepayment/exclude.lst
+nimblepayment/composer.json
+nimblepayment/composer.lock
+nimblepayment/sample.gitignore
+nimblepayment/.gitignore
+nimblepayment/README.md
+nimblepayment/nimblepayments-prestashop.zip
