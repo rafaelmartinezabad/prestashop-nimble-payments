@@ -37,13 +37,13 @@ if (! defined('_PS_VERSION_')) {
 
 class NimblePayment extends PaymentModule
 {
-    public function __construct()
-    {
+	public function __construct()
+	{
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
         $this->version = '1.1.1';
         $this->author = 'BBVA';
-        $this->bootstrap = true;        
+        $this->bootstrap = true;
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
         $this->displayName = $this->l('Nimble Payments');
@@ -82,6 +82,7 @@ class NimblePayment extends PaymentModule
             || !Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN')
             || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN')
             || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN')
+			|| !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS')   
             || !parent::uninstall()
         ) {
             return false;
@@ -158,7 +159,7 @@ class NimblePayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             if ($this->check_credentials() == false){
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
-            }
+            }    
         }
     }
 
@@ -176,7 +177,7 @@ class NimblePayment extends PaymentModule
         $url_nimble = $this->get_gateway_url();
         $this->smarty->assign(
                 array(
-                'url_nimble' => $url_nimble,
+                'url_nimble' => $url_nimble
                 //'client'     => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'))   
                 )
             );
@@ -186,10 +187,9 @@ class NimblePayment extends PaymentModule
     public function getContent()
     {
         $output = null;
-
         Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']).'/'.
           AdminController::$currentIndex.'&configure='. $this->name.'&token='.Tools::getAdminTokenLite('AdminModules'));
-        
+
         if (Tools::isSubmit('btnSubmit')) {
             $this->postValidation();
             if (!count($this->post_errors)) {
@@ -223,7 +223,9 @@ class NimblePayment extends PaymentModule
                 )
             );
             
-            return $this->display(__FILE__, 'payment.tpl');    
+            $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+            if(isset($nimble_credentials) && $nimble_credentials == 1)
+                return $this->display(__FILE__, 'payment.tpl');    
     }
     
     public function hookPaymentReturn($params)
@@ -332,7 +334,7 @@ class NimblePayment extends PaymentModule
     }
 
     public function renderForm()
-    {   
+    {
         $this->fields_form[0]['form'] = array (
             'legend' => array(
             'title'  => $this->l('Client Details'),
@@ -351,8 +353,8 @@ class NimblePayment extends PaymentModule
                 )
             ),
             'submit' => array(
-         'title' => $this->l('Save'),
-        )
+                'title' => $this->l('Save'),
+            )
         );
 
         $helper = new HelperForm();
@@ -403,7 +405,8 @@ class NimblePayment extends PaymentModule
     public function check_credentials()
     {    
         $validator = false;
-
+        Configuration::updateValue('PS_NIMBLE_CREDENTIALS',0);
+        
         try {
             $params = array(
             'clientId' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')),
@@ -414,6 +417,7 @@ class NimblePayment extends PaymentModule
             $response = NimbleAPICredentials::check($nimbleApi);
             if ( isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code'] ){
                 $validator = true;
+                Configuration::updateValue('PS_NIMBLE_CREDENTIALS',1);
             } else{
                 $validator = false;
             }
@@ -434,8 +438,7 @@ class NimblePayment extends PaymentModule
         return NimbleAPI::getGatewayUrl($platform, $storeName, $storeURL, $redirectURL);
     }
     
-    public function getVersionPlugin()
-    {
+    public function getVersionPlugin(){
         return $this->version;
     }
     

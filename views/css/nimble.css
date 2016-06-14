@@ -208,7 +208,6 @@ p#block_top_title{
     text-align: center;
 }
 
-
 @media screen and (max-width: 500px) {
   .paiement_block .nimblepayment img{
     width: 230px;

@@ -27,7 +27,7 @@
 <div class="row">
 	<div class="col-xs-12 col-md-6">
         <p class="payment_module">
-            <a
+            <a 
             class="nimblepayment bankwire" 
             onclick="clickAndDisable(this);"
             href="{$link->getModuleLink('nimblepayment', 'payment')|escape:'html':'UTF-8'}" 
@@ -38,13 +38,11 @@
             </a>
         </p>
     </div>
-</div>
-<script language="JavaScript" type="text/JavaScript">
-
-    function clickAndDisable(link) {
-        link.onclick = function(event) {
-           event.preventDefault();
-        }
-    }
-
-</script>
+</div>  
+<script type="text/javascript">
+   function clickAndDisable(link) {
+     link.onclick = function(event) {
+        event.preventDefault();
+     }
+   }   
+</script>            
