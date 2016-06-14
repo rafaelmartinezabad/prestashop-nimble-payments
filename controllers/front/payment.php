@@ -163,7 +163,8 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             $nimblePayment =new NimblePayment();
             $version = $nimblePayment->getVersionPlugin();
             $this->nimbleapi->authorization->addHeader('source-caller', 'PRESTASHOP_'.$version);
-            
+            //ADD LANG
+            $this->nimbleapi->changeDefaultLanguage($this->context->language->iso_code);
             $response = NimbleAPIPayments::sendPaymentClient($this->nimbleapi, $payment);
         } catch (Exception $e) {
             //type error = 3 // problem to send payment
