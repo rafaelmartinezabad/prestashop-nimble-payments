@@ -82,7 +82,7 @@ class NimblePayment extends PaymentModule
             || !Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN')
             || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN')
             || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN')
-			|| !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS')   
+            || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS')   
             || !parent::uninstall()
         ) {
             return false;
@@ -158,7 +158,10 @@ class NimblePayment extends PaymentModule
     {
         if (Tools::isSubmit('btnSubmit')) {
             if ($this->check_credentials() == false){
+                Configuration::updateValue('PS_NIMBLE_CREDENTIALS',0);
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
+            }else{
+                Configuration::updateValue('PS_NIMBLE_CREDENTIALS',1);
             }    
         }
     }
@@ -405,7 +408,6 @@ class NimblePayment extends PaymentModule
     public function check_credentials()
     {    
         $validator = false;
-        Configuration::updateValue('PS_NIMBLE_CREDENTIALS',0);
         
         try {
             $params = array(
@@ -417,7 +419,6 @@ class NimblePayment extends PaymentModule
             $response = NimbleAPICredentials::check($nimbleApi);
             if ( isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code'] ){
                 $validator = true;
-                Configuration::updateValue('PS_NIMBLE_CREDENTIALS',1);
             } else{
                 $validator = false;
             }
