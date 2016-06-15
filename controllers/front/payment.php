@@ -53,35 +53,15 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             //Tools::redirect('index.php?controller=order');
             $this->result['redirect'] = 'index.php?controller=order';
         }
-        if ($this->validatePaymentData() == true) {
-            $total = $cart->getOrderTotal(true, Cart::BOTH) * 100;
-            $order_num = str_pad($cart->id, 8, '0', STR_PAD_LEFT);
-            $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
-            $this->sendPayment($total, $paramurl);
-        }
+        
+        $total = $cart->getOrderTotal(true, Cart::BOTH) * 100;
+        $order_num = str_pad($cart->id, 8, '0', STR_PAD_LEFT);
+        $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
+        $this->sendPayment($total, $paramurl);
         
         die( Tools::jsonEncode( $this->result ) );
     }
 
-    public function validatePaymentData()
-    {
-        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
-        $this->nimblepayment_client_id = Configuration::get('NIMBLEPAYMENT_CLIENT_ID');
-
-        if ($this->nimblepayment_client_secret == '' || $this->nimblepayment_client_id == '') {
-            $this->setTemplate('payment_failed.tpl');
-
-            //type error = 1
-            //show error to the user
-            $this->type_error = $this->module->l('Is not possible to contact Nimble Payments. Sorry for the inconvenience.', 'payment');
-
-            //write in log
-            Logger::addLog('NIMBLE_PAYMENTS. Client ID and/or Client secret is empty', 4);
-
-            return false;
-        }
-        return true;
-    }
 
     public function createOrder()
     {

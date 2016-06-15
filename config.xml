@@ -2,7 +2,7 @@
 <module>
 	<name>nimblepayment</name>
 	<displayName><![CDATA[Nimble Payments]]></displayName>
-	<version><![CDATA[1.1.1]]></version>
+	<version><![CDATA[2.0.0]]></version>
 	<description><![CDATA[Nimble Payments Gateway]]></description>
 	<author><![CDATA[BBVA]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
