@@ -91,7 +91,7 @@ class NimblePayment extends PaymentModule
     public function hookDisplayTop()
     {
         if(isset($_GET["error"]) && ! empty($_GET["error"]))
-            return $this->display(__FILE__, 'display_top.tpl');
+            return $this->display(__FILE__, 'display_top.tpl', '20160615');
     }
     
     public function hookActionOrderStatusPostUpdate($params)
@@ -178,7 +178,7 @@ class NimblePayment extends PaymentModule
                 //'client'     => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'))   
                 )
             );
-        return $this->display(__FILE__, 'infos.tpl');
+        return $this->display(__FILE__, 'infos.tpl', '20160615');
     }
 
     public function getContent()
@@ -221,7 +221,7 @@ class NimblePayment extends PaymentModule
             
             $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
             if(isset($nimble_credentials) && $nimble_credentials == 1)
-                return $this->display(__FILE__, 'payment.tpl');    
+                return $this->display(__FILE__, 'payment.tpl', '20160615');    
     }
     
     public function hookPaymentReturn($params)
@@ -310,7 +310,7 @@ class NimblePayment extends PaymentModule
 
         else
                 $this->smarty->assign('status', 'failed');
-        return $this->display(__FILE__, 'payment_return.tpl');
+        return $this->display(__FILE__, 'payment_return.tpl', '20160615');
             
     }
 
