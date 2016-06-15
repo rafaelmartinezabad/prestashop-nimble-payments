@@ -43,6 +43,8 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         $this->result = array();
+        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
+        $this->nimblepayment_client_id = Configuration::get('NIMBLEPAYMENT_CLIENT_ID');
         parent::initContent();
         $cart = $this->context->cart;
         if($cart->nbProducts() <=0){
