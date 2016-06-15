@@ -158,7 +158,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             }
         } catch (Exception $e) {
             $this->result['error'] = array(
-                'message' => $this->module->l( 'Unable to process payment. An error has occurred. ERR_PAG code. Please try later.', 'payment')
+                'message' => $this->module->l( 'Unable to process payment. An error has occurred. ERR_PAG code. Please try later.', 'payment')
                 );
         }
     }
