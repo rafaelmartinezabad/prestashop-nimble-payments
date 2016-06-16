@@ -128,7 +128,7 @@ class NimblePayment extends PaymentModule
         $orderState->delete();
     }
 
-    private function createOrderState($db_name, $name)
+    public function createOrderState($db_name, $name)
     {
         if (!Configuration::get($db_name))//if status does not exist
         {
@@ -436,5 +436,24 @@ class NimblePayment extends PaymentModule
     
     public function getVersionPlugin(){
         return $this->version;
+    }
+    
+    public function check_credentials_update()
+    {    
+        Configuration::updateValue('PS_NIMBLE_CREDENTIALS',0);
+        
+        try {
+            $params = array(
+            'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+            'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
+            );
+            
+            $nimbleApi = new NimbleAPI($params);
+            $response = NimbleAPICredentials::check($nimbleApi);
+            if ( isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code'] ){
+                Configuration::updateValue('PS_NIMBLE_CREDENTIALS',1);
+            } 
+        } catch (Exception $e) {
+        }
     }
 }
