@@ -47,7 +47,7 @@
                          <a href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Try now!' mod='nimblepayment'}</a>
                     </p>                   
                     <p class="btn">
-                        <a class="link" onclick="window.open('{$url_nimble}', '', 'width=800, height=578')">{l s='Already registered.' mod='nimblepayment'}</a>
+                        <a class="link" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Already registered.' mod='nimblepayment'}</a>
                     </p>
                 </div>
         </div>
