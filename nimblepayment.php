@@ -209,7 +209,7 @@ class NimblePayment extends PaymentModule
 
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            return $this->display(__FILE__, 'payment.tpl', '20160615');
+            return $this->display(__FILE__, 'payment.tpl', '20160617');
         }
     }
 

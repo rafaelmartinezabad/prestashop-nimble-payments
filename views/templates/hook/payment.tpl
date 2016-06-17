@@ -29,7 +29,7 @@
         <p class="payment_module">
             <a id="nimblepayment_gateway"
             class="nimblepayment bankwire"
-            href="#" 
+            href="#" data-href="{$link->getModuleLink('nimblepayment', 'payment')|escape:'htmlall':'UTF-8'}"
             title="{l s='Pay by Nimble Payments' mod='nimblepayment'}">
                 {l s='Pay by Credit card' mod='nimblepayment'} 
                 
@@ -45,7 +45,7 @@
                 event.preventDefault();
                 $.ajax({
                     type: 'POST',
-                    url: '{$link->getModuleLink('nimblepayment', 'payment')}',
+                    url: $(this).data('href'),
                     data: {
                         'action': 'payment',
                     },
