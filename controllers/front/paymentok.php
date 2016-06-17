@@ -48,7 +48,7 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
         $code = Tools::getValue('paymentcode');
         $cart = (int)Tools::substr($code, 0, 8);
         
-        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');        
+        $this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
         $cart = new Cart($cart);
         $order_num = Tools::substr($code, 0, 8);
         $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
@@ -65,12 +65,11 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
             
             Tools::redirect(
                 'index.php?controller=order-confirmation&id_cart='.$cart_id
-                .'&id_module='.$nimble_id 
+                .'&id_module='.$nimble_id
                 .'&id_order='.$nimble_currentOrder
                 .'&key='.$customer_key
             );
-        }
-        else{
+        } else{
             Tools::redirect('index.php');
         }
     }

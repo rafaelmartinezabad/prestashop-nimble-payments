@@ -47,7 +47,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $this->nimblepayment_client_id = Configuration::get('NIMBLEPAYMENT_CLIENT_ID');
         parent::initContent();
         $cart = $this->context->cart;
-        if($cart->nbProducts() <=0){
+        if ($cart->nbProducts() <=0) {
             //Tools::redirect('index.php?controller=order');
             $this->result['redirect'] = 'index.php?controller=order';
         }
@@ -61,7 +61,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
         $this->sendPayment($total, $paramurl);
         
-        die( Tools::jsonEncode( $this->result ) );
+        die(Tools::jsonEncode( $this->result ));
     }
 
 
@@ -90,7 +90,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $order['cart_id'] = $cart->id;
         $order['nimble_id'] = $nimble->id;
         $order['nimble_currentOrder'] = $nimble->currentOrder;
-        $order['customer_key'] = $customer->secure_key;            
+        $order['customer_key'] = $customer->secure_key;
             
         return $order;
     }        
@@ -128,25 +128,26 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             $response = NimbleAPIPayments::sendPaymentClient($this->nimbleapi, $payment);
             
             //Save transaction_id to this order
-            if ( isset($response["data"]) && isset($response["data"]["id"])){
+            if (isset($response["data"]) && isset($response["data"]["id"])) {
                 $this->context->cookie->__set('nimble_transaction_id', $response['data']['id']);
             }
 
-            if (!isset($response["data"]) || !isset($response["data"]["paymentUrl"])){
+            if (!isset($response["data"]) || !isset($response["data"]["paymentUrl"])) {
                 $this->result['error'] = array(
-                    'message' => $this->module->l( 'Unable to process payment. An error has occurred. ERR_CONEX code. Please try later.', 'payment')
+                    'message' => $this->module->l('Unable to process payment. An error has occurred. ERR_CONEX code. Please try later.', 'payment')
                     );
-            } else{
+            } else {
                 $this->result['redirect'] = $response['data']['paymentUrl'];
             }
         } catch (Exception $e) {
             $this->result['error'] = array(
-                'message' => $this->module->l( 'Unable to process payment. An error has occurred. ERR_PAG code. Please try later.', 'payment')
+                'message' => $this->module->l('Unable to process payment. An error has occurred. ERR_PAG code. Please try later.', 'payment')
                 );
         }
     }
 
-    public function getCurrency(){
+    public function getCurrency()
+    {
         $cart = $this->context->cart;
         $currency_order = new Currency($cart->id_currency);
         $current_currency = $currency_order->iso_code;

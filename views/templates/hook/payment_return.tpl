@@ -1,3 +1,28 @@
+{*
+* 2007-2015 PrestaShop
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/afl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@prestashop.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+* versions in the future. If you wish to customize PrestaShop for your
+* needs please refer to http://www.prestashop.com for more information.
+*
+*  @author PrestaShop SA <contact@prestashop.com>
+*  @copyright  2007-2016 PrestaShop SA
+*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+*  International Registered Trademark & Property of PrestaShop SA
+*}
+
 {if $status == 'ok'}
     <p class="alert alert-success">{l s='Your order on %s is complete.' sprintf=$shop_name mod='nimblepayment'}</p>
     {if isset($order)}
@@ -11,16 +36,16 @@
             </p>
             {/if}
             {if $order->recyclable}
-            <p><i class="icon-repeat"></i>&nbsp;{l s='You have given permission to receive your order in recycled packaging.'}</p>
+            <p><i class="icon-repeat"></i>&nbsp;{l s='You have given permission to receive your order in recycled packaging.' mod='nimblepayment'}</p>
             {/if}
             {if $order->gift}
-                    <p><i class="icon-gift"></i>&nbsp;{l s='You have requested gift wrapping for this order.'}</p>
-                    <p><strong class="dark">{l s='Message'}</strong> {$order->gift_message|nl2br}</p>
+                    <p><i class="icon-gift"></i>&nbsp;{l s='You have requested gift wrapping for this order.' mod='nimblepayment'}</p>
+                    <p><strong class="dark">{l s='Message' mod='nimblepayment'}</strong> {$order->gift_message|nl2br}</p>
             {/if}
     </div>
 
     {if isset($followup)}
-    <p class="bold">{l s='Click the following link to track the delivery of your order'}</p>
+    <p class="bold">{l s='Click the following link to track the delivery of your order' mod='nimblepayment'}</p>
     <a href="{$followup|escape:'html':'UTF-8'}">{$followup|escape:'html':'UTF-8'}</a>
     {/if}
 
@@ -95,7 +120,7 @@
                             {if $order->total_discounts > 0}
                             <tr class="item">
                                     <td colspan="{if $return_allowed}2{else}1{/if}">
-                                            <strong>{l s='Total vouchers'}</strong>
+                                            <strong>{l s='Total vouchers' mod='nimblepayment'}</strong>
                                     </td>
                                     <td colspan="{if $order->hasProductReturned()}5{else}4{/if}">
                                             <span class="price-discount">{displayWtPriceWithCurrency price=$order->total_discounts currency=$currency convert=1}</span>
@@ -105,7 +130,7 @@
                             {if $order->total_wrapping > 0}
                             <tr class="item">
                                     <td colspan="{if $return_allowed}2{else}1{/if}">
-                                            <strong>{l s='Total gift wrapping cost'}</strong>
+                                            <strong>{l s='Total gift wrapping cost' mod='nimblepayment'}</strong>
                                     </td>
                                     <td colspan="{if $order->hasProductReturned()}5{else}4{/if}">
                                             <span class="price-wrapping">{displayWtPriceWithCurrency price=$order->total_wrapping currency=$currency}</span>
@@ -122,7 +147,7 @@
                             </tr>
                             <tr class="totalprice item">
                                     <td colspan="{if $return_allowed}2{else}1{/if}">
-                                            <strong>{l s='Total'}</strong>
+                                            <strong>{l s='Total' mod='nimblepayment'}</strong>
                                     </td>
                                     <td colspan="{if $order->hasProductReturned()}5{else}4{/if}">
                                             <span class="price">{displayWtPriceWithCurrency price=$order->total_paid currency=$currency}</span>
@@ -230,16 +255,16 @@
                                                             <label for="cb_{$product.id_order_detail|intval}">
                                                                     {if $product.download_hash && $logable && $product.display_filename != '' && $product.product_quantity_refunded == 0 && $product.product_quantity_return == 0}
                                                                             {if isset($is_guest) && $is_guest}
-                                                                            <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}&amp;id_order={$order->id}&secure_key={$order->secure_key}")|escape:'html':'UTF-8'}" title="{l s='Download this product'}">
+                                                                            <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}&amp;id_order={$order->id}&secure_key={$order->secure_key}")|escape:'html':'UTF-8'}" title="{l s='Download this product' mod='nimblepayment'}">
                                                                             {else}
-                                                                                    <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}")|escape:'html':'UTF-8'}" title="{l s='Download this product'}">
+                                                                                    <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}")|escape:'html':'UTF-8'}" title="{l s='Download this product' mod='nimblepayment'}">
                                                                             {/if}
-                                                                                    <img src="{$img_dir}icon/download_product.gif" class="icon" alt="{l s='Download product'}" />
+                                                                                    <img src="{$img_dir}icon/download_product.gif" class="icon" alt="{l s='Download product' mod='nimblepayment'}" />
                                                                             </a>
                                                                             {if isset($is_guest) && $is_guest}
-                                                                                    <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}&id_order={$order->id}&secure_key={$order->secure_key}")|escape:'html':'UTF-8'}" title="{l s='Download this product'}"> {$product.product_name|escape:'html':'UTF-8'} 	</a>
+                                                                                    <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}&id_order={$order->id}&secure_key={$order->secure_key}")|escape:'html':'UTF-8'}" title="{l s='Download this product' mod='nimblepayment'}"> {$product.product_name|escape:'html':'UTF-8'} 	</a>
                                                                             {else}
-                                                                            <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}")|escape:'html':'UTF-8'}" title="{l s='Download this product'}"> {$product.product_name|escape:'html':'UTF-8'} 	</a>
+                                                                            <a href="{$link->getPageLink('get-file', true, NULL, "key={$product.filename|escape:'html':'UTF-8'}-{$product.download_hash|escape:'html':'UTF-8'}")|escape:'html':'UTF-8'}" title="{l s='Download this product' mod='nimblepayment'}"> {$product.product_name|escape:'html':'UTF-8'} 	</a>
                                                                             {/if}
                                                                     {else}
                                                                             {$product.product_name|escape:'html':'UTF-8'}
@@ -278,7 +303,7 @@
                     {foreach from=$discounts item=discount}
                             <tr class="item">
                                     <td>{$discount.name|escape:'html':'UTF-8'}</td>
-                                    <td>{l s='Voucher'} {$discount.name|escape:'html':'UTF-8'}</td>
+                                    <td>{l s='Voucher' mod='nimblepayment'} {$discount.name|escape:'html':'UTF-8'}</td>
                                     <td><span class="order_qte_span editable">1</span></td>
                                     <td>&nbsp;</td>
                                     <td>{if $discount.value != 0.00}-{/if}{convertPriceWithCurrency price=$discount.value currency=$currency}</td>
@@ -293,13 +318,13 @@
 
     {if $return_allowed}
             <div id="returnOrderMessage">
-                    <h3 class="page-heading bottom-indent">{l s='Merchandise return'}</h3>
-                    <p>{l s='If you wish to return one or more products, please mark the corresponding boxes and provide an explanation for the return. When complete, click the button below.'}</p>
+                    <h3 class="page-heading bottom-indent">{l s='Merchandise return' mod='nimblepayment'}</h3>
+                    <p>{l s='If you wish to return one or more products, please mark the corresponding boxes and provide an explanation for the return. When complete, click the button below.' mod='nimblepayment'}</p>
                     <p class="form-group">
                             <textarea class="form-control" cols="67" rows="3" name="returnText"></textarea>
                     </p>
                     <p class="form-group">
-                            <button type="submit" name="submitReturnMerchandise" class="btn btn-default button button-small"><span>{l s='Make an RMA slip'}<i class="icon-chevron-right right"></i></span></button>
+                            <button type="submit" name="submitReturnMerchandise" class="btn btn-default button button-small"><span>{l s='Make an RMA slip' mod='nimblepayment'}<i class="icon-chevron-right right"></i></span></button>
                             <input type="hidden" class="hidden" value="{$order->id|intval}" name="id_order" />
                     </p>
             </div>
@@ -311,11 +336,11 @@
             <table class="table table-bordered footab">
                     <thead>
                             <tr>
-                                    <th class="first_item">{l s='Date'}</th>
-                                    <th class="item" data-sort-ignore="true">{l s='Carrier'}</th>
-                                    <th data-hide="phone" class="item">{l s='Weight'}</th>
-                                    <th data-hide="phone" class="item">{l s='Shipping cost'}</th>
-                                    <th data-hide="phone" class="last_item" data-sort-ignore="true">{l s='Tracking number'}</th>
+                                    <th class="first_item">{l s='Date' mod='nimblepayment'}</th>
+                                    <th class="item" data-sort-ignore="true">{l s='Carrier' mod='nimblepayment'}</th>
+                                    <th data-hide="phone" class="item">{l s='Weight' mod='nimblepayment'}</th>
+                                    <th data-hide="phone" class="item">{l s='Shipping cost' mod='nimblepayment'}</th>
+                                    <th data-hide="phone" class="last_item" data-sort-ignore="true">{l s='Tracking number' mod='nimblepayment'}</th>
                             </tr>
                     </thead>
                     <tbody>
@@ -335,13 +360,13 @@
     {/if}
     {if !$is_guest}
             {if count($messages)}
-            <h3 class="page-heading">{l s='Messages'}</h3>
+            <h3 class="page-heading">{l s='Messages' mod='nimblepayment'}</h3>
              <div class="table_block">
                     <table class="detail_step_by_step table table-bordered">
                             <thead>
                                     <tr>
-                                            <th class="first_item" style="width:150px;">{l s='From'}</th>
-                                            <th class="last_item">{l s='Message'}</th>
+                                            <th class="first_item" style="width:150px;">{l s='From' mod='nimblepayment'}</th>
+                                            <th class="last_item">{l s='Message' mod='nimblepayment'}</th>
                                     </tr>
                             </thead>
                             <tbody>
@@ -369,7 +394,7 @@
             {/if}
             {if isset($errors) && $errors}
                     <div class="alert alert-danger">
-                            <p>{if $errors|@count > 1}{l s='There are %d errors' sprintf=$errors|@count}{else}{l s='There is %d error' sprintf=$errors|@count}{/if}</p>
+                            <p>{if $errors|@count > 1}{l s='There are %d errors' mod='nimblepayment' sprintf=$errors|@count}{else}{l s='There is %d error' mod='nimblepayment' sprintf=$errors|@count}{/if}</p>
                             <ol>
                             {foreach from=$errors key=k item=error}
                                     <li>{$error}</li>
@@ -379,11 +404,11 @@
             {/if}
             {if isset($message_confirmation) && $message_confirmation}
             <p class="alert alert-success">
-                    {l s='Message successfully sent'}
+                    {l s='Message successfully sent' mod='nimblepayment'}
             </p>
             {/if}
     {else}
-    <p class="alert alert-info"><i class="icon-info-sign"></i>{l s='You cannot return merchandise with a guest account'}</p>
+    <p class="alert alert-info"><i class="icon-info-sign"></i>{l s='You cannot return merchandise with a guest account' mod='nimblepayment'}</p>
     {/if}
     {/if}
 
