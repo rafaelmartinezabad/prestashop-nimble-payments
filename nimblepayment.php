@@ -173,7 +173,8 @@ class NimblePayment extends PaymentModule
     public function getContent()
     {
         $output = null;
-        Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN',
+        Configuration::updateValue(
+            'NIMBLE_REQUEST_URI_ADMIN',
             dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules')
         );
 
