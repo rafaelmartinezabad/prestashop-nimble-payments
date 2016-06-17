@@ -82,22 +82,24 @@ class NimblePayment extends PaymentModule
 
     public function hookDisplayTop()
     {
-        if (Tools::getIsset("error") && !empty(Tools::getValue("error")))
+        if (Tools::getIsset("error") && !empty(Tools::getValue("error"))) {
             return $this->display(__FILE__, 'display_top.tpl', '20160615');
+        }
     }
 
     public function hookActionOrderStatusPostUpdate($params)
     {
         $transaction_id = $this->context->cookie->nimble_transaction_id;
         $id_order = $params['id_order'];
-        if (!empty($transaction_id) && !empty($id_order))
-            $this->save_order_transaction_id($id_order, $transaction_id);
+        if (!empty($transaction_id) && !empty($id_order)) {
+            $this->saveOrderTransactionId($id_order, $transaction_id);
+        }
 
         //reset cookie
         $this->context->cookie->__set('nimble_transaction_id', '');
     }
 
-    public function save_order_transaction_id($id_order, $transaction_id)
+    public function saveOrderTransactionId($id_order, $transaction_id)
     {
         $order = new Order($id_order);
         $collection = OrderPayment::getByOrderReference($order->reference);
@@ -142,7 +144,7 @@ class NimblePayment extends PaymentModule
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            if ($this->check_credentials() == false) {
+            if ($this->checkCredentials() == false) {
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
             }
         }
@@ -159,12 +161,11 @@ class NimblePayment extends PaymentModule
 
     private function displaynimblepayment()
     {
-        $url_nimble = $this->get_gateway_url();
+        $url_nimble = $this->getGatewayUrl();
         $this->smarty->assign(
-                array(
-                    'url_nimble' => $url_nimble
-                //'client'     => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID'))   
-                )
+            array(
+                'url_nimble' => $url_nimble
+            )
         );
         return $this->display(__FILE__, 'infos.tpl', '20160615');
     }
@@ -172,8 +173,9 @@ class NimblePayment extends PaymentModule
     public function getContent()
     {
         $output = null;
-        Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']) . '/' .
-                AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'));
+        Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN',
+            dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules')
+        );
 
         if (Tools::isSubmit('btnSubmit')) {
             $this->postValidation();
@@ -200,11 +202,11 @@ class NimblePayment extends PaymentModule
             return;
         }
         $this->smarty->assign(
-                array(
-                    'this_path' => $this->_path,
-                    'this_path_bw' => $this->_path,
-                    'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-                )
+            array(
+                'this_path' => $this->_path,
+                'this_path_bw' => $this->_path,
+                'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+            )
         );
 
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
@@ -215,8 +217,9 @@ class NimblePayment extends PaymentModule
 
     public function hookPaymentReturn($params)
     {
-        if (!$this->active)
+        if (!$this->active) {
             return;
+        }
 
         $state = $params['objOrder']->getCurrentState();
         if (in_array($state, array(Configuration::get('PS_OS_PAYMENT'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID')))) {
@@ -294,8 +297,9 @@ class NimblePayment extends PaymentModule
                 $this->errors[] = Tools::displayError('This order cannot be found.');
             }
             unset($order);
-        } else
+        } else {
             $this->smarty->assign('status', 'failed');
+        }
         return $this->display(__FILE__, 'payment_return.tpl', '20160615');
     }
 
@@ -383,7 +387,7 @@ class NimblePayment extends PaymentModule
         );
     }
 
-    public function check_credentials()
+    public function checkCredentials()
     {
         $validator = false;
         Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
@@ -409,7 +413,7 @@ class NimblePayment extends PaymentModule
         return $validator;
     }
 
-    public function get_gateway_url()
+    public function getGatewayUrl()
     {
         $platform = 'Prestashop';
         $storeName = Configuration::get('PS_SHOP_NAME');
@@ -424,7 +428,7 @@ class NimblePayment extends PaymentModule
         return $this->version;
     }
 
-    public function check_credentials_update()
+    public function checkCredentialsUpdate()
     {
         Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
 
@@ -443,5 +447,4 @@ class NimblePayment extends PaymentModule
             
         }
     }
-
 }
