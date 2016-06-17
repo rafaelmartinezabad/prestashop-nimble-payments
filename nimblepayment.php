@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2007-2015 PrestaShop
  *
@@ -24,6 +23,7 @@
  *     @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
+
 require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
 require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
 require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPICredentials.php';
@@ -35,9 +35,11 @@ if (!defined('_PS_VERSION_')) {
     exit();
 }
 
-class NimblePayment extends PaymentModule {
+class NimblePayment extends PaymentModule
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
         $this->version = '2.0.0';
@@ -51,7 +53,8 @@ class NimblePayment extends PaymentModule {
         $this->post_errors = array();
     }
 
-    public function install() {
+    public function install()
+    {
         // PHP 5.2
         if (!version_compare(phpversion(), '5.2', '>=')) {
             $this->context->controller->errors[] = $this->l('Nimble Payments module only supports PHP versions greater or equal than 5.2');
@@ -67,7 +70,8 @@ class NimblePayment extends PaymentModule {
         return true;
     }
 
-    public function uninstall() {
+    public function uninstall()
+    {
         if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE')) || !Configuration::deleteByName('PENDING_NIMBLE') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !parent::uninstall()
         ) {
             return false;
@@ -76,12 +80,14 @@ class NimblePayment extends PaymentModule {
         return true;
     }
 
-    public function hookDisplayTop() {
+    public function hookDisplayTop()
+    {
         if (Tools::getIsset(Tools::getValue("error")) && !empty(Tools::getValue("error")))
             return $this->display(__FILE__, 'display_top.tpl', '20160615');
     }
 
-    public function hookActionOrderStatusPostUpdate($params) {
+    public function hookActionOrderStatusPostUpdate($params)
+    {
         $transaction_id = $this->context->cookie->nimble_transaction_id;
         $id_order = $params['id_order'];
         if (!empty($transaction_id) && !empty($id_order))
@@ -91,7 +97,8 @@ class NimblePayment extends PaymentModule {
         $this->context->cookie->__set('nimble_transaction_id', '');
     }
 
-    public function save_order_transaction_id($id_order, $transaction_id) {
+    public function save_order_transaction_id($id_order, $transaction_id)
+    {
         $order = new Order($id_order);
         $collection = OrderPayment::getByOrderReference($order->reference);
 
@@ -105,12 +112,14 @@ class NimblePayment extends PaymentModule {
         }
     }
 
-    public function deleteOrderState($id_order_state) {
+    public function deleteOrderState($id_order_state)
+    {
         $orderState = new OrderState($id_order_state);
         $orderState->delete();
     }
 
-    public function createOrderState($db_name, $name) {
+    public function createOrderState($db_name, $name)
+    {
         if (!Configuration::get($db_name)) {//if status does not exist
             $orderState = new OrderState();
             $orderState->name = array_fill(0, 10, $name);
@@ -130,7 +139,8 @@ class NimblePayment extends PaymentModule {
         }
     }
 
-    private function postValidation() {
+    private function postValidation()
+    {
         if (Tools::isSubmit('btnSubmit')) {
             if ($this->check_credentials() == false) {
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
@@ -138,7 +148,8 @@ class NimblePayment extends PaymentModule {
         }
     }
 
-    private function postProcess() {
+    private function postProcess()
+    {
         if (Tools::isSubmit('btnSubmit')) {
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
@@ -146,7 +157,8 @@ class NimblePayment extends PaymentModule {
         return $this->displayConfirmation($this->l('Settings updated'));
     }
 
-    private function displaynimblepayment() {
+    private function displaynimblepayment()
+    {
         $url_nimble = $this->get_gateway_url();
         $this->smarty->assign(
                 array(
@@ -157,7 +169,8 @@ class NimblePayment extends PaymentModule {
         return $this->display(__FILE__, 'infos.tpl', '20160615');
     }
 
-    public function getContent() {
+    public function getContent()
+    {
         $output = null;
         Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']) . '/' .
                 AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'));
@@ -178,7 +191,8 @@ class NimblePayment extends PaymentModule {
         return $output;
     }
 
-    public function hookPayment($params) {
+    public function hookPayment($params)
+    {
         if (!$this->active) {
             return;
         }
@@ -199,7 +213,8 @@ class NimblePayment extends PaymentModule {
         }
     }
 
-    public function hookPaymentReturn($params) {
+    public function hookPaymentReturn($params)
+    {
         if (!$this->active)
             return;
 
@@ -284,7 +299,8 @@ class NimblePayment extends PaymentModule {
         return $this->display(__FILE__, 'payment_return.tpl', '20160615');
     }
 
-    public function checkCurrency($cart) {
+    public function checkCurrency($cart)
+    {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
 
@@ -298,7 +314,8 @@ class NimblePayment extends PaymentModule {
         return false;
     }
 
-    public function renderForm() {
+    public function renderForm()
+    {
         $this->fields_form[0]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Client Details'),
@@ -343,7 +360,8 @@ class NimblePayment extends PaymentModule {
         return $helper->generateForm($this->fields_form);
     }
 
-    public function checkCurrencyNimble($cart) {
+    public function checkCurrencyNimble($cart)
+    {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
 
@@ -357,14 +375,16 @@ class NimblePayment extends PaymentModule {
         return false;
     }
 
-    public function getConfigFieldsValues() {
+    public function getConfigFieldsValues()
+    {
         return array(
             'NIMBLEPAYMENT_CLIENT_ID' => Tools::getValue('NIMBLEPAYMENT_CLIENT_ID', Configuration::get('NIMBLEPAYMENT_CLIENT_ID')),
             'NIMBLEPAYMENT_CLIENT_SECRET' => Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET', Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'))
         );
     }
 
-    public function check_credentials() {
+    public function check_credentials()
+    {
         $validator = false;
         Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
 
@@ -389,7 +409,8 @@ class NimblePayment extends PaymentModule {
         return $validator;
     }
 
-    public function get_gateway_url() {
+    public function get_gateway_url()
+    {
         $platform = 'Prestashop';
         $storeName = Configuration::get('PS_SHOP_NAME');
         $storeURL = _PS_BASE_URL_ . __PS_BASE_URI__;
@@ -398,11 +419,13 @@ class NimblePayment extends PaymentModule {
         return NimbleAPI::getGatewayUrl($platform, $storeName, $storeURL, $redirectURL);
     }
 
-    public function getVersionPlugin() {
+    public function getVersionPlugin()
+    {
         return $this->version;
     }
 
-    public function check_credentials_update() {
+    public function check_credentials_update()
+    {
         Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
 
         try {

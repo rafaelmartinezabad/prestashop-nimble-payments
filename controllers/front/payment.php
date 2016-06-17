@@ -61,7 +61,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
         $this->sendPayment($total, $paramurl);
         
-        die(Tools::jsonEncode( $this->result ));
+        die(Tools::jsonEncode($this->result));
     }
 
 
@@ -93,7 +93,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $order['customer_key'] = $customer->secure_key;
             
         return $order;
-    }        
+    }
     
     public function sendPayment($total, $paramurl)
     {
