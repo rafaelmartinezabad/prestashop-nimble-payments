@@ -301,7 +301,7 @@ class NimblePayment extends PaymentModule
         } else {
             $this->smarty->assign('status', 'failed');
         }
-        return $this->display(__FILE__, 'payment_return.tpl', '20160615');
+        return $this->display(__FILE__, 'payment_return.tpl', '20160617');
     }
 
     public function checkCurrency($cart)
