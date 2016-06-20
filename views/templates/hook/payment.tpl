@@ -18,7 +18,7 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2015 PrestaShop SA
+*  @copyright  2007-2016 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
@@ -27,10 +27,9 @@
 <div class="row">
 	<div class="col-xs-12 col-md-6">
         <p class="payment_module">
-            <a 
-            class="nimblepayment bankwire" 
-            onclick="clickAndDisable(this);"
-            href="{$link->getModuleLink('nimblepayment', 'payment')|escape:'html':'UTF-8'}" 
+            <a id="nimblepayment_gateway"
+            class="nimblepayment bankwire"
+            href="#" data-href="{$link->getModuleLink('nimblepayment', 'payment')|escape:'htmlall':'UTF-8'}"
             title="{l s='Pay by Nimble Payments' mod='nimblepayment'}">
                 {l s='Pay by Credit card' mod='nimblepayment'} 
                 
@@ -38,11 +37,31 @@
             </a>
         </p>
     </div>
-</div>  
+</div>
 <script type="text/javascript">
-   function clickAndDisable(link) {
-     link.onclick = function(event) {
-        event.preventDefault();
-     }
-   }   
+    $(document).ready(function () {
+        $("#nimblepayment_gateway").click(function(event) {
+            if ('#' === $(this).attr('href')){
+                event.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).data('href'),
+                    data: {
+                        'action': 'payment',
+                    },
+                    dataType: 'json',
+                    async: false,
+                    success: function(response) {
+                        if ('redirect' in response){
+                            $('#nimblepayment_gateway').attr('href', response['redirect']);
+                            $(location).attr('href', response['redirect'])
+                        } else if ('error' in response){
+                            $('#HOOK_PAYMENT .alert').remove();
+                            $('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">' + response['error']['message'] + '</p>');
+                        }
+                    }
+                });
+            }
+        });
+    });
 </script>            

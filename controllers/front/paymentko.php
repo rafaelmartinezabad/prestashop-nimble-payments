@@ -40,10 +40,7 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
         $order = Tools::getValue('order');
-        $cart_id             = (int)$order['cart_id'];
-        $nimble_id           = (int)$order['nimble_id'];
         $nimble_currentOrder = (int)$order['nimble_currentOrder'];
-        $customer_key        = $order['customer_key'];
         
         $code = Tools::getValue('paymentcode');
         $cart = (int)Tools::substr($code, 0, 8);

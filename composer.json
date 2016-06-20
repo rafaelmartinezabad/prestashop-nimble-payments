@@ -1,0 +1,35 @@
+{
+  "name": "nimblepayments/prestashop-nimble-payments",
+  "type": "prestashop-module",
+  "description": "PrestaShop module nimblepayment",
+  "homepage": "https://github.com/nimblepayments/prestashop-nimble-payments",
+  "license": "OSL-3.0",
+  "require": {
+        "nimblepayments/sdk-php": "2.0.1"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/nimblepayments/sdk-php.git"
+        }
+    ],
+    "scripts": {
+        "post-root-package-install": [
+        ],
+        "post-install-cmd": [
+            "cp -R vendor/nimblepayments/sdk-php ./library/sdk",
+            "rm -R ./library/sdk/test",
+            "rm -R ./library/sdk/lib/Nimble/extensions",
+            "find library/sdk -type d -exec cp library/index.php {} \\;"
+        ],
+        "post-update-cmd": [
+            "cp -R vendor/nimblepayments/sdk-php ./library/sdk",
+            "rm -R ./library/sdk/test",
+            "rm -R ./library/sdk/lib/Nimble/extensions",
+            "find library/sdk -type d -exec cp library/index.php {} \\;"
+        ],
+        "zip": [
+            "7z a -tzip nimblepayments-prestashop.zip ../nimblepayment -x@exclude.lst"
+        ]
+    }
+}

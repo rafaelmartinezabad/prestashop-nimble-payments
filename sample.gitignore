@@ -1,0 +1,6 @@
+.gitignore
+vendor/
+library/
+composer.lock
+nimblepayments-prestashop.zip
+config_es.xml
