@@ -42,12 +42,12 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.0';
+        $this->version = '2.1.0';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
-        $this->displayName = $this->l('Nimble Payments');
+        $this->displayName = $this->l('Card payment');
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
         $this->post_errors = array();
@@ -124,7 +124,16 @@ class NimblePayment extends PaymentModule
     {
         if (!Configuration::get($db_name)) {//if status does not exist
             $orderState = new OrderState();
-            $orderState->name = array_fill(0, 10, $name);
+            $orderState->name = array();
+
+            foreach (Language::getLanguages() as $language) {
+                if (Tools::strtolower($language['iso_code']) == 'es') {
+                    $orderState->name[$language['id_lang']] = 'Pendiente de pago';
+                } else {
+                    $orderState->name[$language['id_lang']] = 'Pending nimble';
+                }
+            }
+            
             $orderState->send_email = false;
             $orderState->color = 'royalblue';
             $orderState->hidden = false;
@@ -137,6 +146,16 @@ class NimblePayment extends PaymentModule
                 copy($source, $destination);
 
                 Configuration::updateValue($db_name, (int) $orderState->id);
+            }
+        } else if (Configuration::get($db_name)) {
+            $orderState = new OrderState($db_name);
+            
+            foreach (Language::getLanguages() as $language) {
+                if (Tools::strtolower($language['iso_code']) == 'es') {
+                    $orderState->name[$language['id_lang']] = 'Pendiente de pago';
+                } else {
+                    $orderState->name[$language['id_lang']] = 'Pending nimble';
+                }
             }
         }
     }
@@ -188,7 +207,7 @@ class NimblePayment extends PaymentModule
                 }
             }
         }
-        if ($this->check_credentials() == true && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN'))
+        if ($this->checkCredentials() == true && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN'))
             $output .= $this->authorize3legged();
         $output .= $this->displaynimblepayment();
         $output .= '<div id="nimble-form">' . $this->renderForm() . '</div>';
@@ -513,5 +532,10 @@ class NimblePayment extends PaymentModule
         } catch (Exception $e) {
             
         }
+    }
+    
+    public function setDisplayName($name)
+    {
+        $this->displayName = $this->l($name);
     }
 }

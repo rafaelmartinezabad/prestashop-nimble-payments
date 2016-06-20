@@ -2,7 +2,7 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{nimblepayment}prestashop>nimblepayment_3dff122f265143dc1242609faa7e6778'] = 'Nimble Payments';
+$_MODULE['<{nimblepayment}prestashop>nimblepayment_21ff087f1520a70163128cae982de67a'] = 'Pago con tarjeta';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_fe8aabc450e22cbfb7aa2e998f95e99c'] = 'Pasarela de pagos Nimble Payments';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_cbe0a99684b145e77f3e14174ac212e3'] = '¿Está seguro de querer borrar los detalles?';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_b7ad9b613c7149cd83ee1e424ca33951'] = 'El módulo Nimble Payments solo es compatible con versiones de PHP mayores o iguales a la 5.3';
