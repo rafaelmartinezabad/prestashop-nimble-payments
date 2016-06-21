@@ -82,7 +82,8 @@ class NimblePayment extends PaymentModule
 
     public function hookDisplayTop()
     {
-        if (Tools::getIsset("error") && !empty(Tools::getValue("error"))) {
+        $error = Tools::getValue("error");
+        if (Tools::getIsset("error") && !empty($error)) {
             return $this->display(__FILE__, 'display_top.tpl', '20160617');
         }
     }
