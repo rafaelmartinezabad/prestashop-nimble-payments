@@ -42,7 +42,7 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '2.1.0';
+        $this->version = '2.0.1';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
@@ -82,7 +82,8 @@ class NimblePayment extends PaymentModule
 
     public function hookDisplayTop()
     {
-        if (Tools::getIsset("error") && !empty(Tools::getValue("error"))) {
+        $error = Tools::getValue("error");
+        if (Tools::getIsset("error") && !empty($error)) {
             return $this->display(__FILE__, 'display_top.tpl', '20160617');
         }
     }
