@@ -29,7 +29,7 @@
         <p class="payment_module">
             <a id="nimblepayment_gateway"
             class="nimblepayment bankwire"
-            href="#" data-href="{$link->getModuleLink('nimblepayment', 'payment')|escape:'htmlall':'UTF-8'}"
+            href="#" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
             title="{l s='Pay by Nimble Payments' mod='nimblepayment'}">
                 {l s='Pay by Credit card' mod='nimblepayment'} 
                 
