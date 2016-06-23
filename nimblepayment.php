@@ -42,7 +42,7 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.1';
+        $this->version = '2.1.0';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
@@ -62,7 +62,7 @@ class NimblePayment extends PaymentModule
         }
 
         if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('actionOrderStatusPostUpdate') || !$this->registerHook('DisplayTop')
-        ) {
+            || !$this->registerHook('actionAdminLoginControllerSetMedia') ) {
             return false;
         }
 
@@ -72,7 +72,8 @@ class NimblePayment extends PaymentModule
 
     public function uninstall()
     {
-        if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE')) || !Configuration::deleteByName('PENDING_NIMBLE') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !parent::uninstall()
+        if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE')) || !Configuration::deleteByName('PENDING_NIMBLE')
+         || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !parent::uninstall()
         ) {
             return false;
         }
@@ -80,6 +81,11 @@ class NimblePayment extends PaymentModule
         return true;
     }
 
+    public function hookActionAdminLoginControllerSetMedia()
+    {
+        $this->refreshToken();
+    }
+    
     public function hookDisplayTop()
     {
         $error = Tools::getValue("error");
@@ -131,7 +137,7 @@ class NimblePayment extends PaymentModule
                 if (Tools::strtolower($language['iso_code']) == 'es') {
                     $orderState->name[$language['id_lang']] = 'Pendiente de pago';
                 } else {
-                    $orderState->name[$language['id_lang']] = 'Pending nimble';
+                    $orderState->name[$language['id_lang']] = 'Pending payment';
                 }
             }
             
@@ -155,7 +161,7 @@ class NimblePayment extends PaymentModule
                 if (Tools::strtolower($language['iso_code']) == 'es') {
                     $orderState->name[$language['id_lang']] = 'Pendiente de pago';
                 } else {
-                    $orderState->name[$language['id_lang']] = 'Pending nimble';
+                    $orderState->name[$language['id_lang']] = 'Pending pay';
                 }
             }
         }
@@ -463,8 +469,8 @@ class NimblePayment extends PaymentModule
             'clientSecret' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'))
             );
             
-            $nimbleApi = new NimbleAPI($params);
-            $validator = $nimbleApi->getOauth3Url();
+            $nimble_api = new NimbleAPI($params);
+            $validator = $nimble_api->getOauth3Url();
         } catch (Exception $e) {
             $validator = false;
         }
@@ -497,14 +503,14 @@ class NimblePayment extends PaymentModule
                     'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
                     'oauth_code' => Tools::getValue('code')
             );
-            $NimbleApi = new NimbleAPI($params);
+            $nimble_api = new NimbleAPI($params);
 
             // Check if NimbleAPI object has properly perform the authorization process
-            if ($NimbleApi != null && $NimbleApi->authorization->isAccessParams()) {
+            if ($nimble_api != null && $nimble_api->authorization->isAccessParams()) {
                 $oauth = 'success';
                 // Set token data on PS variables
-                Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $NimbleApi->authorization->getAccessToken());
-                Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $NimbleApi->authorization->getRefreshToken());
+                Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $nimble_api->authorization->getAccessToken());
+                Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $nimble_api->authorization->getRefreshToken());
             } else {
                 $oauth = 'error';
             }
@@ -539,4 +545,33 @@ class NimblePayment extends PaymentModule
     {
         $this->displayName = $this->l($name);
     }
+    
+    public function refreshToken()
+    {
+        try {
+                $params = array(
+                    'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                    'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                    'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN'),
+                    'refreshToken' => Configuration::get('PS_NIMBLE_REFRESH_TOKEN')
+                 );
+                $nimble_api = new NimbleAPI($params);
+                $options = array(
+                    'token' => $nimble_api->authorization->getAccessToken(),
+                    'refreshToken' => $nimble_api->authorization->getRefreshToken()
+                );
+                if ( empty($options['token']) || empty($options['refreshToken']) ){
+                    Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN');
+                    Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
+                } else {
+                    Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $options['token']);
+                    Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $options['refreshToken']);
+                }
+        } catch (Exception $e) {
+            Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN');
+            Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
+        }
+        
+    }
+    
 }

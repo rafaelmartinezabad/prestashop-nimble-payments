@@ -28,8 +28,9 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_2_1_0($object)
+function upgrade_module_3_0_0($object)
 {
     $object->createOrderState('PENDING_NIMBLE', 'pending_nimble');
     $object->setDisplayName('Card payment');
+    return $object->registerHook('actionAdminLoginControllerSetMedia');
 }
