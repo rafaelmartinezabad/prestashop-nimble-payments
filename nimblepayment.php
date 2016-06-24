@@ -42,7 +42,7 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '2.1.0';
+        $this->version = '3.0.0';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
@@ -229,8 +229,12 @@ class NimblePayment extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
+        $ssl = Configuration::get('PS_SSL_ENABLED');
+        $params = array();
         $this->smarty->assign(
             array(
+                'ssl' => $ssl,
+                'params' => $params,
                 'this_path' => $this->_path,
                 'this_path_bw' => $this->_path,
                 'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
@@ -239,7 +243,7 @@ class NimblePayment extends PaymentModule
 
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            return $this->display(__FILE__, 'payment.tpl', '20160617');
+            return $this->display(__FILE__, 'payment.tpl', '20160623');
         }
     }
 
