@@ -47,7 +47,7 @@ class NimblePayment extends PaymentModule
         $this->bootstrap = true;
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
-        $this->displayName = $this->l('Card payment');
+        $this->displayName = $this->l('Nimble Payments');
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
         $this->post_errors = array();
@@ -61,7 +61,7 @@ class NimblePayment extends PaymentModule
             return false;
         }
 
-        if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('actionOrderStatusPostUpdate') || !$this->registerHook('DisplayTop')
+        if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('DisplayTop')
             || !$this->registerHook('actionAdminLoginControllerSetMedia') ) {
             return false;
         }
@@ -90,33 +90,6 @@ class NimblePayment extends PaymentModule
         $error = Tools::getValue("error");
         if (Tools::getIsset("error") && !empty($error)) {
             return $this->display(__FILE__, 'display_top.tpl', '20160617');
-        }
-    }
-
-    public function hookActionOrderStatusPostUpdate($params)
-    {
-        $transaction_id = $this->context->cookie->nimble_transaction_id;
-        $id_order = $params['id_order'];
-        if (!empty($transaction_id) && !empty($id_order)) {
-            $this->saveOrderTransactionId($id_order, $transaction_id);
-        }
-
-        //reset cookie
-        $this->context->cookie->__set('nimble_transaction_id', '');
-    }
-
-    public function saveOrderTransactionId($id_order, $transaction_id)
-    {
-        $order = new Order($id_order);
-        $collection = OrderPayment::getByOrderReference($order->reference);
-
-        if (count($collection) > 0) {
-            $order_payment = $collection[0];
-            // for older versions (1.5) , we check if it hasn't been filled yet.
-            if (!$order_payment->transaction_id) {
-                $order_payment->transaction_id = $transaction_id;
-                $order_payment->update();
-            }
         }
     }
 

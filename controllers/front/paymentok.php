@@ -39,12 +39,6 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         parent::initContent();
-        $order = Tools::getValue('order');
-        $cart_id             = (int)$order['cart_id'];
-        $nimble_id           = (int)$order['nimble_id'];
-        $nimble_currentOrder = (int)$order['nimble_currentOrder'];
-        $customer_key        = $order['customer_key'];
-        
         $code = Tools::getValue('paymentcode');
         $cart = (int)Tools::substr($code, 0, 8);
         
@@ -53,21 +47,30 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
         $order_num = Tools::substr($code, 0, 8);
         $total_url = $cart->getOrderTotal(true, Cart::BOTH) * 100;
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total_url);
-        $transaction_id =$this->context->cookie->nimble_transaction_id;
         
-        if (! empty($transaction_id) && $paramurl == $code) {
-            $objOrder = $nimble_currentOrder;
-            $history = new OrderHistory();
-            $history->id_order = (int)$objOrder;
-            $history->changeIdOrderState((int)(Configuration::get('PS_OS_PAYMENT')), (int)($objOrder));
-            $history->addWithemail();
-            $history->save();
-            
+        if ($paramurl == $code) {
+            $total = $cart->getOrderTotal(true, Cart::BOTH);
+            $extra_vars = array();
+            $extra_vars['transaction_id'] = $this->context->cookie->nimble_transaction_id;
+            $this->context->cookie->__set('nimble_transaction_id', ''); //reset cookie
+            $nimble = new NimblePayment();
+            $nimble->validateOrder(
+                $cart->id,
+                _PS_OS_PAYMENT_,
+                $total,
+                $nimble->displayName,
+                null,
+                $extra_vars,
+                null,
+                false,
+                $cart->secure_key
+            );
+            $customer = new Customer($cart->id_customer);
             Tools::redirect(
-                'index.php?controller=order-confirmation&id_cart='.$cart_id
-                .'&id_module='.$nimble_id
-                .'&id_order='.$nimble_currentOrder
-                .'&key='.$customer_key
+                'index.php?controller=order-confirmation&id_cart='.$cart->id
+                .'&id_module='.$nimble->id
+                .'&id_order='.$nimble->currentOrder
+                .'&key='.$customer->secure_key
             );
         } else {
             Tools::redirect('index.php');

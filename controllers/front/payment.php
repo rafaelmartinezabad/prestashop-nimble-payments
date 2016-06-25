@@ -63,40 +63,11 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         
         die(Tools::jsonEncode($this->result));
     }
-
-
-    public function createOrder()
-    {
-        $order = array();
-        $cart = $this->context->cart;
-        $status_order = Configuration::get('PENDING_NIMBLE');
-
-        $total = $cart->getOrderTotal(true, Cart::BOTH);
-        $extra_vars = array();
-        $nimble = new NimblePayment();
-        $nimble->validateOrder(
-            $cart->id,
-            $status_order,
-            $total,
-            $nimble->displayName,
-            null,
-            $extra_vars,
-            null,
-            false,
-            $cart->secure_key
-        );
-        $customer = new Customer($cart->id_customer);
-
-        $order['cart_id'] = $cart->id;
-        $order['nimble_id'] = $nimble->id;
-        $order['nimble_currentOrder'] = $nimble->currentOrder;
-        $order['customer_key'] = $customer->secure_key;
-            
-        return $order;
-    }
     
     public function sendPayment($total, $paramurl)
     {
+        $cart = $this->context->cart;
+
         try {
             $params = array(
             'clientId' => $this->nimblepayment_client_id,
@@ -104,17 +75,13 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             );
             
             $this->nimbleapi = new NimbleAPI($params);
-            
-            //Create Order
-            $order = array();
-            $order = $this->createOrder();
 
             $payment = array(
                 'amount' => $total,
                 'currency' => $this->getCurrency(),
-                'merchantOrderId' => $order['nimble_currentOrder'],
-                'paymentSuccessUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl, 'order' => $order)),
-                'paymentErrorUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl, 'order' => $order))
+                'merchantOrderId' => $cart->id,
+                'paymentSuccessUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl)),
+                'paymentErrorUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl))
             );
             
             $this->result['redirect'] = $payment['paymentErrorUrl'];
