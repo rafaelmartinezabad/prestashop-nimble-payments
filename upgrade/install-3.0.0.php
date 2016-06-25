@@ -30,7 +30,9 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_3_0_0($object)
 {
-    $object->createOrderState('PENDING_NIMBLE', 'pending_nimble');
-    $object->setDisplayName('Card payment');
-    return $object->registerHook('actionAdminLoginControllerSetMedia');
+    //$object->setDisplayName('Card payment');
+    $object->checkCredentialsUpdate();
+    return ($object->registerHook('actionOrderStatusPostUpdate')
+         && $object->registerHook('actionAdminLoginControllerSetMedia')   
+         && $object->registerHook('DisplayTop'));
 }

@@ -66,13 +66,12 @@ class NimblePayment extends PaymentModule
             return false;
         }
 
-        $this->createOrderState('PENDING_NIMBLE', 'pending_nimble');
         return true;
     }
 
     public function uninstall()
     {
-        if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || $this->deleteOrderState(Configuration::get('PENDING_NIMBLE')) || !Configuration::deleteByName('PENDING_NIMBLE')
+        if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET')
          || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !parent::uninstall()
         ) {
             return false;
@@ -117,52 +116,6 @@ class NimblePayment extends PaymentModule
             if (!$order_payment->transaction_id) {
                 $order_payment->transaction_id = $transaction_id;
                 $order_payment->update();
-            }
-        }
-    }
-
-    public function deleteOrderState($id_order_state)
-    {
-        $orderState = new OrderState($id_order_state);
-        $orderState->delete();
-    }
-
-    public function createOrderState($db_name, $name)
-    {
-        if (!Configuration::get($db_name)) {//if status does not exist
-            $orderState = new OrderState();
-            $orderState->name = array();
-
-            foreach (Language::getLanguages() as $language) {
-                if (Tools::strtolower($language['iso_code']) == 'es') {
-                    $orderState->name[$language['id_lang']] = 'Pendiente de pago';
-                } else {
-                    $orderState->name[$language['id_lang']] = 'Pending payment';
-                }
-            }
-            
-            $orderState->send_email = false;
-            $orderState->color = 'royalblue';
-            $orderState->hidden = false;
-            $orderState->delivery = false;
-            $orderState->logable = false;
-            $orderState->invoice = false;
-            if ($orderState->add()) {//save new order status
-                $source = _PS_MODULE_DIR_ . '/../img/os/' . (int) Configuration::get('PS_OS_BANKWIRE') . '.gif';
-                $destination = _PS_MODULE_DIR_ . '/../img/os/' . (int) $orderState->id . '.gif';
-                copy($source, $destination);
-
-                Configuration::updateValue($db_name, (int) $orderState->id);
-            }
-        } else if (Configuration::get($db_name)) {
-            $orderState = new OrderState($db_name);
-            
-            foreach (Language::getLanguages() as $language) {
-                if (Tools::strtolower($language['iso_code']) == 'es') {
-                    $orderState->name[$language['id_lang']] = 'Pendiente de pago';
-                } else {
-                    $orderState->name[$language['id_lang']] = 'Pending pay';
-                }
             }
         }
     }
