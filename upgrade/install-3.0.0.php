@@ -32,7 +32,7 @@ function upgrade_module_3_0_0($object)
 {
     //$object->setDisplayName('Card payment');
     $object->checkCredentialsUpdate();
-    return ($object->registerHook('actionOrderStatusPostUpdate')
+    return ($object->registerHook('adminOrder')
          && $object->registerHook('actionAdminLoginControllerSetMedia')   
          && $object->registerHook('DisplayTop'));
 }

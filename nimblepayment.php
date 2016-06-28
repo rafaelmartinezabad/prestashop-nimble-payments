@@ -61,7 +61,7 @@ class NimblePayment extends PaymentModule
             return false;
         }
 
-        if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('DisplayTop')
+        if (!parent::install() || ! $this->registerHook('adminOrder') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('DisplayTop')
             || !$this->registerHook('actionAdminLoginControllerSetMedia') ) {
             return false;
         }
@@ -80,6 +80,85 @@ class NimblePayment extends PaymentModule
         return true;
     }
 
+    /**
+     * AdminOrder Hook implementation for altering order detail presentation in order to add refund nimble options
+     * @param  array $params hook data
+     * @return string         HTML output
+     */
+    public function hookAdminOrder($params)
+    {
+        $this->_html = "";
+        $refunds = array();
+        $error = "";
+        $refunded = 0;
+
+        // Nimble refund button submitted
+        if (Tools::isSubmit('submitNimbleRefund')) {
+            $this->_doRefund($params['id_order'], Tools::getValue('description'), Tools::getValue('amount'));
+        }
+
+        // Build tpl addons
+        $admin_templates = array();
+        // Refund tpl
+        if ($this->_canRefund((int)$params['id_order'])) {
+            $admin_templates[] = 'refund';
+        }
+
+        if (count($admin_templates) > 0) {
+            // Get order data
+            $order = new Order((int)$params['id_order']);
+            $currency = new Currency($order->id_currency);
+
+            if (version_compare(_PS_VERSION_, '1.5', '>=')) {
+                $order_state = $order->current_state;
+            } else {
+                $order_state = OrderHistory::getLastOrderState($params['id_order']);
+            }
+
+            // Set params
+            $refunds = $this->getListRefunds($this->_getIdTransaction($params['id_order']));
+
+            if (!is_array($refunds)) {
+                // There was an error
+                $error = $refunds;
+                $refunds = array();
+            } else {
+                // Check if total refunds exceed total amount
+                $refunded = 0;
+                foreach ($refunds as $refund) {
+                    $refunded += $refund['refund']['amount'];
+                }
+            }
+
+            // Set tpl data
+            $this->context->smarty->assign(
+                array(
+                    // 'authorization' => (int)Configuration::get('PAYPAL_OS_AUTHORIZATION'),
+                    'base_url' => _PS_BASE_URL_.__PS_BASE_URI__,
+                    'module_name' => $this->name,
+                    'order_state' => $order_state,
+                    'params' => $params,
+                    'id_currency' => $currency->getSign(),
+                    'list_refunds' => $refunds,
+                    'still_refundable' => $refunded < $order->total_paid,
+                    'order_amount' => $order->total_paid,
+                    'order_currency' => $currency->sign,
+                    'refunded' => $refunded,
+                    'description' => $order->reference,
+                    'ps_version' => _PS_VERSION_,
+                    'error' => $error
+                )
+            );
+
+            foreach ($admin_templates as $admin_template) {
+                $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl');
+            }
+        }
+
+        return $this->_html;
+    }
+
+    
     public function hookActionAdminLoginControllerSetMedia()
     {
         $this->refreshToken();
@@ -140,8 +219,12 @@ class NimblePayment extends PaymentModule
                 }
             }
         }
-        if ($this->checkCredentials() == true && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN'))
+        
+        $credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+        if ( $credentials && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
             $output .= $this->authorize3legged();
+        }
+        
         $output .= $this->displaynimblepayment();
         $output .= '<div id="nimble-form">' . $this->renderForm() . '</div>';
         return $output;
@@ -166,7 +249,7 @@ class NimblePayment extends PaymentModule
                 'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
             )
         );
-
+        
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
             return $this->display(__FILE__, 'payment.tpl', '20160623');
@@ -467,7 +550,7 @@ class NimblePayment extends PaymentModule
                 Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 1);
             }
         } catch (Exception $e) {
-            
+            Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
         }
     }
     
@@ -503,5 +586,258 @@ class NimblePayment extends PaymentModule
         }
         
     }
+    
+    /**************************************************************
+     *                    NIMBLE REFUNDS FUNCTIONS                *
+     **************************************************************/
+   
+    /**
+     * Check if an order is refundable
+     * @param  int $id_order id order
+     * @return boolean           wether or not the order is refundable
+     */
+    private function _canRefund($id_order)
+    {
+        // Check oAuth
+        if (!Configuration::get('PS_NIMBLE_ACCESS_TOKEN')) {
+            return false;
+        }
+
+        // Check if order exists and is succesfully paid
+        if (!(bool)$id_order) {
+            return false;
+        }
+
+        $order = new Order($id_order);
+        return $order->module == 'nimblepayment';
+    }
+
+    /**
+     * Refund process implementation pre and post execution
+     * @param  int $id_order    id order
+     * @param  string $description refund description
+     * @param  float $amt         amount to refund
+     */
+    private function _doRefund($id_order, $description, $amt)
+    {
+        // Get order object
+        $order = new Order((int)$id_order);
+        if (!Validate::isLoadedObject($order)) {
+            return false;
+        }
+        // Get products buyed on order
+        //$products = $order->getProducts();
+        $currency = new Currency((int)$order->id_currency);
+        if (!Validate::isLoadedObject($currency)) {
+            $this->_errors[] = $this->l('Not a valid currency');
+        }
+
+        if (count($this->_errors)) {
+            return false;
+        }
+
+        // Execute refund
+        $transaction = $this->_getIdTransaction($id_order);
+        $response = $this->_makeRefund($transaction, $id_order, (float)($amt), $description);
+
+        //OPEN OPT
+        if (isset($response['result']) && isset($response['result']['code']) && 428 == $response['result']['code']
+                && isset($response['data']) && isset($response['data']['ticket']) && isset($response['data']['token']) ){
+            $ticket = $response['data']['ticket'];
+            $otp_info = array(
+                'action'    =>  'refund',
+                'ticket'    =>  $ticket,
+                'token'     =>  $response['data']['token'],
+                'order_id'  =>  $id_order,
+                'description' => $description,
+                'amt' => $amt,
+                'transaction' => $transaction
+                
+            );
+            $refund_info = serialize($otp_info);
+            Configuration::updateValue('NIMBLEPAYMENTS_REFUND_INFO', $refund_info);
+            $back_url = $redirectURL = _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/nimblepayment/oauth2callback.php';
+            $url_otp = NimbleAPI::getOTPUrl($ticket, $back_url);
+            Tools::redirect($url_otp);
+        } else {
+            $message = $this->l('There was a problem trying to execute refund, please try again later').'<br>';
+        }
+
+        // Add private message
+        $this->_addNewPrivateMessage((int)$id_order, $message);
+
+        // Redirect to origin page (order detail page)
+        // Tools::redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    /**
+     * Add new message to the order record
+     * @param int $id_order id order
+     * @param string $message  message to record
+     */
+    public function _addNewPrivateMessage($id_order, $message)
+    {
+        if (!(bool)$id_order) {
+            return false;
+        }
+
+        $new_message = new Message();
+        $message = strip_tags($message, '<br>');
+
+        if (!Validate::isCleanHtml($message)) {
+            $message = $this->l('Payment message is not valid, please check your module.');
+        }
+
+        $new_message->message = $message;
+        $new_message->id_order = (int)$id_order;
+        $new_message->private = 1;
+
+        return $new_message->add();
+    }
+
+    /**
+     * Perform refund through Nimble API SDK
+     * @param  int  $id_transaction id transaction
+     * @param  int  $id_order       id order
+     * @param  float $amt            amount to refund
+     * @param  string  $description    description for refund
+     * @return array                 refund API callback response
+     */
+    private function _makeRefund($id_transaction, $id_order, $amt = null, $description = "")
+    {
+        if (!$id_transaction) {
+            die(Tools::displayError('Fatal Error: id_transaction is null'));
+        }
+
+        $refund_params = array(
+                 'amount' => (float)$amt * 100,
+                 'concept' => $description,
+                 'reason' => 'REQUEST_BY_CUSTOMER',
+                );
+
+        $params = array(
+                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
+            );
+
+        $nimble = new NimbleAPI($params);
+
+        if ($nimble != null && $nimble->authorization->isAccessParams()) {
+            // Do refund
+            return NimbleAPIPayments::sendPaymentRefund($nimble, $id_transaction, $refund_params);
+        } else {
+            // Auth problem -> Redirect to module settings page
+            
+        }
+    }
+
+    /**
+     * Retrieves list of refunds performed for specified transaction
+     * @param  int $IdTransaction id_transaction
+     * @return array                list of refunds
+     */
+    public function getListRefunds($IdTransaction)
+    {
+
+        $params = array(
+                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
+            );
+
+        $nimble = new NimbleAPI($params);
+
+        if ($nimble != null && $nimble->authorization->isAccessParams()) {
+            // Do refund
+            $payment = NimbleAPIPayments::getPaymentRefunds($nimble, $IdTransaction);
+            if (isset($payment['error'])) {
+                    return $payment['error'];
+            } elseif (isset($payment['data']['refunds'])) {
+                return $payment['data']['refunds'];
+            }
+        } else {
+            // Auth problem -> Redirect to module settings page
+            return $this->l('There was a problem trying to authenticate with Nimble API');
+        }
+    }
+    
+    public function nimbleProcessRefund($refund_info)
+    {
+        try {
+            $params = array(
+                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                'token' => $refund_info['token']
+            );
+            $nimble = new NimbleAPI($params);
+            
+            $refund = array(
+                'amount' => $refund_info['amt'] * 100,
+                'concept' => $refund_info['description'],
+                'reason' => 'REQUEST_BY_CUSTOMER'
+            );
+            
+            $response = NimbleAPIPayments::sendPaymentRefund($nimble, $refund_info['transaction'], $refund);
+            error_log(print_r($response,true));
+        } catch (Exception $e) {
+            return false;
+        }
+        if (!isset($response['data']) || !isset($response['data']['refundId'])){
+             //LANG: ERROR_REFUND_1
+            if ( isset($response['result']) && isset($response['result']['info']) ){
+                $message = $response['result']['info'];
+            }    
+        } else {        
+            // Register refund on order history
+            // Save history
+            $history = new OrderHistory();
+            $history->id_order = (int)$refund_info['id_order'];
+            $history->changeIdOrderState((int)Configuration::get('PS_OS_REFUND'), $history->id_order);
+            $history->addWithemail();
+            $history->save();
+            
+        }   
+        
+    }
+    
+   /**
+     * Retrieves id transaction from id_order
+     * @param  int $id_order id order
+     * @return int           id transaction
+     */
+    private function _getIdTransaction($id_order)
+    {
+            return Db::getInstance()->getValue('
+                SELECT `transaction_id`
+                FROM `'._DB_PREFIX_.'orders` o
+                LEFT JOIN `'._DB_PREFIX_.'order_payment` op ON (o.`reference` = op.`order_reference`)
+                WHERE o.`id_order` = '.(int)$id_order);
+
+    }
+
+    /**
+     * Retrieves tpl object from name, fetching for the proper path
+     * @param  string $name tpl name
+     * @return object       tpl display object
+     */
+    public function fetchTemplate($name)
+    {
+        if (version_compare(_PS_VERSION_, '1.4', '<')) {
+            $this->context->smarty->currentTemplate = $name;
+        } elseif (version_compare(_PS_VERSION_, '1.5', '<')) {
+            $views = 'views/templates/';
+            if (@filemtime(dirname(__FILE__).'/'.$name)) {
+                return $this->display(__FILE__, $name);
+            } elseif (@filemtime(dirname(__FILE__).'/'.$views.'hook/'.$name))
+                return $this->display(__FILE__, $views.'hook/'.$name);
+            elseif (@filemtime(dirname(__FILE__).'/'.$views.'front/'.$name))
+                return $this->display(__FILE__, $views.'front/'.$name);
+            elseif (@filemtime(dirname(__FILE__).'/'.$views.'admin/'.$name))
+                return $this->display(__FILE__, $views.'admin/'.$name);
+        }
+
+        return $this->display(__FILE__, $name);
+    }    
     
 }
