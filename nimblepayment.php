@@ -100,8 +100,11 @@ class NimblePayment extends PaymentModule
         // Build tpl addons
         $admin_templates = array();
         // Refund tpl
+        $order = new Order((int)$params['id_order']);
         if ($this->_canRefund((int)$params['id_order'])) {
             $admin_templates[] = 'refund';
+        } else if ($order->module == 'nimblepayment'){
+            $admin_templates[] = 'authorize';
         }
 
         if (count($admin_templates) > 0) {
@@ -146,7 +149,8 @@ class NimblePayment extends PaymentModule
                     'refunded' => $refunded,
                     'description' => $order->reference,
                     'ps_version' => _PS_VERSION_,
-                    'error' => $error
+                    'error' => $error,
+                    'Oauth3Url' => $this->getOauth3Url()
                 )
             );
 
@@ -478,8 +482,8 @@ class NimblePayment extends PaymentModule
         $validator = false;    
         try {
             $params = array(
-            'clientId' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')),
-            'clientSecret' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'))
+            'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+            'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
             );
             
             $nimble_api = new NimbleAPI($params);
@@ -798,7 +802,7 @@ class NimblePayment extends PaymentModule
             $history->save();
             
         }   
-        
+        // to do redirect
     }
     
    /**

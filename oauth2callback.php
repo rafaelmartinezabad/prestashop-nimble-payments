@@ -33,10 +33,11 @@ if (Tools::getValue('code')){
 } else if(Tools::getValue('ticket') && Tools::getValue('result') == "OK"){
     $ticket = Tools::getValue('ticket');
     $refund_info = unserialize(Configuration::get('NIMBLEPAYMENTS_REFUND_INFO'));
-    $cashout_info = unserialize(Configuration::get('NIMBLEPAYMENTS_CASHOUT_INFO'));
+    // $cashout_info = unserialize(Configuration::get('NIMBLEPAYMENTS_CASHOUT_INFO'));
     if( $refund_info['ticket'] == $ticket ){
         $nimble->nimbleProcessRefund($refund_info);
     }
-    
+} else {
+    Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN'));
 }
 
