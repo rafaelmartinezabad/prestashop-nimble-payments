@@ -127,24 +127,26 @@ class NimblePayment extends PaymentModule
                 $refunds = array();
             } else {
                 // Check if total refunds exceed total amount
-                $refunded = 0;
                 foreach ($refunds as $refund) {
-                    $refunded += $refund['refund']['amount'];
+                    $refunded += ($refund['refund']['amount']) / 100 ;
                 }
             }
 
+            Configuration::updateValue( 'NIMBLE_REQUEST_URI_ADMIN_ORDER', 
+            dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&id_order=' . $params['id_order'] . '&vieworder&token=' . Tools::getValue('token')
+            );
+            
             // Set tpl data
             $this->context->smarty->assign(
                 array(
-                    // 'authorization' => (int)Configuration::get('PAYPAL_OS_AUTHORIZATION'),
                     'base_url' => _PS_BASE_URL_.__PS_BASE_URI__,
                     'module_name' => $this->name,
                     'order_state' => $order_state,
                     'params' => $params,
                     'id_currency' => $currency->getSign(),
                     'list_refunds' => $refunds,
-                    'still_refundable' => $refunded < $order->total_paid,
-                    'order_amount' => $order->total_paid,
+                    'still_refundable' => $refunded < (float)$order->total_paid,
+                    'order_amount' => (float)$order->total_paid,
                     'order_currency' => $currency->sign,
                     'refunded' => $refunded,
                     'description' => $order->reference,
@@ -783,7 +785,6 @@ class NimblePayment extends PaymentModule
             );
             
             $response = NimbleAPIPayments::sendPaymentRefund($nimble, $refund_info['transaction'], $refund);
-            error_log(print_r($response,true));
         } catch (Exception $e) {
             return false;
         }
@@ -795,15 +796,17 @@ class NimblePayment extends PaymentModule
         } else {        
             // Register refund on order history
             // Save history
-            $history = new OrderHistory();
-            $history->id_order = (int)$refund_info['id_order'];
-            $history->changeIdOrderState((int)Configuration::get('PS_OS_REFUND'), $history->id_order);
-            $history->addWithemail();
-            $history->save();
-            
+            $order = new Order((int)$refund_info['order_id']);       
+            if( (float)$order->total_paid == ($refund['amount'] / 100) ){
+                $history = new OrderHistory();
+                $history->id_order = (int)$refund_info['order_id'];
+                $history->changeIdOrderState((int)Configuration::get('PS_OS_REFUND'), $history->id_order);
+                $history->addWithemail();
+                $history->save();
+            }
         }   
-        // to do redirect
-    }
+       Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN_ORDER'));
+}
     
    /**
      * Retrieves id transaction from id_order

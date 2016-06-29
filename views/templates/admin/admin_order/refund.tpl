@@ -41,7 +41,7 @@
 				{foreach from=$list_refunds item=list}
 				  <tr>
 				    <td>{date("Y-m-d", strtotime($list.refundDate))|escape:'htmlall':'UTF-8'}</td>
-				    <td>{number_format($list.refund['amount'], 2, ",", ".")|escape:'htmlall':'UTF-8'} {$list.refund['currency']|escape:'htmlall':'UTF-8'}</td> 
+				    <td>{number_format($list.refund['amount'] / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$list.refund['currency']|escape:'htmlall':'UTF-8'}</td> 
 				    <td>{$list.refundConcept|escape:'htmlall':'UTF-8'}</td> 
 				    <td>{$list.refundState|escape:'htmlall':'UTF-8'}</td>
 				  </tr>
@@ -85,7 +85,7 @@
 			{foreach from=$list_refunds item=list}
 			  <tr>
 			    <td>{Tools::displayDate($list.refundDate, $smarty.const.null,true)|escape:'htmlall':'UTF-8'}</td>
-			    <td>{$list.refund|escape:'htmlall':'UTF-8'}</td> 
+			    <td>{$list.refund / 100|escape:'htmlall':'UTF-8'}</td> 
 			    <td>{$list.refundState|escape:'htmlall':'UTF-8'}</td>
 			  </tr>
 			{/foreach}

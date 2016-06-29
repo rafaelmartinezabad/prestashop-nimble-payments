@@ -28,7 +28,7 @@
     {if isset($order)}
     <div class="info-order box">
             {if $carrier->id}<p><strong class="dark">{l s='Carrier' mod='nimblepayment'}</strong> {if $carrier->name == "0"}{$shop_name|escape:'html':'UTF-8'}{else}{$carrier->name|escape:'html':'UTF-8'}{/if}</p>{/if}
-            <p><strong class="dark">{l s='Payment method' mod='nimblepayment'}</strong> <span class="color-myaccount">{$order->payment|escape:'html':'UTF-8'}</span></p>
+            <p><strong class="dark">{l s='Payment method' mod='nimblepayment'}</strong> <span class="color-myaccount">{l s='Card payment' mod='nimblepayment'}</span></p>
             {if $invoice AND $invoiceAllowed}
             <p>
                     <i class="icon-file-text"></i>

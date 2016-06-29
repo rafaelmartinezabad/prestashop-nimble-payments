@@ -60,3 +60,6 @@ $_MODULE['<{nimblepayment}prestashop>payment_return_2fb4ff3bfaaa7204156b95847bf5
 $_MODULE['<{nimblepayment}prestashop>payment_return_7589dfa9a5a899e9701335164c9ab520'] = 'Envío y manipulación';
 $_MODULE['<{nimblepayment}prestashop>payment_return_1f87346a16cf80c372065de3c54c86d9'] = '(impuestos inc.)';
 $_MODULE['<{nimblepayment}prestashop>payment_return_9dea4016dbcc290b773ab2fae678aaa8'] = 'Artículos';
+$_MODULE['<{nimblepayment}prestashop>payment_return_21ff087f1520a70163128cae982de67a'] = 'Pago con tarjeta';
+$_MODULE['<{nimblepayment}prestashop>authorize_f67553ab5da349bdd531c8ab60dbacf2'] = 'Todavía no has autorizado a Prestashop en Nimble Payments.';
+$_MODULE['<{nimblepayment}prestashop>authorize_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
