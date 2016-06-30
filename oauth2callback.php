@@ -30,12 +30,17 @@ require_once _PS_MODULE_DIR_.'nimblepayment/nimblepayment.php';
 $nimble = new NimblePayment();
 if (Tools::getValue('code')){
    $nimble->nimbleOauth2callback();
-} else if(Tools::getValue('ticket') && Tools::getValue('result') == "OK"){
+} else if(Tools::getValue('ticket')){
     $ticket = Tools::getValue('ticket');
     $refund_info = unserialize(Configuration::get('NIMBLEPAYMENTS_REFUND_INFO'));
+    $result = Tools::getValue('result');
     // $cashout_info = unserialize(Configuration::get('NIMBLEPAYMENTS_CASHOUT_INFO'));
     if( $refund_info['ticket'] == $ticket ){
-        $nimble->nimbleProcessRefund($refund_info);
+        if ($result == "OK"){
+            $nimble->nimbleProcessRefund($refund_info);
+        } else {
+            //Tools::redirect($refund_info['url_return']);
+        }
     }
 } else {
     Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN'));
