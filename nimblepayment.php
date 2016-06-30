@@ -828,22 +828,13 @@ class NimblePayment extends PaymentModule
      * @param  string $name tpl name
      * @return object       tpl display object
      */
-    public function fetchTemplate($name)
+    public function fetchTemplate($name, $cache_id = null)
     {
         if (version_compare(_PS_VERSION_, '1.4', '<')) {
             $this->context->smarty->currentTemplate = $name;
         } elseif (version_compare(_PS_VERSION_, '1.5', '<')) {
-            $views = 'views/templates/';
-            if (@filemtime(dirname(__FILE__).'/'.$name)) {
-                return $this->display(__FILE__, $name);
-            } elseif (@filemtime(dirname(__FILE__).'/'.$views.'hook/'.$name))
-                return $this->display(__FILE__, $views.'hook/'.$name);
-            elseif (@filemtime(dirname(__FILE__).'/'.$views.'front/'.$name))
-                return $this->display(__FILE__, $views.'front/'.$name);
-            elseif (@filemtime(dirname(__FILE__).'/'.$views.'admin/'.$name))
-                return $this->display(__FILE__, $views.'admin/'.$name);
+            return $this->display(__FILE__, $name, $cache_id);
         }
-
         return $this->display(__FILE__, $name);
     }    
     
