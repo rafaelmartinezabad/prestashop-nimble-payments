@@ -62,7 +62,7 @@ class NimblePayment extends PaymentModule
         }
 
         if (!parent::install() || ! $this->registerHook('adminOrder') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('DisplayTop')
-            || !$this->registerHook('actionAdminLoginControllerSetMedia') ) {
+            || !$this->registerHook('actionAdminLoginControllerSetMedia') || ! $this->registerHook('dashboardZoneOne') ) {
             return false;
         }
 
@@ -80,6 +80,36 @@ class NimblePayment extends PaymentModule
         return true;
     }
 
+    /**
+     * DashboardZoneOne Hook implementation
+     * @param  array $params hook data
+     * @return object         tpl for zone one (top)
+     */
+    public function hookDashboardZoneOne($params)
+    {
+        $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+        if (isset($nimble_credentials) && $nimble_credentials == 1) {
+            if ( ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
+                $this->context->smarty->assign(
+                    array(
+                        'data' => "",
+                        'Oauth3Url' => $this->getOauth3Url(),
+                        'token' => false
+                    )
+                );
+                return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
+            } else {
+                $this->context->smarty->assign(
+                    array(
+                        'data' => "",
+                        'token' => true
+                    )
+                );
+                return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
+            }
+        }         
+    }
+    
     /**
      * AdminOrder Hook implementation for altering order detail presentation in order to add refund nimble options
      * @param  array $params hook data

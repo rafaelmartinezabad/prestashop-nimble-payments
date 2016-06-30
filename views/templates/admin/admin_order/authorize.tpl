@@ -1,6 +1,5 @@
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
 
-<div id="nimble-refund-panel"></div>
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel">
