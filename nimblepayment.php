@@ -103,21 +103,6 @@ class NimblePayment extends PaymentModule
         $order = new Order((int)$params['id_order']);
         if ($this->_canRefund((int)$params['id_order'])) {
             $admin_templates[] = 'refund';
-        } else if ($order->module == 'nimblepayment'){
-            $admin_templates[] = 'authorize';
-        }
-
-        if (count($admin_templates) > 0) {
-            // Get order data
-            $order = new Order((int)$params['id_order']);
-            $currency = new Currency($order->id_currency);
-
-            if (version_compare(_PS_VERSION_, '1.5', '>=')) {
-                $order_state = $order->current_state;
-            } else {
-                $order_state = OrderHistory::getLastOrderState($params['id_order']);
-            }
-
             // Set params
             $refunds = $this->getListRefunds($this->_getIdTransaction($params['id_order']));
 
@@ -131,34 +116,42 @@ class NimblePayment extends PaymentModule
                     $refunded += ($refund['refund']['amount']) / 100 ;
                 }
             }
+        } else if ($order->module == 'nimblepayment'){
+            $admin_templates[] = 'authorize';
+        }
 
-            Configuration::updateValue( 'NIMBLE_REQUEST_URI_ADMIN_ORDER', 
-            dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&id_order=' . $params['id_order'] . '&vieworder&token=' . Tools::getValue('token')
-            );
-            
-            // Set tpl data
-            $this->context->smarty->assign(
-                array(
-                    'base_url' => _PS_BASE_URL_.__PS_BASE_URI__,
-                    'module_name' => $this->name,
-                    'order_state' => $order_state,
-                    'params' => $params,
-                    'id_currency' => $currency->getSign(),
-                    'list_refunds' => $refunds,
-                    'still_refundable' => $refunded < (float)$order->total_paid,
-                    'order_amount' => (float)$order->total_paid,
-                    'order_currency' => $currency->sign,
-                    'refunded' => $refunded,
-                    'description' => $order->reference,
-                    'ps_version' => _PS_VERSION_,
-                    'error' => $error,
-                    'Oauth3Url' => $this->getOauth3Url()
-                )
-            );
+        // Get order data
+        $order = new Order((int)$params['id_order']);
+        $currency = new Currency($order->id_currency);
 
-            foreach ($admin_templates as $admin_template) {
-                $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl');
-            }
+        if (version_compare(_PS_VERSION_, '1.5', '>=')) {
+            $order_state = $order->current_state;
+        } else {
+            $order_state = OrderHistory::getLastOrderState($params['id_order']);
+        }
+        
+        // Set tpl data
+        $this->context->smarty->assign(
+            array(
+                'base_url' => _PS_BASE_URL_.__PS_BASE_URI__,
+                'module_name' => $this->name,
+                'order_state' => $order_state,
+                'params' => $params,
+                'id_currency' => $currency->getSign(),
+                'list_refunds' => $refunds,
+                'still_refundable' => $refunded < (float)$order->total_paid,
+                'order_amount' => (float)$order->total_paid,
+                'order_currency' => $currency->sign,
+                'refunded' => $refunded,
+                'description' => $order->reference,
+                'ps_version' => _PS_VERSION_,
+                'error' => $error,
+                'Oauth3Url' => $this->getOauth3Url()
+            )
+        );
+
+        foreach ($admin_templates as $admin_template) {
+            $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl');
         }
 
         return $this->_html;
