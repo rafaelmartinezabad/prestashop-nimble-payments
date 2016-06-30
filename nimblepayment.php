@@ -807,7 +807,7 @@ class NimblePayment extends PaymentModule
             }
         }   
         
-       //Tools::redirect($refund_info['url_return']);
+       Tools::redirectAdmin($refund_info['url_return']);
 }
     
    /**
