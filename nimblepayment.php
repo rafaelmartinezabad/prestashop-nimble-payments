@@ -197,18 +197,18 @@ class NimblePayment extends PaymentModule
     {
         $this->_html = "";
         $refunds = array();
-        $error = "";
+        $new_refund_message_class = '';
+        $new_refund_message = '';
+        $new_refund = Tools::getValue('np_refund', false) ? true : false;
+        if ($new_refund){
+            $new_refund_message_class = Tools::getValue('np_refund') == 'OK' ? 'success' : 'danger'; 
+            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('Refund OK') : $this->l('Refund KO'); 
+        }
         $refunded = 0;
 
         // Nimble refund button submitted
         if (Tools::isSubmit('submitNimbleRefund')) {
-            if( Tools::getValue("stateRefund") == 'refund' ){
-                $stateRefund = true;
-            } else {
-                $stateRefund = false;
-            }
-            
-            $this->_doRefund($params['id_order'], Tools::getValue('description'), Tools::getValue('amount'), $stateRefund);
+            $this->_doRefund($params['id_order']);
         }
 
         // Build tpl addons
@@ -217,61 +217,54 @@ class NimblePayment extends PaymentModule
         $order = new Order((int)$params['id_order']);
         if ($this->_canRefund((int)$params['id_order'])) {
             $admin_templates[] = 'refund';
-        } else if ($order->module == 'nimblepayment'){
-            $admin_templates[] = 'authorize';
-        }
-
-        if (count($admin_templates) > 0) {
-            // Get order data
-            $order = new Order((int)$params['id_order']);
-            $currency = new Currency($order->id_currency);
-
-            if (version_compare(_PS_VERSION_, '1.5', '>=')) {
-                $order_state = $order->current_state;
-            } else {
-                $order_state = OrderHistory::getLastOrderState($params['id_order']);
-            }
-
             // Set params
             $refunds = $this->getListRefunds($this->_getIdTransaction($params['id_order']));
-
-            if (!is_array($refunds)) {
-                // There was an error
-                $error = $refunds;
-                $refunds = array();
-            } else {
-                // Check if total refunds exceed total amount
+            // Check if total refunds exceed total amount
+            if (is_array($refunds)){
                 foreach ($refunds as $refund) {
                     $refunded += ($refund['refund']['amount']) / 100 ;
                 }
             }
-            
-            //error_log( dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&id_order=' . $params['id_order'] . '&vieworder&token=' . Tools::getValue('token'));
-            //error_log(_PS_BASE_URL_.__PS_BASE_URI__ . ($_SERVER['REQUEST_URI']) . Context::getContext()->link->getAdminLink('AdminOrders'). '&id_order=' . $params['id_order'] . '&vieworder');
-            
-            // Set tpl data
-            $this->context->smarty->assign(
-                array(
-                    'base_url' => _PS_BASE_URL_.__PS_BASE_URI__,
-                    'module_name' => $this->name,
-                    'order_state' => $order_state,
-                    'params' => $params,
-                    'id_currency' => $currency->getSign(),
-                    'list_refunds' => $refunds,
-                    'still_refundable' => $refunded < (float)$order->total_paid,
-                    'order_amount' => (float)$order->total_paid,
-                    'order_currency' => $currency->sign,
-                    'refunded' => $refunded,
-                    'description' => $order->reference,
-                    'ps_version' => _PS_VERSION_,
-                    'error' => $error,
-                    'Oauth3Url' => $this->getOauth3Url()
-                )
-            );
+        } else if ($order->module == 'nimblepayment'){
+            $admin_templates[] = 'authorize';
+        }
 
-            foreach ($admin_templates as $admin_template) {
-                $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl');
-            }
+        // Get order data
+        $order = new Order((int)$params['id_order']);
+        $currency = new Currency($order->id_currency);
+
+        if (version_compare(_PS_VERSION_, '1.5', '>=')) {
+            $order_state = $order->current_state;
+        } else {
+            $order_state = OrderHistory::getLastOrderState($params['id_order']);
+        }
+        
+	//error_log( dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&id_order=' . $params['id_order'] . '&vieworder&token=' . Tools::getValue('token'));
+        //error_log(_PS_BASE_URL_.__PS_BASE_URI__ . ($_SERVER['REQUEST_URI']) . Context::getContext()->link->getAdminLink('AdminOrders'). '&id_order=' . $params['id_order'] . '&vieworder');
+        
+	// Set tpl data
+        $this->context->smarty->assign(
+            array(
+                'base_url' => _PS_BASE_URL_.__PS_BASE_URI__,
+                'module_name' => $this->name,
+                'order_state' => $order_state,
+                'params' => $params,
+                'id_currency' => $currency->getSign(),
+                'list_refunds' => $refunds,
+                'still_refundable' => $refunded < (float)$order->total_paid,
+                'order_amount' => (float)$order->total_paid,
+                'order_currency' => $currency->sign,
+                'refunded' => $refunded,
+                'description' => $order->reference,
+                'ps_version' => _PS_VERSION_,
+                'new_refund_message_class' => $new_refund_message_class,
+                'new_refund_message' => $new_refund_message,
+                'Oauth3Url' => $this->getOauth3Url()
+            )
+        );
+
+        foreach ($admin_templates as $admin_template) {
+            $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl', '20160630');
         }
 
         return $this->_html;
@@ -579,7 +572,6 @@ class NimblePayment extends PaymentModule
         $storeName = Configuration::get('PS_SHOP_NAME');
         $storeURL = _PS_BASE_URL_ . __PS_BASE_URI__;
         $redirectURL = _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/nimblepayment/oauth2callback.php';
-
         return NimbleAPI::getGatewayUrl($platform, $storeName, $storeURL, $redirectURL);
     }
 
@@ -737,7 +729,7 @@ class NimblePayment extends PaymentModule
      * @param  string $description refund description
      * @param  float $amt         amount to refund
      */
-    private function _doRefund($id_order, $description, $amt, $stateRefund)
+    private function _doRefund($id_order)
     {
         // Get order object
         $order = new Order((int)$id_order);
@@ -756,6 +748,8 @@ class NimblePayment extends PaymentModule
         }
 
         // Execute refund
+        $description = Tools::getValue('description');
+        $amt = Tools::getValue('amount');
         $transaction = $this->_getIdTransaction($id_order);
         $response = $this->_makeRefund($transaction, $id_order, (float)($amt), $description);
 
@@ -763,7 +757,9 @@ class NimblePayment extends PaymentModule
         if (isset($response['result']) && isset($response['result']['code']) && 428 == $response['result']['code']
                 && isset($response['data']) && isset($response['data']['ticket']) && isset($response['data']['token']) ){
             $ticket = $response['data']['ticket'];
-            //$url_return = _PS_BASE_URL_ . __PS_BASE_URI__;
+            $url_return = $_SERVER['REQUEST_URI'] . Context::getContext()->link->getAdminLink('AdminOrders'). '&id_order=' . $id_order . '&vieworder';
+            $stateRefund = ( Tools::getValue("stateRefund") == 'refund' ) ? true : false;
+            
             $otp_info = array(
                 'action'    =>  'refund',
                 'ticket'    =>  $ticket,
@@ -772,12 +768,12 @@ class NimblePayment extends PaymentModule
                 'description' => $description,
                 'amt'       => $amt,
                 'transaction' => $transaction,
-                'stateRefund' => $stateRefund
-                
+                'stateRefund' => $stateRefund,
+                'url_return' => $url_return
             );
             $refund_info = serialize($otp_info);
             Configuration::updateValue('NIMBLEPAYMENTS_REFUND_INFO', $refund_info);
-            $back_url = $redirectURL = _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/nimblepayment/oauth2callback.php';
+            $back_url = _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/nimblepayment/oauth2callback.php';
             $url_otp = NimbleAPI::getOTPUrl($ticket, $back_url);
             Tools::redirect($url_otp);
         } else {
@@ -824,7 +820,7 @@ class NimblePayment extends PaymentModule
      * @param  string  $description    description for refund
      * @return array                 refund API callback response
      */
-    private function _makeRefund($id_transaction, $id_order, $amt = null, $description = "")
+    private function _makeRefund($id_transaction, $id_order, $amt, $description = "")
     {
         if (!$id_transaction) {
             die(Tools::displayError('Fatal Error: id_transaction is null'));
@@ -904,10 +900,8 @@ class NimblePayment extends PaymentModule
             return false;
         }
         if (!isset($response['data']) || !isset($response['data']['refundId'])){
-             //LANG: ERROR_REFUND_1
-            if ( isset($response['result']) && isset($response['result']['info']) ){
-                $message = $response['result']['info'];
-            }    
+            //LANG: ERROR_REFUND_1
+            Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=error#nimble-refund-panel');
         } else {        
             if( $refund_info['stateRefund'] == true ){
                 // Register refund on order history and save history
@@ -919,7 +913,7 @@ class NimblePayment extends PaymentModule
             }
         }   
         
-       //Tools::redirect($refund_info['url_return']);
+       Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=OK#nimble-refund-panel');
 }
     
    /**
