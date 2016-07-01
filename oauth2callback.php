@@ -39,7 +39,7 @@ if (Tools::getValue('code')){
         if ($result == "OK"){
             $nimble->nimbleProcessRefund($refund_info);
         } else {
-            Tools::redirectAdmin($refund_info['url_return'] . '&error=refund');
+            Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=error#nimble-refund-panel');
         }
     }
 } else {
