@@ -375,10 +375,29 @@ class NimblePayment extends PaymentModule
         }
 
         $state = $params['objOrder']->getCurrentState();
+        $reference = $params['objOrder']->reference;
+        
         if (in_array($state, array(Configuration::get('PS_OS_PAYMENT'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID')))) {
             $id_order = (int) Tools::getValue('id_order');
             $order = new Order($id_order);
             if (Validate::isLoadedObject($order)) {
+                //customer data
+                $transaction = $this->_getIdTransaction($id_order);
+                try {
+                    $params = array(
+                        'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                        'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
+                    );
+
+                    $nimbleApi = new NimbleAPI($params);
+                    $updateCustomer = NimbleAPIPayments::updateCustomerData($nimbleApi, $transaction, $reference);
+                    if ( !isset($updateCustomer['result']) || ! isset($updateCustomer['result']['code']) || 200 != $updateCustomer['result']['code'] || !isset($updateCustomer['info']) || 'OK' != $updateCustomer['info'] ){
+                        //to do
+                    }
+                } catch (Exception $e) {
+                    //to do
+                }
+                
                 $order->id_customer = $this->context->customer->id;
                 $id_order_state = (int) $order->getCurrentState();
                 $carrier = new Carrier((int) $order->id_carrier, (int) $order->id_lang);
