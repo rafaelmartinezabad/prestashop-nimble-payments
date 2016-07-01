@@ -1,4 +1,5 @@
-{/**
+<?php
+/**
  * 2007-2015 PrestaShop
  *
  * NOTICE OF LICENSE
@@ -21,18 +22,25 @@
  *     @copyright 2007-2015 PrestaShop SA
  *     @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
- */}
- 
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
+ */
 
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel">
-                    <div class="text">{l s='You have not yet Prestashop authorized to perform operations on Nimble Payments.' mod='nimblepayment'}
-                        <p class="btn">
-                            <a href="{$Oauth3Url}" class="btn btn-primary link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
-                        </p>
-                    </div>
-                </div>
-	</div>
-</div>
+
+include_once(PS_ADMIN_DIR.'/../classes/AdminTab.php');
+/**
+ * Empty tab for accessing module settings page
+ */
+class AdminNimbleConfig extends AdminTab
+{
+
+    /**
+     * Constructor method for redirecting to module admin settings page
+     */
+    public function __construct()
+    {
+        try {
+            Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN'));
+        } catch (Exception $e) {
+            $this->_errors = array($e->getMessage());
+        }
+    }
+}

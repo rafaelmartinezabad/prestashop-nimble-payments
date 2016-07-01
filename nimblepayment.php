@@ -24,16 +24,17 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
-require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
-require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPICredentials.php';
-
 if (!defined('_CAN_LOAD_FILES_')) {
     exit();
 }
 if (!defined('_PS_VERSION_')) {
     exit();
 }
+
+require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
+require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
+require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPICredentials.php';
+require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIAccount.php';
 
 class NimblePayment extends PaymentModule
 {
@@ -61,8 +62,31 @@ class NimblePayment extends PaymentModule
             return false;
         }
 
-        if (!parent::install() || ! $this->registerHook('adminOrder') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('DisplayTop')
-            || !$this->registerHook('actionAdminLoginControllerSetMedia') || ! $this->registerHook('dashboardZoneOne') ) {
+        // Mapping Nimble Tabs
+        $tabs = array(
+            'AdminNimbleConfig' => array (
+                'label' => $this->l('Nimble Payments'),
+                'rootClass' => true,
+                )
+        );
+        // Set tabs for uninstall
+        Configuration::updateValue('PS_ADMIN_NIMBLE_TABS', serialize($tabs));
+
+        // Build menu tabs
+        foreach ($tabs as $className => $data) {
+            // Check if exists
+            if (!$id_tab = Tab::getIdFromClassName($className)) {
+                if ($data['rootClass']) {
+                    $this->installModuleTab($className, $data['label'], 0);
+                    $rootClass = $className;
+                } else {
+                    $this->installModuleTab($className, $data['label'], (int)Tab::getIdFromClassName($rootClass));
+                }
+            }
+        }
+        
+        if (!parent::install() || ! $this->registerHook('adminOrder') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('displayTop')
+            || !$this->registerHook('actionAdminLoginControllerSetMedia') || ! $this->registerHook('displayBackOfficeHeader') || ! $this->registerHook('dashboardZoneOne') ) {
             return false;
         }
 
@@ -71,6 +95,24 @@ class NimblePayment extends PaymentModule
 
     public function uninstall()
     {
+        // Unregister hooks
+        $this->unregisterHook('adminOrder');
+        $this->unregisterHook('payment');
+        $this->unregisterHook('paymentReturn');
+        $this->unregisterHook('displayTop');
+        $this->unregisterHook('dashboardZoneOne');
+        $this->unregisterHook('actionAdminControllerSetMedia');
+        $this->unregisterHook('displayBackOfficeHeader');
+        $tabs = unserialize(Configuration::get('PS_ADMIN_NIMBLE_TABS'));
+
+        // Unbuild Menu
+        foreach ($tabs as $className => $data) {
+            $this->uninstallModuleTab($className);
+        }
+
+        // Remove system variables
+        Configuration::deleteByName('PS_ADMIN_NIMBLE_TABS');
+        
         if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET')
          || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !parent::uninstall()
         ) {
@@ -80,6 +122,16 @@ class NimblePayment extends PaymentModule
         return true;
     }
 
+    /**
+     * DisplayBackOfficeHeader Hook implementation
+     * @return string html content for back office header
+     */
+    public function hookDisplayBackOfficeHeader()
+    {
+        //Add as scoped CSS in back office header
+        $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css', 'all');
+    }
+    
     /**
      * DashboardZoneOne Hook implementation
      * @param  array $params hook data
@@ -99,15 +151,41 @@ class NimblePayment extends PaymentModule
                 );
                 return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
             } else {
-                $this->context->smarty->assign(
-                    array(
-                        'data' => "",
-                        'token' => true
-                    )
-                );
-                return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
-            }
-        }         
+                try {
+                    $params = array(
+                        'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                        'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                        'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
+                    );
+                    $nimble = new NimbleAPI($params);
+                    $summary = NimbleAPIAccount::balanceSummary($nimble);
+                    if ( !isset($summary['result']) || ! isset($summary['result']['code']) || 200 != $summary['result']['code'] || !isset($summary['data'])){
+                        //error
+                    } else{
+                        $totalavailable = $summary['data']['available'] / 100;
+                        $total_str = number_format($totalavailable, 2, ',', '.');
+                        $balance = $summary['data']['accountBalance'] / 100;
+                        $balance_str = number_format($balance, 2, ',', '.');
+                        $holdback = $summary['data']['hold'] / 100;
+                        $holdback_str = number_format($holdback, 2, ',', '.');
+                        
+                        $this->context->smarty->assign(
+                            array(
+                                'data' => "",
+                                'token' => true,
+                                'total_str' => $total_str,
+                                'balance_str' => $balance_str,
+                                'holdback_str' => $holdback_str,
+                                
+                            )
+                        );
+                        return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
+                    }
+                } catch (Exception $e) {
+                    //to do
+                }
+            }         
+        }
     }
     
     /**
@@ -873,5 +951,47 @@ class NimblePayment extends PaymentModule
         }
         return $this->display(__FILE__, $name);
     }    
+     
+    /**
+     * PS module tab installation callback implementation
+     * @param  string $tabClass    tab class
+     * @param  string $tabName     tab name
+     * @param  int $idTabParent id tab parent
+     * @return bool              wether or not tab was propery installed
+     */
+    private function installModuleTab($tabClass, $tabName, $idTabParent)
+    {
+        $o = false;
+
+        // Create tab object
+        $tab = new Tab();
+        $tab->class_name = $tabClass;
+        $tab->id_parent = $idTabParent;
+        $tab->module = $this->name;
+        $tab->name = array();
+        foreach (Language::getLanguages(true) as $lang) {
+            $tab->name[$lang['id_lang']] = $this->l($tabName);
+        }
+
+        return $tab->save();
+
+    }
     
+     /**
+     * PS module tab uninstallation callback implementation
+     * @param  string $tabClass    tab class
+     * @return bool              wether or not tab was propery uninstalled
+     */
+    private function uninstallModuleTab($tabClass)
+    {
+
+        $idTab = Tab::getIdFromClassName($tabClass);
+        if ($idTab != 0) {
+            $tab = new Tab($idTab);
+            $tab->delete();
+            return true;
+        }
+        return false;
+    }
+
 }
