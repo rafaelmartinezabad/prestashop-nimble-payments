@@ -30,10 +30,11 @@
 <section id="dashnimbleactivity" class="panel widget">
 	<section>
 		<header>
-			<i class="icon-AdminNimble"></i> {l s='Pagos con Nimble Payments' mod='nimblepayment'}
+			<i class="icon-AdminNimble"></i> {l s='Nimble Payments Summary' mod='nimblepayment'}
 		</header>
                 {if $token == false}
-                    <div class="text">{l s='You have not yet Prestashop authorized to perform operations on Nimble Payments.' mod='nimblepayment'}
+                    <div class="text">{l s='From Prestashop you can manage all ypur sales, see the movements of your account, make refunds, etc.' mod='nimblepayment'}
+                        <p>{l s='To release all features of Nimble Payments from Prestashop, you need to login in Nimble Payments and grant access to Prestashop in order to access to this operative.' mod='nimblepayment'}</p>
                             <p class="btn">
                                 <a href="{$Oauth3Url}" class="btn btn-primary link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
                             </p>

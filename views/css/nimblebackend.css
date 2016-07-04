@@ -24,6 +24,13 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-AdminNimble::before{
+    font-family: 'nimble';
+}
+
+.icon-AdminNimble:before {
+    content: "\e900";
+}
 .icon-AdminNimbleConfig::before{
     font-family: 'nimble';
 }
