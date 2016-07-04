@@ -58,7 +58,7 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
                 $cart->id,
                 _PS_OS_PAYMENT_,
                 $total,
-                $nimble->displayName,
+                $nimble->displayMethod,
                 null,
                 $extra_vars,
                 null,

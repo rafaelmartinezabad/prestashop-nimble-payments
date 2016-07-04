@@ -49,6 +49,7 @@ class NimblePayment extends PaymentModule
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
         $this->displayName = $this->l('Nimble Payments');
+        $this->displayMethod = $this->l('Card Payment');
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
         $this->post_errors = array();

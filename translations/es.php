@@ -20,6 +20,7 @@ $_MODULE['<{nimblepayment}prestashop>nimblepayment_5d605634919b04d3954d61654cb1e
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_72b7124567e54db6cac8e51ee22404ce'] = 'Url Pago';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_a8d6e9e751effe7032ebbbd1f3eae51f'] = 'URL OK Tienda';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_4e9986e1549c768ede0a90439792d582'] = 'URL KO Tienda';
+$_MODULE['<{nimblepayment}prestashop>nimblepayment_4de70f80016440f94ea9790d7777dd6a'] = 'Pago con tarjeta';
 $_MODULE['<{nimblepayment}prestashop>nimblepayment_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
 $_MODULE['<{nimblepayment}prestashop>payment_96c9c16dd5ff18bc4dcd03476d3e0aa4'] = 'No es posible contactar con Nimble Payments. Disculpe las molestias.';
 $_MODULE['<{nimblepayment}prestashop>payment_5659c6d76cf0c938c0b1075444aad3c9'] = 'No es posible enviar el pago a Nimble Payments. Disculpe las molestias.';
