@@ -425,9 +425,11 @@ class NimblePayment extends PaymentModule
                 $order_status = new OrderState((int) $id_order_state, (int) $order->id_lang);
 
                 $customer = new Customer($order->id_customer);
+                $price = Tools::displayPrice($order->total_paid, $this->context->currency);
                 $this->context->smarty->assign(array(
                     'shop_name' => (string) Configuration::get('PS_SHOP_NAME'),
                     'order' => $order,
+                    'price' => $price,
                     'status' => 'ok',
                     'return_allowed' => (int) $order->isReturnable(),
                     'currency' => new Currency($order->id_currency),
