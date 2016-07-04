@@ -351,11 +351,10 @@ class NimblePayment extends PaymentModule
             return;
         }
         $ssl = Configuration::get('PS_SSL_ENABLED');
-        $params = array();
         $this->smarty->assign(
             array(
                 'ssl' => $ssl,
-                'params' => $params,
+                'params' => array(),
                 'this_path' => $this->_path,
                 'this_path_bw' => $this->_path,
                 'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
