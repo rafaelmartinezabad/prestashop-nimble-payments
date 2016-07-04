@@ -216,9 +216,12 @@ class NimblePayment extends PaymentModule
         // Refund tpl
         $order = new Order((int)$params['id_order']);
         if ($this->_canRefund((int)$params['id_order'])) {
-            $admin_templates[] = 'refund';
-            // Set params
-            $refunds = $this->getListRefunds($this->_getIdTransaction($params['id_order']));
+            $transaction = $this->_getIdTransaction($params['id_order']);
+            if( !empty($transaction) ){
+                $admin_templates[] = 'refund';
+                // Set params
+                $refunds = $this->getListRefunds($transaction);
+            }    
             // Check if total refunds exceed total amount
             if (is_array($refunds)){
                 foreach ($refunds as $refund) {
