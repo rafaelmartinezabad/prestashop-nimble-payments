@@ -27,6 +27,22 @@
     <p class="alert alert-success">{l s='Your order on %s is complete.' sprintf=$shop_name mod='nimblepayment'}</p>
     {if isset($order)}
     <div class="info-order box">
+            <p>{l s='Total price:' mod='nimblepayment'}
+                <strong class="dark"> {$price|escape:'htmlall':'UTF-8'} </strong>
+            </p>
+            <p>{l s='Your order ID is :' mod='nimblepayment'} 
+                    <strong class="dark">
+                    {if $smarty.const._PS_VERSION_ >= 1.5}
+                            {if isset($order->reference)}
+                                    {$order->reference|escape:'htmlall':'UTF-8'}
+                            {else}
+                                    {$order->id|intval}
+                            {/if}
+                    {else}
+                            {$order->id|intval}
+                    {/if}
+                    </strong>
+            </p>
             {if $carrier->id}<p><strong class="dark">{l s='Carrier' mod='nimblepayment'}</strong> {if $carrier->name == "0"}{$shop_name|escape:'html':'UTF-8'}{else}{$carrier->name|escape:'html':'UTF-8'}{/if}</p>{/if}
             <p><strong class="dark">{l s='Payment method' mod='nimblepayment'}</strong> <span class="color-myaccount">{l s='Card payment' mod='nimblepayment'}</span></p>
             {if $invoice AND $invoiceAllowed}
