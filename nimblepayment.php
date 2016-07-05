@@ -739,11 +739,6 @@ class NimblePayment extends PaymentModule
         }
     }
     
-    public function setDisplayName($name)
-    {
-        $this->displayName = $this->l($name);
-    }
-    
     public function refreshToken()
     {
         try {
