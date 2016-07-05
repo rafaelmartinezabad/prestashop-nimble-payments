@@ -60,8 +60,10 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $order_num = str_pad($cart->id, 8, '0', STR_PAD_LEFT);
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
         $this->sendPayment($total, $paramurl);
-        
-        die(Tools::jsonEncode($this->result));
+        if (Tools::getIsset('action')){
+            die(Tools::jsonEncode($this->result));
+        }
+        Tools::redirect($this->result['redirect']);
     }
     
     public function sendPayment($total, $paramurl)
