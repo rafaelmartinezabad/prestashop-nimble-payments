@@ -25,34 +25,40 @@
  */
  *}
 
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimblebackend.css" rel="stylesheet" type="text/css" media="all">
 
 <section id="dashnimbleactivity" class="panel widget">
+        <div class="panel-heading">
+	       <i class="icon-AdminNimble"></i> {l s='Nimble Payments Account' mod='nimblepayment'}
+		<span class="panel-heading-action">
+			<a class="list-toolbar-btn" href="#" onclick="toggleDashConfig('dashactivity'); return false;" title="Configurar">
+				<i class="process-icon-configure"></i>
+			</a>
+			<a class="list-toolbar-btn" href="#" onclick="refreshDashboard('dashactivity'); return false;" title="Refrescar">
+				<i class="process-icon-refresh"></i>
+			</a>
+		</span>
+	</div>
 	<section>
-		<header>
-			<i class="icon-AdminNimble"></i> {l s='Nimble Payments Summary' mod='nimblepayment'}
-		</header>
                 {if $token == false}
-                    <div class="text">{l s='From Prestashop you can manage all ypur sales, see the movements of your account, make refunds, etc.' mod='nimblepayment'}
-                        <p>{l s='To release all features of Nimble Payments from Prestashop, you need to login in Nimble Payments and grant access to Prestashop in order to access to this operative.' mod='nimblepayment'}</p>
-                            <p class="btn">
-                                <a href="{$Oauth3Url}" class="btn btn-primary link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
-                            </p>
+                    <div class="text">
+                            <p>{l s='From Prestashop you can manage all ypur sales, see the movements of your account, make refunds, etc.' mod='nimblepayment'}</p>
+                            <p>{l s='To release all features of Nimble Payments from Prestashop, you need to login in Nimble Payments and grant access to Prestashop in order to access to this operative.' mod='nimblepayment'}</p>                   
                     </div>
+                    <div class="btn-autorize">
+                        <a href="{$Oauth3Url}" class="btn btn-nimble link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
+                    </div>    
                 {else}
-                    <ul class="data_list">
-                            <li>
-                                    <span class="data_label">{l s='Balance account' mod='nimblepayment'}</a></span>
-                                    <span id="">{$balance_str}</span>
-                            </li>
-                            <li>
-                                    <span class="data_label">{l s='Total available' mod='nimblepayment'}</a></span>
-                                    <span id="">{$total_str}</span>
-                            </li>
-                    </ul>
+                    <ul class="data_list_vertical">
+			<li>
+				<span class="data_label size_md nimble-text">{l s='Balance account' mod='nimblepayment'}</span>
+				<span id="nimble-balance">{$balance_str|escape:'htmlall':'UTF-8'}</span>
+			</li>
+			<li>
+				<span class="data_label size_md nimble-text">{l s='Total available' mod='nimblepayment'}</span>
+			        <span id="nimble-total-available">{$total_str|escape:'htmlall':'UTF-8'}</span>
+			</li>
+		    </ul>        
                 {/if}
-		{*if isset($data['error'])}
-                    <p class="error">{$data['error']|escape:'htmlall':'UTF-8'}</p>
-		{/if*}
 	</section>
 </section>

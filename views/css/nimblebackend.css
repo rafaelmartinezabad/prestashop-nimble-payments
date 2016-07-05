@@ -38,3 +38,27 @@
 .icon-AdminNimbleConfig:before {
     content: "\e900";
 }
+#nimble-balance, #nimble-total-available{
+    display: block;
+    text-align: center;
+    font-size: 1.7em;
+}
+
+.nimble-text{
+    color: #65be00;
+}
+
+#dashnimbleactivity ul.data_list_vertical{
+    border: none !important;
+}
+
+.btn-autorize{
+    margin-top: 15px;
+    text-align: center;
+}
+
+.btn-nimble{
+    background-color: #65be00;
+    color: #fff !important;
+    text-transform: uppercase;
+}

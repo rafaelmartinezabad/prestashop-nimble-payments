@@ -114,7 +114,7 @@ class NimblePayment extends PaymentModule
         // Remove system variables
         Configuration::deleteByName('PS_ADMIN_NIMBLE_TABS');
         
-        if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET')
+        if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || !Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN')
          || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !parent::uninstall()
         ) {
             return false;
@@ -164,12 +164,12 @@ class NimblePayment extends PaymentModule
                         //error
                     } else{
                         $totalavailable = $summary['data']['available'] / 100;
-                        $total_str = number_format($totalavailable, 2, ',', '.');
+                        $total_str = Tools::displayPrice($totalavailable, $this->context->currency);                        
                         $balance = $summary['data']['accountBalance'] / 100;
-                        $balance_str = number_format($balance, 2, ',', '.');
+                        $balance_str = Tools::displayPrice($balance, $this->context->currency);
                         $holdback = $summary['data']['hold'] / 100;
-                        $holdback_str = number_format($holdback, 2, ',', '.');
-                        
+                        $holdback_str = Tools::displayPrice($holdback, $this->context->currency);
+                      
                         $this->context->smarty->assign(
                             array(
                                 'data' => "",

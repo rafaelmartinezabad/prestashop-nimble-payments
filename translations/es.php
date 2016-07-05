@@ -64,7 +64,7 @@ $_MODULE['<{nimblepayment}prestashop>payment_return_9dea4016dbcc290b773ab2fae678
 $_MODULE['<{nimblepayment}prestashop>payment_return_21ff087f1520a70163128cae982de67a'] = 'Pago con tarjeta';
 $_MODULE['<{nimblepayment}prestashop>authorize_f67553ab5da349bdd531c8ab60dbacf2'] = 'Todavía no has autorizado a Prestashop en Nimble Payments.';
 $_MODULE['<{nimblepayment}prestashop>authorize_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
-$_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_bcb23583cfd28ac81b5e8125c02e4a30'] = 'Resumen Nimble Payments';
+$_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_c0d3ef76579d995d96b7ed5908a25c5a'] = 'Cuenta Nimble Payments';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_b0594408790cd741df6e305952e4c114'] = 'Desde Prestashop podrás gestionar todas tus ventas, ver los movimientos de tu cuenta, hacer devoluciones, etc.';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_15494258dcb144a2c887c56739bc748f'] = 'Para acceder a todas las funcionalidades de Nimble Payments desde Prestashop, es necesario que te identifiques en Nimble Payments y des permiso a Prestashop para poder acceder a esta operativa';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
