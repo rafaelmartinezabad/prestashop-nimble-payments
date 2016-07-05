@@ -290,7 +290,7 @@ class NimblePayment extends PaymentModule
 
     private function postValidation()
     {
-        if (Tools::isSubmit('btnSubmit')) {
+        if (Tools::isSubmit('saveCredentials')) {
             if ($this->checkCredentials() == false) {
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
             }
@@ -299,7 +299,7 @@ class NimblePayment extends PaymentModule
 
     private function postProcess()
     {
-        if (Tools::isSubmit('btnSubmit')) {
+        if (Tools::isSubmit('saveCredentials')) {
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
             Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
         }
@@ -324,8 +324,12 @@ class NimblePayment extends PaymentModule
             'NIMBLE_REQUEST_URI_ADMIN',
             dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules')
         );
-
-        if (Tools::isSubmit('btnSubmit')) {
+        
+        if (Tools::isSubmit('removeOauth2')) {
+            $this->removeOauthToken();
+        }
+        
+        if (Tools::isSubmit('saveCredentials')) {
             $this->postValidation();
             if (!count($this->post_errors)) {
                 $output .= $this->postProcess();
@@ -343,6 +347,10 @@ class NimblePayment extends PaymentModule
         
         $output .= $this->displaynimblepayment();
         $output .= '<div id="nimble-form">' . $this->renderForm() . '</div>';
+        if ( $credentials && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
+            $output .= $this->unauthorize3legged();
+        }
+        
         return $output;
     }
 
@@ -528,7 +536,7 @@ class NimblePayment extends PaymentModule
 
         $helper->id = (int) Tools::getValue('id_carrier');
         $helper->identifier = $this->identifier;
-        $helper->submit_action = 'btnSubmit';
+        $helper->submit_action = 'saveCredentials';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
                 . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
@@ -631,6 +639,38 @@ class NimblePayment extends PaymentModule
         return $this->display(__FILE__, 'authorize.tpl'); 
     }
     
+    public function unauthorize3legged(){
+        $this->unauthorize_form[0]['form'] = array(
+            'legend' => array(
+                'title' => $this->l('Comercio vinculado con Nimble Payments'),
+                'icon' => 'icon-edit'
+            ),
+            'submit' => array(
+                'title' => $this->l('Desvincular'),
+            )
+        );
+
+        $helper = new HelperForm();
+        $helper->show_toolbar = false;
+        $helper->table = $this->table;
+        $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
+        $helper->default_form_language = $lang->id;
+        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
+
+        $helper->id = (int) Tools::getValue('id_carrier');
+        $helper->identifier = $this->identifier;
+        $helper->submit_action = 'removeOauth2';
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
+                . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->tpl_vars = array(
+            'languages' => $this->context->controller->getLanguages(),
+            'id_language' => $this->context->language->id
+        );
+
+        return $helper->generateForm($this->unauthorize_form);
+    }
+    
     /**
      * Perform oAuth after security server callback returns code confirmation through NimbleAPI SDK.
      * We are getting here automatically through oAuth redirect URL from security server (/module/nimblepayment/oauth2callback.php)
@@ -666,6 +706,13 @@ class NimblePayment extends PaymentModule
 
         // After process redirect to module settings page with oauth2callback parameter on URL
         Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN').'&oauth2callback='.$oauth);
+    }
+    
+    
+    public function removeOauthToken()
+    {
+        Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', null);
+        Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', null);
     }
 
 
