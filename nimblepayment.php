@@ -115,7 +115,7 @@ class NimblePayment extends PaymentModule
         Configuration::deleteByName('PS_ADMIN_NIMBLE_TABS');
         
         if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || !Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN')
-         || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !parent::uninstall()
+         || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !Configuration::deleteByName('NIMBLEPAYMENTS_REFUND_INFO')  || !parent::uninstall()
         ) {
             return false;
         }
@@ -242,9 +242,6 @@ class NimblePayment extends PaymentModule
         } else {
             $order_state = OrderHistory::getLastOrderState($params['id_order']);
         }
-        
-	//error_log( dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&id_order=' . $params['id_order'] . '&vieworder&token=' . Tools::getValue('token'));
-        //error_log(_PS_BASE_URL_.__PS_BASE_URI__ . ($_SERVER['REQUEST_URI']) . Context::getContext()->link->getAdminLink('AdminOrders'). '&id_order=' . $params['id_order'] . '&vieworder');
         
 	// Set tpl data
         $this->context->smarty->assign(
@@ -821,8 +818,14 @@ class NimblePayment extends PaymentModule
         // Execute refund
         $description = Tools::getValue('description');
         $amt = Tools::getValue('amount');
+        $reason = Tools::getValue('reason');
+        $amount =  Tools::getValue("amount");
+        $order_amount =  Tools::getValue("order_amount");
+        $refundType =  Tools::getValue("refundType");
+        
+
         $transaction = $this->_getIdTransaction($id_order);
-        $response = $this->_makeRefund($transaction, $id_order, (float)($amt), $description);
+        $response = $this->_makeRefund($transaction, $id_order, (float)($amt), $description, $reason);
 
         //OPEN OPT
         if (isset($response['result']) && isset($response['result']['code']) && 428 == $response['result']['code']
@@ -832,16 +835,21 @@ class NimblePayment extends PaymentModule
             $stateRefund = ( Tools::getValue("stateRefund") == 'refund' ) ? true : false;
             
             $otp_info = array(
-                'action'    =>  'refund',
-                'ticket'    =>  $ticket,
-                'token'     =>  $response['data']['token'],
-                'order_id'  =>  $id_order,
-                'description' => $description,
-                'amt'       => $amt,
-                'transaction' => $transaction,
-                'stateRefund' => $stateRefund,
-                'url_return' => $url_return
+                'action'       => 'refund',
+                'ticket'       => $ticket,
+                'token'        => $response['data']['token'],
+                'order_id'     => $id_order,
+                'description'  => $description,
+                'amt'          => $amt,
+                'transaction'  => $transaction,
+                'stateRefund'  => $stateRefund,
+                'url_return'   => $url_return,
+                'reason'       => $reason,
+                'order_amount' => $order_amount,
+                'amount'       => $amount,
+                'refundType'   => $refundType
             );
+            
             $refund_info = serialize($otp_info);
             Configuration::updateValue('NIMBLEPAYMENTS_REFUND_INFO', $refund_info);
             $back_url = _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/nimblepayment/oauth2callback.php';
@@ -891,7 +899,7 @@ class NimblePayment extends PaymentModule
      * @param  string  $description    description for refund
      * @return array                 refund API callback response
      */
-    private function _makeRefund($id_transaction, $id_order, $amt, $description = "")
+    private function _makeRefund($id_transaction, $id_order, $amt, $description = "", $reason)
     {
         if (!$id_transaction) {
             die(Tools::displayError('Fatal Error: id_transaction is null'));
@@ -900,7 +908,7 @@ class NimblePayment extends PaymentModule
         $refund_params = array(
                  'amount' => (float)$amt * 100,
                  'concept' => $description,
-                 'reason' => 'REQUEST_BY_CUSTOMER',
+                 'reason' => $reason,
                 );
 
         $params = array(
@@ -963,7 +971,7 @@ class NimblePayment extends PaymentModule
             $refund = array(
                 'amount' => $refund_info['amt'] * 100,
                 'concept' => $refund_info['description'],
-                'reason' => 'REQUEST_BY_CUSTOMER'
+                'reason' => $refund_info['reason']
             );
             
             $response = NimbleAPIPayments::sendPaymentRefund($nimble, $refund_info['transaction'], $refund);
@@ -973,8 +981,8 @@ class NimblePayment extends PaymentModule
         if (!isset($response['data']) || !isset($response['data']['refundId'])){
             //LANG: ERROR_REFUND_1
             Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=error#nimble-refund-panel');
-        } else {        
-            if( $refund_info['stateRefund'] == true ){
+        } else {     
+            if( $refund_info['refundType'] == 'refundTotal' ){
                 // Register refund on order history and save history
                 $history = new OrderHistory();
                 $history->id_order = (int)$refund_info['order_id'];

@@ -70,3 +70,4 @@ $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_15494258dcb144a2c887c567
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_5a5b999aa93eb5bd6fbc3cf485f8b044'] = 'Total en cuenta';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_7d058d4cdbc3a0f480bd472b62a0bf53'] = 'Total disponible';
+$_MODULE['<{nimblepayment}prestashop>refund_d798feab5b47ea8a51a7a2ea77d8e479'] = 'Devoluciones Nimble Payments';
