@@ -288,30 +288,35 @@ class NimblePayment extends PaymentModule
     private function postValidation()
     {
         if (Tools::isSubmit('saveCredentials')) {
+            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
+            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
             if ($this->checkCredentials() == false) {
                 $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
             }
         }
     }
 
-    private function postProcess()
-    {
-        if (Tools::isSubmit('saveCredentials')) {
-            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
-            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
-        }
-        return $this->displayConfirmation($this->l('Settings updated'));
-    }
-
     private function displaynimblepayment()
     {
         $url_nimble = $this->getGatewayUrl();
         $subtitle = $this->enabled ? $this->l('Your gateway Nimble Payments is ready to sell.') : $this->l('Configure your payment gateway. It is very easy!');
+        $token = Tools::getAdminTokenLite('AdminModules');
+        $post_url = $this->context->link->getAdminLink('AdminModules', false)
+                . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name 
+                . '&token=' . $token;
+        $error_message = (count($this->post_errors)) ? 1 : 0;
+        $authorized = ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ) ? 1 : 0;
         $this->smarty->assign(
             array(
                 'url_nimble' => $url_nimble,
                 'gateway_enabled' => $this->enabled,
                 'subtitle' => $subtitle,
+                'post_url' => $post_url,
+                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                'error_message' => $error_message,
+                'authorized' => $authorized,
+                'Oauth3Url' => $this->getOauth3Url(),
             )
         );
         return $this->display(__FILE__, 'gateway_config.tpl', '20160615');
@@ -331,24 +336,17 @@ class NimblePayment extends PaymentModule
         
         if (Tools::isSubmit('saveCredentials')) {
             $this->postValidation();
-            if (!count($this->post_errors)) {
-                $output .= $this->postProcess();
-            } else {
-                foreach ($this->post_errors as $err) {
-                    $output .= $this->displayError($err);
-                }
-            }
         }
         
         $this->enabled = Configuration::get('PS_NIMBLE_CREDENTIALS');
         $output .= $this->displaynimblepayment();
-        $output .= '<div id="nimble-form">' . $this->renderForm() . '</div>';
+        //$output .= '<div id="nimble-form">' . $this->renderForm() . '</div>';
         
         if ( $this->enabled && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
-            $output .= $this->authorize3legged();
+            //$output .= $this->authorize3legged();
         }
         if ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
-            $output .= $this->unauthorize3legged();
+            //$output .= $this->unauthorize3legged();
         }
         
         return $output;
