@@ -306,12 +306,15 @@ class NimblePayment extends PaymentModule
     private function displaynimblepayment()
     {
         $url_nimble = $this->getGatewayUrl();
+        $subtitle = $this->enabled ? $this->l('Your gateway Nimble Payments is ready to sell.') : $this->l('Configure your payment gateway. It is very easy!');
         $this->smarty->assign(
             array(
-                'url_nimble' => $url_nimble
+                'url_nimble' => $url_nimble,
+                'gateway_enabled' => $this->enabled,
+                'subtitle' => $subtitle,
             )
         );
-        return $this->display(__FILE__, 'infos.tpl', '20160615');
+        return $this->display(__FILE__, 'gateway_config.tpl', '20160615');
     }
 
     public function getContent()
@@ -337,14 +340,14 @@ class NimblePayment extends PaymentModule
             }
         }
         
-        $credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
-        if ( $credentials && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
-            $output .= $this->authorize3legged();
-        }
-        
+        $this->enabled = Configuration::get('PS_NIMBLE_CREDENTIALS');
         $output .= $this->displaynimblepayment();
         $output .= '<div id="nimble-form">' . $this->renderForm() . '</div>';
-        if ( $credentials && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
+        
+        if ( $this->enabled && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
+            $output .= $this->authorize3legged();
+        }
+        if ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
             $output .= $this->unauthorize3legged();
         }
         
@@ -372,7 +375,7 @@ class NimblePayment extends PaymentModule
         
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            return $this->display(__FILE__, 'payment.tpl', '20160623');
+            return $this->display(__FILE__, 'payment.tpl', '20160705');
         }
     }
 
@@ -731,11 +734,6 @@ class NimblePayment extends PaymentModule
         } catch (Exception $e) {
             Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
         }
-    }
-    
-    public function setDisplayName($name)
-    {
-        $this->displayName = $this->l($name);
     }
     
     public function refreshToken()

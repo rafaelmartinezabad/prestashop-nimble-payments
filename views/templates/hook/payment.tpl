@@ -29,7 +29,7 @@
         <p class="payment_module">
             <a id="nimblepayment_gateway"
             class="nimblepayment bankwire"
-            href="#" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
+            href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
             title="{l s='Pay by Nimble Payments' mod='nimblepayment'}">
                 {l s='Pay by Credit card' mod='nimblepayment'} 
                 
@@ -41,7 +41,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#nimblepayment_gateway").click(function(event) {
-            if ('#' === $(this).attr('href')){
+            if ( ! $(this).data('clicked') ){
                 event.preventDefault();
                 $.ajax({
                     type: 'POST',
@@ -59,6 +59,7 @@
                             $('#HOOK_PAYMENT .alert').remove();
                             $('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">' + response['error']['message'] + '</p>');
                         }
+                        $(this).data('clicked', true);
                     }
                 });
             }
