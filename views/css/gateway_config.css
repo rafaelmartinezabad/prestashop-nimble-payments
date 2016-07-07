@@ -1,179 +1,73 @@
-.nimbleHeader{
-  margin: 5px 10px 10px 10px !important;
+.nimbleHeader {
+    margin: 20px;
 }
 
-.nimbleHeader .text-box {
-  background: #EEEFEC;
-  border-radius: 4px;
-  font-family: arial;
+.nimbleHeader .title {
+    color: #63b220;
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    font-family: Helvetica, Arial, Sans-Serif;
 }
 
-.nimbleHeader .img-box{
-  margin-bottom: 10px;
+.nimbleHeader .subtitle {
+    font-size: 22px;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
 }
 
-.nimbleHeader .text-box .padding {
-  padding: 20px;
+.nimbleStepBox {
+    background-color: #ffffff;
+    margin: 20px;
+    padding: 0;
+}
+#content.bootstrap .nimbleStepBox h3 {
+    background-color: #6cc023;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 0 20px;
+    margin: 0;
+    font-family: Helvetica, Arial, Sans-Serif;
 }
 
-.nimbleHeader .text-box .title {
-  color: #29BC1F;
-  font-size: 22px;
-  margin: 0 0 10px 0;
-  text-transform: uppercase;
-  font-family: arial;
+#content.bootstrap .nimbleStepBox img.logo{
+    float: left;
+    height: 32px;
+    margin: 20px;
 }
 
-.nimbleHeader .text-box .text {
-  font-size: 12px;
-  margin-bottom: 10px;
-  padding: 0 10px;
-  color: black;
+#content.bootstrap .nimbleStepBox .contentStep {
+    padding: 20px;
 }
 
-.nimbleHeader .text-box .btn {
-  display: block;
-  margin-top: 5px;
-  text-align: center;
+#content.bootstrap .nimbleStepBox .contentStep .subtitle{
+    font-weight: bold;
 }
 
-.nimbleHeader .iblock, .nimbleHeader .btn {
-  display: inline-block;
-  vertical-align: middle;
+#content.bootstrap .nimbleStepBox .contentStep img.link{
+    margin-left: 14px;
+    height: 16px;
 }
 
-.nimbleHeader .btn {
-  padding: 0;
-  overflow: hidden;
+#content.bootstrap .nimbleStepBox .contentStep a.btn{
+    color: #63b220;
+    text-transform: uppercase;
+    text-decoration: underline;
+    font-weight: bold;
 }
 
-.nimbleHeader .text-box .btn {
-  display: inline-block;
-  margin-top: 25px;
-  text-align: center;
-  margin-bottom: 20px;
+#content.bootstrap .nimbleStepBox .contentStep .form-group label {
+    text-transform: uppercase;
 }
 
-.nimbleHeader .text-box .btn .link {
-  border-radius: 35px;
-  font-size: 16px;
+#content.bootstrap .nimbleStepBox .contentStep .form-footer {
+    text-align: right;
+}
+
+#content.bootstrap .nimbleStepBox .contentStep #module_form_submit_btn, #content.bootstrap .nimbleAuthorize #authorize_btn {
+  color: #fff;
+  font-size: 14px;
   font-weight: bold;
-  letter-spacing: -1px;
-  margin: 0 auto;
-  width: 200px;
-  padding: 12px;
-}
-
-.nimbleHeader .btn .link {
-  color: #fff;
-  display: block;
-  font-size: 1.2rem;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-  -webkit-transition: background-color .5s ease;
-  transition: background-color .5s ease;
-  background-color: #65be00;
-  border: 1px solid #65be00;
-  border-radius: 4px;
-  height: auto;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  width: auto;
-}
-
-#content.bootstrap  #nimble-form .panel {
-  border: 1px solid #EEEFEC;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  box-shadow: none;
-}
-
-#content.bootstrap  #nimble-form .panel-heading {
-  border-left: 8px solid #65be00;
-  border-bottom: none;
-  margin-bottom: 0;
-  display: block;
-  font-size: 18px;
-  line-height: 3px;
-  padding: 30px 0px 30px 20px;
-  text-transform: uppercase;
-  font-family: arial !important;
-  margin-bottom: 20px;
-  margin-left: -20px;
-}
-
-#content.bootstrap  #nimble-form .panel-heading i{
-  display: none;
-}
-
-#content.bootstrap  #nimble-form .form-group{
-  width: 100%;
-}
-
-#content.bootstrap  #nimble-form .form-horizontal .control-label{
-  text-align: left;
-  width: 100%;
-  text-transform: uppercase;
-  font-family: arial !important;
-  color: #383839;
-  margin-bottom: 8px;
-  font-weight: bolder;
-}
-
-#content.bootstrap  #nimble-form .form-horizontal input{
-  color: #818287;
-  display: block;
-  font-size: 12px;
-  line-height: 20px;
-  padding: 10px 10px;
-  background-color: #fdfdfd;
-  border: 1px solid #b5b5b5;
-  height: 50px;
-}
-
-#content.bootstrap  #nimble-form {
-
-}
-
-#content.bootstrap  #nimble-form select {
-
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  -webkit-appearance:none;
-  -moz-appearance: none;
-  width: 50% !important;
-  background: url(../img/deplegable.png) no-repeat 98% center, -webkit-gradient(linear, left top, left bottom, from(#f4f4f4), to(#e5e5e5));
-  background: url(../img/deplegable.png) no-repeat 98% center, -webkit-linear-gradient(#f4f4f4, #e5e5e5);
-  background: url(../img/deplegable.png) no-repeat 98% center,linear-gradient(#f4f4f4, #e5e5e5);
-  color: #515155;
-  cursor: pointer;
-  font-size: 12px;
-  line-height: 15px;
-  padding: 12px 12px;
-
-  border: 1px solid #b5b5b5;
-  border-radius: 4px;
-  display: block;
-  height: 50px;
-  overflow: hidden;
-  position: relative;
-}
-
-#content.bootstrap  #nimble-form .panel-footer{
-  border: none;
-  background-color: transparent;
-}
-
-#content.bootstrap  #nimble-form [class^="process-icon-"]{
-  display: none;
-}
-
-#content.bootstrap  #nimble-form #module_form_submit_btn {
-  color: #fff;
-  display: block;
-  font-size: 12px;
   padding: 16px 25px;
   line-height: 10px;
   text-align: center;
@@ -183,40 +77,39 @@
   transition: background-color .5s ease;
   background-color: #65be00;
   border: 1px solid #65be00;
-  border-radius: 4px;
+  border-radius: 25px;
   height: auto;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
+  -moz-border-radius: 25px;
+  -webkit-border-radius: 25px;
   width: auto;
   box-shadow: none;
 }
 
-
-.paiement_block .nimblepayment img{
-  float: right;
-  width: 330px;
-  height: 35px;
-
-}
-
-p#block_top_title{  
-  margin-top: 15px;
-  margin-bottom: -30px;
-}
-
-.button-registration{
+.nimbleAuthorize {
+    background-color: #ffffff;
+    margin: 20px;
+    padding-bottom: 20px;
     text-align: center;
 }
 
-@media screen and (max-width: 500px) {
-  .paiement_block .nimblepayment img{
-    width: 230px;
-    height: 25px;
-  }
+.nimbleAuthorize .title {
+    color: #63b220;
+    font-size: 20px;
+    padding: 20px;
+    text-transform: uppercase;
+    font-family: Helvetica, Arial, Sans-Serif;
 }
-@media screen and (max-width: 390px) {
-  .paiement_block .nimblepayment img{
-    width: 165px;
-    height: 18px;
-  }
+.nimbleAuthorize .separator {
+    margin: 0 auto;
+    width: 300px;
+    border-top: 1px solid #63b220;
+}
+
+.nimbleAuthorize .box {
+    font-size: 14px;
+    padding: 20px;
+}
+
+.nimbleAuthorize .box .logo {
+    margin-bottom: 20px;
 }
