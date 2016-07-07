@@ -340,14 +340,6 @@ class NimblePayment extends PaymentModule
         
         $this->enabled = Configuration::get('PS_NIMBLE_CREDENTIALS');
         $output .= $this->displaynimblepayment();
-        //$output .= '<div id="nimble-form">' . $this->renderForm() . '</div>';
-        
-        if ( $this->enabled && ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
-            //$output .= $this->authorize3legged();
-        }
-        if ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
-            //$output .= $this->unauthorize3legged();
-        }
         
         return $output;
     }
@@ -500,53 +492,7 @@ class NimblePayment extends PaymentModule
         }
         return false;
     }
-
-    public function renderForm()
-    {
-        $this->fields_form[0]['form'] = array(
-            'legend' => array(
-                'title' => $this->l('Client Details'),
-                'icon' => 'icon-edit'
-            ),
-            'input' => array(
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Client id'),
-                    'name' => 'NIMBLEPAYMENT_CLIENT_ID',
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Client secret'),
-                    'name' => 'NIMBLEPAYMENT_CLIENT_SECRET',
-                )
-            ),
-            'submit' => array(
-                'title' => $this->l('Save'),
-            )
-        );
-
-        $helper = new HelperForm();
-        $helper->show_toolbar = false;
-        $helper->table = $this->table;
-        $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
-        $helper->default_form_language = $lang->id;
-        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
-
-        $helper->id = (int) Tools::getValue('id_carrier');
-        $helper->identifier = $this->identifier;
-        $helper->submit_action = 'saveCredentials';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
-                . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
-        $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->tpl_vars = array(
-            'fields_value' => $this->getConfigFieldsValues(),
-            'languages' => $this->context->controller->getLanguages(),
-            'id_language' => $this->context->language->id
-        );
-
-        return $helper->generateForm($this->fields_form);
-    }
-
+    
     public function checkCurrencyNimble($cart)
     {
         $currency_order = new Currency($cart->id_currency);
@@ -577,8 +523,8 @@ class NimblePayment extends PaymentModule
 
         try {
             $params = array(
-                'clientId' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')),
-                'clientSecret' => trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET'))
+                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
             );
 
             $nimbleApi = new NimbleAPI($params);
@@ -632,43 +578,6 @@ class NimblePayment extends PaymentModule
          return $validator;
     }
     
-    public function authorize3legged(){
-        $this->smarty->assign('Oauth3Url' , $this->getOauth3Url());
-        return $this->display(__FILE__, 'authorize.tpl'); 
-    }
-    
-    public function unauthorize3legged(){
-        $this->unauthorize_form[0]['form'] = array(
-            'legend' => array(
-                'title' => $this->l('Comercio vinculado con Nimble Payments'),
-                'icon' => 'icon-edit'
-            ),
-            'submit' => array(
-                'title' => $this->l('Desvincular'),
-            )
-        );
-
-        $helper = new HelperForm();
-        $helper->show_toolbar = false;
-        $helper->table = $this->table;
-        $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
-        $helper->default_form_language = $lang->id;
-        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
-
-        $helper->id = (int) Tools::getValue('id_carrier');
-        $helper->identifier = $this->identifier;
-        $helper->submit_action = 'removeOauth2';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
-                . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
-        $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->tpl_vars = array(
-            'languages' => $this->context->controller->getLanguages(),
-            'id_language' => $this->context->language->id
-        );
-
-        return $helper->generateForm($this->unauthorize_form);
-    }
-    
     /**
      * Perform oAuth after security server callback returns code confirmation through NimbleAPI SDK.
      * We are getting here automatically through oAuth redirect URL from security server (/module/nimblepayment/oauth2callback.php)
@@ -714,26 +623,6 @@ class NimblePayment extends PaymentModule
     }
 
 
-    public function checkCredentialsUpdate()
-    {
-        Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
-
-        try {
-            $params = array(
-                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
-            );
-
-            $nimbleApi = new NimbleAPI($params);
-            $response = NimbleAPICredentials::check($nimbleApi);
-            if (isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code']) {
-                Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 1);
-            }
-        } catch (Exception $e) {
-            Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 0);
-        }
-    }
-    
     public function refreshToken()
     {
         try {
