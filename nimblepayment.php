@@ -252,7 +252,6 @@ class NimblePayment extends PaymentModule
                 'params' => $params,
                 'id_currency' => $currency->getSign(),
                 'list_refunds' => $refunds,
-                'still_refundable' => $refunded < (float)$order->total_paid,
                 'order_amount' => (float)$order->total_paid,
                 'order_currency' => $currency->sign,
                 'refunded' => $refunded,
