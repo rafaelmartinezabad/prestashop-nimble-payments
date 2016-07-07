@@ -5,7 +5,7 @@
   "homepage": "https://github.com/nimblepayments/prestashop-nimble-payments",
   "license": "OSL-3.0",
   "require": {
-        "nimblepayments/sdk-php": "2.0.1"
+        "nimblepayments/sdk-php": "2.0.2"
     },
     "repositories": [
         {
