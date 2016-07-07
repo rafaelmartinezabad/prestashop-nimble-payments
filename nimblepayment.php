@@ -299,7 +299,7 @@ class NimblePayment extends PaymentModule
     private function displaynimblepayment()
     {
         $url_nimble = $this->getGatewayUrl();
-        $subtitle = $this->enabled ? $this->l('Your gateway Nimble Payments is ready to sell.') : $this->l('Configure your payment gateway. It is very easy!');
+        $subtitle = $this->enabled ? $this->l('¡Tu pasarela Nimble Payments está lista para vender!') : $this->l('Cómo empezar a usar Nimble Payments en dos pasos.');
         $token = Tools::getAdminTokenLite('AdminModules');
         $post_url = $this->context->link->getAdminLink('AdminModules', false)
                 . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name 
