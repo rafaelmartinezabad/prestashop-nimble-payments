@@ -220,6 +220,7 @@ class NimblePayment extends PaymentModule
             $transaction = $this->_getIdTransaction($params['id_order']);
             if( !empty($transaction) ){
                 $admin_templates[] = 'refund';
+                $admin_templates[] = 'payment_details';
                 // Set params
                 $refunds = $this->getListRefunds($transaction);
             }    
@@ -236,6 +237,7 @@ class NimblePayment extends PaymentModule
         // Get order data
         $order = new Order((int)$params['id_order']);
         $currency = new Currency($order->id_currency);
+        $ssl = Configuration::get('PS_SSL_ENABLED');
 
         if (version_compare(_PS_VERSION_, '1.5', '>=')) {
             $order_state = $order->current_state;
@@ -260,10 +262,13 @@ class NimblePayment extends PaymentModule
                 'ps_version' => _PS_VERSION_,
                 'new_refund_message_class' => $new_refund_message_class,
                 'new_refund_message' => $new_refund_message,
-                'Oauth3Url' => $this->getOauth3Url()
+                'Oauth3Url' => $this->getOauth3Url(),
+                'ssl'        => $ssl,
+                'parameters' => array()
+                
             )
         );
-
+        
         foreach ($admin_templates as $admin_template) {
             $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl', '20160630');
         }
@@ -989,14 +994,14 @@ class NimblePayment extends PaymentModule
         }   
         
        Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=OK#nimble-refund-panel');
-}
+    }
     
    /**
      * Retrieves id transaction from id_order
      * @param  int $id_order id order
      * @return int           id transaction
      */
-    private function _getIdTransaction($id_order)
+    public function _getIdTransaction($id_order)
     {
             return Db::getInstance()->getValue('
                 SELECT `transaction_id`
