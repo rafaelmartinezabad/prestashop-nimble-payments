@@ -64,7 +64,7 @@
     text-align: right;
 }
 
-#content.bootstrap .nimbleStepBox .contentStep #module_form_submit_btn, #content.bootstrap .nimbleAuthorize #authorize_btn {
+#content.bootstrap .nimbleStepBox .contentStep #module_form_submit_btn, #content.bootstrap .nimbleAuthorize #authorize_btn, #content.bootstrap .nimbleAuthorize #unauthorize_btn {
   color: #fff;
   font-size: 14px;
   font-weight: bold;
@@ -99,6 +99,7 @@
     text-transform: uppercase;
     font-family: Helvetica, Arial, Sans-Serif;
 }
+
 .nimbleAuthorize .separator {
     margin: 0 auto;
     width: 300px;

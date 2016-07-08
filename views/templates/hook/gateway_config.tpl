@@ -26,33 +26,33 @@
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/gateway_config.css" rel="stylesheet" type="text/css" media="all">
 
 <div class="nimbleHeader">
-    <h1 class="title"><strong>Nimble Payments:</strong> {l s='Wellcome to change' mod='nimblepayment'}</h1>
+    <h1 class="title"><strong>Nimble Payments:</strong> {l s='BIENVENIDO AL CAMBIO' mod='nimblepayment'}</h1>
     <h2 class="subtitle">{$subtitle|escape:'htmlall':'UTF-8'}</h2>
 </div >
 {if !$gateway_enabled}
     <div class="nimbleStepBox step1">
-        <h3>{l s='Paso 1: Alta en Nimble Payments' mod='nimblepayment'}</h3>
+        <h3>{l s='Paso 1 - date de alta en Nimble Payments' mod='nimblepayment'}</h3>
         <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/oval.png"/>
         <div class="contentStep">
-            <p class="subtitle">{l s='Registraté y date de alta, es necesario para poder crear pasarelas de pago.' mod='nimblepayment'}</p>
+            <p class="subtitle">{l s='Si no estas registrado aun en Nimble Payments, puedes registrarte de forma completamente gratuita y online.' mod='nimblepayment'}</p>
             <p>{l s='Solo necesitas un email y una contraseña para empezar a probar.' mod='nimblepayment'}
                 <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/edit.png"/>
-                <a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Try now!' mod='nimblepayment'}</a>
+                <a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Regístrate aquí' mod='nimblepayment'}</a>
             </p>
         </div>
     </div>
     <div class="nimbleStepBox step2">
-        <h3>{l s='Paso 2: Configura tu modulo' mod='nimblepayment'}</h3>
+        <h3>{l s='Paso 2 - configura tu módulo' mod='nimblepayment'}</h3>
         <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/oval.png"/>
         <div class="contentStep">
-            <p class="subtitle">{l s='Necesitamos las credenciales de tu pasarela de pago en Nimble Payments.' mod='nimblepayment'}</p>
-            <p>{l s='¿No los tienes a mano?' mod='nimblepayment'}
+            <p class="subtitle">{l s='Para poder aceptar pagos solo tienes que darnos los identificadores que obtienes en Nimble Payments.' mod='nimblepayment'}</p>
+            <p>{l s='Si no los tienes a mano consultalos aqui.' mod='nimblepayment'}
                 <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/edit.png"/>
-                <a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Consultalos aquí' mod='nimblepayment'}</a>
+                <a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Consúltalos aquí' mod='nimblepayment'}</a>
             </p>
             {if $error_message}
             <div class="module_error alert alert-danger">
-                    <button data-dismiss="alert" class="close" type="button">×</button>{l s='Data invalid gateway to accept payments.' mod='nimblepayment'}
+                    <button data-dismiss="alert" class="close" type="button">×</button>{l s='Datos de pasarela no validos para aceptar pagos.' mod='nimblepayment'}
             </div>
             {/if}
             <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
@@ -77,7 +77,7 @@
     </div>
 {else}
     <div class="nimbleStepBox">
-        <h3>{l s='Estos son tus datos' mod='nimblepayment'}</h3>
+        <h3>{l s='DATOS DE MI PASARELA NIMBLE PAYMENTS' mod='nimblepayment'}</h3>
         <div class="contentStep">
             <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
                 <input type="hidden" value="1" name="saveCredentials">
@@ -99,25 +99,25 @@
             </form>
         </div>
     </div>
-    {if !$authorized}   
+    {if !$authorized}
         <div class="nimbleAuthorize">
             <div class="title">
-                <p>{l s='Hazlo todo sin salir de prestashop:' mod='nimblepayment'}<br/>
-                {l s='Gestionar ventas, ver movimientos de tu cuenta, hacer devoluciones, ...' mod='nimblepayment'}</p>
+                <p>{l s='Desde prestashop podrás gestionar todas tus ventas,' mod='nimblepayment'}<br/>
+                {l s='ver los movimientos de tu cuenta , hacer devoluciones, etc.' mod='nimblepayment'}</p>
             </div>
             <div class="separator"></div>
             <div class="box">
-                <p>{l s='Para ello necesitaremos que te identifiques y nos des permiso para acceder a tus datos' mod='nimblepayment'}</p>
+                <p>{l s='Para acceder a toda la potencia de Nimble Payments desde prestashop, es necesario que te identifiques y des permiso a Prestashop a acceder a estos datos.' mod='nimblepayment'}</p>
             </div>
             <div class="box">
-                <a id="authorize_btn" href="{$Oauth3Url}" class="link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
+                <a id="authorize_btn" href="{$Oauth3Url}" class="link">{l s='AUTORIZAR A PRESTASHOP' mod='nimblepayment'}</a>
             </div>
         </div>
     {else}
         <div class="nimbleAuthorize">
             <div class="box">
-                <img class="logo" alt="logo-authorized" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/oval.png"/>
-                <p>{l s='Tienda autorizada para operar en Nimble Payments' mod='nimblepayment'}</p>
+                <img class="logo" alt="logo-authorized" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icon-linked.png"/>
+                <p>{l s='Tienda vinculada al usuario de nimblepayments.com' mod='nimblepayment'}</p>
             </div>
             <div class="box">
                 <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">

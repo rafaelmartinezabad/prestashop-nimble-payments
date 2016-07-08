@@ -30,7 +30,7 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_3_0_0($object)
 {
-    $object->checkCredentialsUpdate();
+    $object->checkCredentials();
     return ($object->registerHook('adminOrder')
          && $object->registerHook('actionAdminLoginControllerSetMedia')   
          && $object->registerHook('DisplayTop'));
