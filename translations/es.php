@@ -29,6 +29,12 @@ $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_9665cb37065d3ccb50b57e5b
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_5a5b999aa93eb5bd6fbc3cf485f8b044'] = 'Total en cuenta';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_7d058d4cdbc3a0f480bd472b62a0bf53'] = 'Total disponible';
 $_MODULE['<{nimblepayment}prestashop>display_top_bc8216d81ce81357e2a279af6a3de85e'] = 'No se ha podido procesar el pago. Se ha producido un error. Código ERR_PAG. Por favor, inténtalo mas tarde.';
+$_MODULE['<{nimblepayment}prestashop>order_detail_a5e1fa75db260c8549cc2763d7372312'] = 'Detalle de movimientos';
+$_MODULE['<{nimblepayment}prestashop>order_detail_d3968fe61a2b33f02e9cd8606b029a57'] = 'Importes';
+$_MODULE['<{nimblepayment}prestashop>order_detail_006300efaf063e1705dd614ea0ae9e8b'] = 'Descuentos';
+$_MODULE['<{nimblepayment}prestashop>order_detail_f2cd171bd42220283b7a595c3ff2aaaf'] = 'Venta';
+$_MODULE['<{nimblepayment}prestashop>order_detail_76f0ed934de85cc7131910b32ede7714'] = 'Devolución';
+$_MODULE['<{nimblepayment}prestashop>order_detail_b2c53e2828c8c6f5ce6f219a0073c529'] = 'Saldo final';
 $_MODULE['<{nimblepayment}prestashop>payment_return_88526efe38fd18179a127024aba8c1d7'] = 'Su pedido en %s ha sido completado';
 $_MODULE['<{nimblepayment}prestashop>payment_return_914419aa32f04011357d3b604a86d7eb'] = 'Transportista';
 $_MODULE['<{nimblepayment}prestashop>payment_return_f0aaaae189e9c7711931a65ffcd22543'] = 'Método de pago';
