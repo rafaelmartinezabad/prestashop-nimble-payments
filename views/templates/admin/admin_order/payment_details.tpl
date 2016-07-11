@@ -39,7 +39,8 @@
                     async: false,
                     success: function(response) {
                         //$('tr.payment_information').addClass('hidden');
-                        $("tr.payment_information").html(response);
+                        $("tr.payment_information").html("");
+                        $("tr.payment_information").append(response);
                     }
                 });
             }

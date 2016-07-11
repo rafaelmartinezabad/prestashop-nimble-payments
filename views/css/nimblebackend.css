@@ -65,3 +65,41 @@
     color: #fff !important;
     text-transform: uppercase;
 }
+#nimble-payment-details-td, #nimble-payment-details-td:hover {
+    background-color: #fff;
+}
+#nimble-payment-details {
+    text-align: left;
+    padding: 25px;
+    border: solid 1px #dddddd;
+    border-radius: 15px;
+    margin: 0;
+}
+#nimble-payment-details table {
+    width: 420px;
+    margin: 0 0 0 auto;
+}
+#nimble-payment-details table th, #nimble-payment-details table td {
+    text-align: right;
+    padding: 5px 0 10px 0;
+    border: none;
+}
+#nimble-payment-details table td.nimble-empty {
+    width: 10px;
+}
+#nimble-payment-details table td.nimble-date{
+    width: 100px;
+    text-align: left;
+}
+#nimble-payment-details table td.nimble-detail{
+    width: 120px;
+    text-align: left;
+    font-weight: bold;
+}
+#nimble-payment-details table td.partial {
+    border-top: solid 1px #ccc;
+}
+#nimble-payment-details table td.total {
+    background: #ccc;
+    font-weight: bold;
+}
