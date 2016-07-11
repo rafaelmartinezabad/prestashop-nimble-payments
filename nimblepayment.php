@@ -158,8 +158,7 @@ class NimblePayment extends PaymentModule
                     $params = array(
                         'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
                         'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
-                        'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN'),
-                        'admin_url' => $admin_url,
+                        'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
                     );
                     $nimble = new NimbleAPI($params);
                     $summary = NimbleAPIAccount::balanceSummary($nimble);
@@ -180,7 +179,7 @@ class NimblePayment extends PaymentModule
                                 'total_str' => $total_str,
                                 'balance_str' => $balance_str,
                                 'holdback_str' => $holdback_str,
-                                
+                                'admin_url' => $admin_url,
                             )
                         );
                         return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
