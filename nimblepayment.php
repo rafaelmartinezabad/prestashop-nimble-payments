@@ -216,13 +216,13 @@ class NimblePayment extends PaymentModule
 
         // Build tpl addons
         $admin_templates = array();
+        $admin_templates[] = 'payment_details';
         // Refund tpl
         $order = new Order((int)$params['id_order']);
         if ($this->_canRefund((int)$params['id_order'])) {
             $transaction = $this->_getIdTransaction($params['id_order']);
             if( !empty($transaction) ){
                 $admin_templates[] = 'refund';
-                $admin_templates[] = 'payment_details';
                 // Set params
                 $refunds = $this->getListRefunds($transaction);
             }    
