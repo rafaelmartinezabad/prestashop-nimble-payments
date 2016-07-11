@@ -32,22 +32,22 @@
 {if !$gateway_enabled}
     <div class="nimbleStepBox step1">
         <h3>{l s='Paso 1 - date de alta en Nimble Payments' mod='nimblepayment'}</h3>
-        <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/oval.png"/>
+        <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_redondo.png"/>
         <div class="contentStep">
             <p class="subtitle">{l s='Si no estas registrado aun en Nimble Payments, puedes registrarte de forma completamente gratuita y online.' mod='nimblepayment'}</p>
             <p>{l s='Solo necesitas un email y una contraseña para empezar a probar.' mod='nimblepayment'}
-                <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/edit.png"/>
+                <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png"/>
                 <a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Regístrate aquí' mod='nimblepayment'}</a>
             </p>
         </div>
     </div>
     <div class="nimbleStepBox step2">
         <h3>{l s='Paso 2 - configura tu módulo' mod='nimblepayment'}</h3>
-        <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/oval.png"/>
+        <img class="logo" alt="logo-config" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_configura.png"/>
         <div class="contentStep">
             <p class="subtitle">{l s='Para poder aceptar pagos solo tienes que darnos los identificadores que obtienes en Nimble Payments.' mod='nimblepayment'}</p>
             <p>{l s='Si no los tienes a mano consultalos aqui.' mod='nimblepayment'}
-                <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/edit.png"/>
+                <img class="link" alt="logo-gateway-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_consultalos.png"/>
                 <a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Consúltalos aquí' mod='nimblepayment'}</a>
             </p>
             {if $error_message}

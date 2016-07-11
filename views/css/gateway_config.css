@@ -32,7 +32,7 @@
 
 #content.bootstrap .nimbleStepBox img.logo{
     float: left;
-    height: 32px;
+    height: 36px;
     margin: 20px;
 }
 
@@ -46,7 +46,7 @@
 
 #content.bootstrap .nimbleStepBox .contentStep img.link{
     margin-left: 14px;
-    height: 16px;
+    height: 20px;
 }
 
 #content.bootstrap .nimbleStepBox .contentStep a.btn{

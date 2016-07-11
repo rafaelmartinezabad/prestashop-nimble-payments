@@ -23,15 +23,13 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}  
  
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
-
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel">
-                    <div class="text">{l s='You have not yet Prestashop authorized to perform operations on Nimble Payments.' mod='nimblepayment'}
-                        <p class="btn">
-                            <a href="{$Oauth3Url}" class="btn btn-primary link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
-                        </p>
+                    <div class="text-authorize">{l s='You have not yet Prestashop authorized to perform operations on Nimble Payments.' mod='nimblepayment'}
+                        <div class="btn-autorize">
+                            <a href="{$Oauth3Url}" class="btn btn-nimble link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
+                        </div>
                     </div>
                 </div>
 	</div>

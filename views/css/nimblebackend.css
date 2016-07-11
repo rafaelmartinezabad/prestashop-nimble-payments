@@ -52,7 +52,10 @@
     border: none !important;
 }
 
-.btn-autorize{
+.text-authorize {
+    text-align: center;
+}
+.btn-autorize {
     margin-top: 15px;
     text-align: center;
 }
