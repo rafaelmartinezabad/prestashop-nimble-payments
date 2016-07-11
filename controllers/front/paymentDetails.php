@@ -37,10 +37,10 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
     public function initContent()
     {
         parent::initContent();
+        $template = "";
         
         if (Tools::getIsset('order_id')){
             $order_id = Tools::getValue('order_id');
-            echo "<p>Ha pedido la Orden {$order_id}</p>";
             
             $nimblePayment = new NimblePayment();
             $transaction_id = $nimblePayment->_getIdTransaction($order_id);
@@ -58,13 +58,33 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
                //to do
             }
         }
-        $html = "";
+
         if (isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code']) {
-             //$this->smarty->assign('Oauth3Url' , "");   
-            //$html = $this->display(__FILE__, '../../views/templates/hook/display_top.tpl', '20160707');
+            $sale = $response['data']['amount']['value'];
+            $dateSale = $response['data']['date'];
+            $balance = $response['data']['balance']['value'];
+            $currency = $response['data']['balance']['currency'];
+            $refunds = $response['data']['refunds'];
+            $refunded = array();
+            
+            for($i=0; $i<count($refunds); $i++){
+                $refunded[$i]['amount']   = $refunds[$i]['refund']['amount'];
+                $refunded[$i]['currency'] = $refunds[$i]['refund']['currency'];
+                $refunded[$i]['date']     = $refunds[$i]['refundDate'];
+            }
+                        
+            $this->context->smarty->assign(array(
+                'sale'       => $sale,
+                'currency'   => $currency,
+                'balance'    => $balance,
+                'dateSale'   => $dateSale,
+                'refunded'   => $refunded
+            ));
+            
+            $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/hook/order_detail.tpl');
+            die($template);
         }
-        //$html = $this->display(__FILE__, 'views/templates/hook/display_top.tpl', '20160707');
-        $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/hook/display_top.tpl');
+        
         die($template);
     }
 }
