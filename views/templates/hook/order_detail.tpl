@@ -30,7 +30,7 @@
                <th scope="col">{l s='' mod='nimblepayment'}</th>
                <th scope="col">{l s='' mod='nimblepayment'}</th>
                <th scope="col">{l s='Amount' mod='nimblepayment'}</th>
-               <th scope="col" colspan="2">{l s='Refunds' mod='nimblepayment'}</th>
+               <th scope="col" colspan="2">{l s='Discounts' mod='nimblepayment'}</th>
              </tr>
              <tr>
                  <td class="nimble-date">{date("Y/m/d", strtotime($dateSale))|escape:'htmlall':'UTF-8'}</td>

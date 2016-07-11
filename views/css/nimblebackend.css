@@ -81,7 +81,7 @@
 }
 #nimble-payment-details table th, #nimble-payment-details table td {
     text-align: right;
-    padding: 5px 0 10px 0;
+    padding: 5px 10px 10px 0;
     border: none;
 }
 #nimble-payment-details table td.nimble-empty {
