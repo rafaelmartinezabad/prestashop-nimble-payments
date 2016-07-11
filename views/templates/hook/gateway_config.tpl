@@ -35,7 +35,7 @@
         <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_redondo.png"/>
         <div class="contentStep">
             <p class="subtitle">{l s='Si no estas registrado aun en Nimble Payments, puedes registrarte de forma completamente gratuita y online.' mod='nimblepayment'}</p>
-            <p>{l s='Solo necesitas un email y una contraseña para empezar a probar.' mod='nimblepayment'}
+            <p>{l s='Regístrate ahora y empieza a vender online.' mod='nimblepayment'}
                 <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png"/>
                 <a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Regístrate aquí' mod='nimblepayment'}</a>
             </p>
@@ -46,7 +46,7 @@
         <img class="logo" alt="logo-config" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_configura.png"/>
         <div class="contentStep">
             <p class="subtitle">{l s='Para poder aceptar pagos solo tienes que darnos los identificadores que obtienes en Nimble Payments.' mod='nimblepayment'}</p>
-            <p>{l s='Si no los tienes a mano consultalos aqui.' mod='nimblepayment'}
+            <p>{l s='Si no los tienes a mano consultalos aquí.' mod='nimblepayment'}
                 <img class="link" alt="logo-gateway-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_consultalos.png"/>
                 <a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Consúltalos aquí' mod='nimblepayment'}</a>
             </p>
@@ -58,7 +58,7 @@
             <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
                 <input type="hidden" value="1" name="saveCredentials">
                 <div class="form-group">
-                    <label>{l s='Client id' mod='nimblepayment'}</label>
+                    <label>{l s='API client id' mod='nimblepayment'}</label>
                     <div>
                         <input type="text" class="" value="{$clientId|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_ID" name="NIMBLEPAYMENT_CLIENT_ID">
                     </div>
@@ -82,7 +82,7 @@
             <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
                 <input type="hidden" value="1" name="saveCredentials">
                 <div class="form-group">
-                    <label>{l s='Client id' mod='nimblepayment'}</label>
+                    <label>{l s='API client id' mod='nimblepayment'}</label>
                     <div>
                         <input type="text" class="" value="{$clientId|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_ID" name="NIMBLEPAYMENT_CLIENT_ID">
                     </div>
@@ -110,14 +110,14 @@
                 <p>{l s='Para acceder a toda la potencia de Nimble Payments desde prestashop, es necesario que te identifiques y des permiso a Prestashop a acceder a estos datos.' mod='nimblepayment'}</p>
             </div>
             <div class="box">
-                <a id="authorize_btn" href="{$Oauth3Url}" class="link">{l s='AUTORIZAR A PRESTASHOP' mod='nimblepayment'}</a>
+                <a id="authorize_btn" href="{$Oauth3Url}" class="link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
             </div>
         </div>
     {else}
         <div class="nimbleAuthorize">
             <div class="box">
                 <img class="logo" alt="logo-authorized" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icon-linked.png"/>
-                <p>{l s='Tienda vinculada al usuario de nimblepayments.com' mod='nimblepayment'}</p>
+                <p>{l s='Tienda vinculada a Nimble Payments' mod='nimblepayment'}</p>
             </div>
             <div class="box">
                 <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">

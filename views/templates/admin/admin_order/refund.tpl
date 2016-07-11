@@ -68,9 +68,9 @@
                                     <label for="reason">
                                         <span class="label-text">{l s='Reason' mod='nimblepayment'}:</span>
                                         <select name="reason">
-                                            <option value="REQUEST_BY_CUSTOMER" selected>Request by customer</option>
-                                            <option value="DUPLICATE">Duplicate</option>
-                                            <option value="NO_INFORMED">No informated</option>
+                                            <option value="REQUEST_BY_CUSTOMER" selected>{l s='Request by customer' mod='nimblepayment'}</option>
+                                            <option value="DUPLICATE">{l s='Duplicate' mod='nimblepayment'}</option>
+                                            <option value="NO_INFORMED">{l s='No informated' mod='nimblepayment'}</option>
                                         </select>
                                     </label>
                                     <div class="amount hidden">

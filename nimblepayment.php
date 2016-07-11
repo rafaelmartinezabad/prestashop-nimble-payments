@@ -205,7 +205,7 @@ class NimblePayment extends PaymentModule
         $new_refund = Tools::getValue('np_refund', false) ? true : false;
         if ($new_refund){
             $new_refund_message_class = Tools::getValue('np_refund') == 'OK' ? 'success' : 'danger'; 
-            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('Refund OK') : $this->l('Refund KO'); 
+            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('La devolución se ha realizado correctamente.') : $this->l('No se ha podido realizar la devolución.'); 
         }
         $refunded = 0;
 
