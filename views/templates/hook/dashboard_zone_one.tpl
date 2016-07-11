@@ -31,11 +31,8 @@
         <div class="panel-heading">
 	       <i class="icon-AdminNimble"></i> {l s='Nimble Payments Account' mod='nimblepayment'}
 		<span class="panel-heading-action">
-			<a class="list-toolbar-btn" href="#" onclick="toggleDashConfig('dashactivity'); return false;" title="Configurar">
+			<a class="list-toolbar-btn" href="{$admin_url}" title="Configurar">
 				<i class="process-icon-configure"></i>
-			</a>
-			<a class="list-toolbar-btn" href="#" onclick="refreshDashboard('dashactivity'); return false;" title="Refrescar">
-				<i class="process-icon-refresh"></i>
 			</a>
 		</span>
 	</div>
