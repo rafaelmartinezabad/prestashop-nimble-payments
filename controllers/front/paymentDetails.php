@@ -37,8 +37,13 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
     public function initContent()
     {
         parent::initContent();
-        $template = "";
-        
+        $nimblePayment = new NimblePayment();
+        $Oauth3Url = $nimblePayment->getOauth3Url();
+        $this->context->smarty->assign(array(
+            'Oauth3Url'       => $Oauth3Url,
+        ));
+        $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/admin/admin_order/authorize.tpl');
+   
         if (Tools::getIsset('order_id')){
             $order_id = Tools::getValue('order_id');
             
@@ -66,23 +71,47 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
             $currency = $response['data']['balance']['currency'];
             $refunds = $response['data']['refunds'];
             $refunded = array();
+            $fee = 0;
+            $feecurrency = ' - ';
+            $feeRefund = 0;
+            $feeRefundcurrency = ' - ';
+            $feetotal = 0;
+            $feetotalRefund = 0;
+            $total = 0;
             
+            if( 'SETTLED' == $response['data']['state'] && isset($response['data']['fee']) && isset($response['data']['fee']['amount']) ){
+                    $fee = $response['data']['fee']['amount'];
+                    $feecurrency = $response['data']['fee']['currency'];    
+            }   
+
             for($i=0; $i<count($refunds); $i++){
                 $refunded[$i]['amount']   = $refunds[$i]['refund']['amount'];
                 $refunded[$i]['currency'] = $refunds[$i]['refund']['currency'];
                 $refunded[$i]['date']     = $refunds[$i]['refundDate'];
+                if( 'SETTLED' == $response['data']['state'] && isset($refunds[$i]['refundFee']) && isset($refunds[$i]['refundFee']['amount']) ){
+                    $feeRefund = $refunds[$i]['refundFee']['amount'];
+                    $feeRefundcurrency = $refunds[$i]['refundFee']['currency'];
+                    $feetotalRefund += $refunds[$i]['refundFee']['amount'];
+                }
             }
-                        
-            $this->context->smarty->assign(array(
-                'sale'       => $sale,
-                'currency'   => $currency,
-                'balance'    => $balance,
-                'dateSale'   => $dateSale,
-                'refunded'   => $refunded
-            ));
+            $feetotal = $fee - $feetotalRefund;
+            $total = $balance - $feetotal;
             
+            $this->context->smarty->assign(array(
+                'sale'         => $sale,
+                'currency'     => $currency,
+                'balance'      => $balance,
+                'dateSale'     => $dateSale,
+                'refunded'     => $refunded,
+                'fee'         => $fee,
+                'feecurrency' => $feecurrency,
+                'feeRefund'   => $feeRefund,
+                'feeRefundcurrency'   => $feeRefundcurrency,
+                'feetotal'       => $feetotal,
+                'total'       => $total
+            ));
+
             $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/hook/order_detail.tpl');
-            die($template);
         }
         
         die($template);

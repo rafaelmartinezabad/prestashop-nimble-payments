@@ -33,6 +33,7 @@
                    <th class="refund-nimble-title" scope="col">{l s='' mod='nimblepayment'}</th>
                    <th class="refund-nimble-title" scope="col">{l s='' mod='nimblepayment'}</th>
                    <th class="refund-nimble-title" scope="col">{l s='Importes' mod='nimblepayment'}</th>
+                   <th class="refund-nimble-title" scope="col">{l s='Devoluciones' mod='nimblepayment'}</th>
                  </tr>
             </thead>
             <tbody>
@@ -40,23 +41,39 @@
                      <td>{date("Y-m-d", strtotime($dateSale))|escape:'htmlall':'UTF-8'}</td>
                      <td>Venta</td>
                      <td>{number_format($sale / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$currency|escape:'htmlall':'UTF-8'}</td>
+                     {if $fee != 0}
+                         <td>{number_format($fee / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$currency|escape:'htmlall':'UTF-8'}</td>
+                     {else}
+                          <td> - </td>
+                     {/if}    
                  </tr>
                 {foreach from=$refunded item=list}
                  <tr>
                     <td>{date("Y-m-d", strtotime($list['date']))|escape:'htmlall':'UTF-8'}</td>
                     <td>Devolucion</td>
-                    <td>{number_format($list['amount'] / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$list['currency']|escape:'htmlall':'UTF-8'}</td>
+                    <td>- {number_format($list['amount'] / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$list['currency']|escape:'htmlall':'UTF-8'}</td>
+                    {if $feeRefund != 0}
+                        <td>- {number_format($feeRefund / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$list['currency']|escape:'htmlall':'UTF-8'}</td>
+                    {else}
+                        <td> - </td>
+                     {/if} 
                  </tr>
                  {/foreach}
                  <tr class="balance-partial">
                      <td></td>
                      <td></td>
-                     <td>22.01euro</td>
+                     <td>{number_format($balance / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$currency|escape:'htmlall':'UTF-8'}</td>
+                     {if $feetotal != 0}
+                        <td>{number_format($feetotal / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$currency|escape:'htmlall':'UTF-8'}</td>
+                     {else}
+                        <td> - </td>
+                     {/if}   
                  </tr>
                  <tr class="balance-total">
                     <td></td>
-                    <td>Saldo Final</td>
-                    <td>{number_format($balance / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$currency|escape:'htmlall':'UTF-8'}</td>
+                    <td></td>
+                    <td>Saldo Final</td>                    
+                    <td>{number_format($total / 100, 2, ",", ".")|escape:'htmlall':'UTF-8'} {$currency|escape:'htmlall':'UTF-8'}</td>
                  </tr>
              </tbody>    
         </table>
