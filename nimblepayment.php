@@ -239,7 +239,7 @@ class NimblePayment extends PaymentModule
         // Get order data
         $order = new Order((int)$params['id_order']);
         $currency = new Currency($order->id_currency);
-        $ssl = Configuration::get('PS_SSL_ENABLED');
+        $ssl = ((!empty($_SERVER['HTTPS']) && Tools::strtolower($_SERVER['HTTPS']) != 'off')) ? 1 : 0;
 
         if (version_compare(_PS_VERSION_, '1.5', '>=')) {
             $order_state = $order->current_state;

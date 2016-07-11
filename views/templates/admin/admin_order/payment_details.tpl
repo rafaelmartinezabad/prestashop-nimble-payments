@@ -28,6 +28,8 @@
    $(document).ready(function () {
         $(".open_payment_information").click(function(event) {
             if ( ! $(this).data('clicked') ){
+                $("tr.payment_information").html("");
+                $(this).data('clicked', true);
                 event.preventDefault();
                 $.ajax({
                     type: 'POST',
@@ -35,12 +37,11 @@
                     data: {
                         'order_id': $('input[name="id_order"]').val(),
                     },
-                    //dataType: 'json',
-                    async: false,
                     success: function(response) {
-                        //$('tr.payment_information').addClass('hidden');
-                        $("tr.payment_information").html("");
                         $("tr.payment_information").append(response);
+                    },
+                    error: function() {
+                        console.log("Error on ajax")
                     }
                 });
             }
