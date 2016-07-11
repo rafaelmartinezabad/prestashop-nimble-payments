@@ -140,6 +140,7 @@ class NimblePayment extends PaymentModule
      */
     public function hookDashboardZoneOne($params)
     {
+        $admin_url = Configuration::get('NIMBLE_REQUEST_URI_ADMIN');
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
             if ( ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
@@ -147,7 +148,8 @@ class NimblePayment extends PaymentModule
                     array(
                         'data' => "",
                         'Oauth3Url' => $this->getOauth3Url(),
-                        'token' => false
+                        'token' => false,
+                        'admin_url' => $admin_url,
                     )
                 );
                 return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
@@ -156,7 +158,8 @@ class NimblePayment extends PaymentModule
                     $params = array(
                         'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
                         'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
-                        'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
+                        'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN'),
+                        'admin_url' => $admin_url,
                     );
                     $nimble = new NimbleAPI($params);
                     $summary = NimbleAPIAccount::balanceSummary($nimble);
