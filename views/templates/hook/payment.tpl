@@ -30,10 +30,10 @@
             <a id="nimblepayment_gateway"
             class="nimblepayment bankwire"
             href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
-            title="{l s='Pay by Nimble Payments' mod='nimblepayment'}">
+            title="{l s='Pay by Credit card' mod='nimblepayment'}">
                 {l s='Pay by Credit card' mod='nimblepayment'} 
                 
-                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Nimble Payments' mod='nimblepayment'}"/>
+                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
             </a>
         </p>
     </div>

@@ -39,9 +39,13 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         parent::initContent();
-        if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 1) {
-            Tools::redirect('index.php?controller=order-opc?error=payment');
+        $error_code = "";
+        if (Tools::getIsset('error_code')){
+            $error_code = "&error_code=" . Tools::getValue('error_code');
         }
-        Tools::redirect('index.php?controller=order?error=payment');
+        if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 1) {
+            Tools::redirect('index.php?controller=order-opc?error=payment' . $error_code);
+        }
+        Tools::redirect('index.php?controller=order?error=payment' . $error_code);
     }
 }
