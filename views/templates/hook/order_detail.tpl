@@ -33,7 +33,7 @@
                <th scope="col" colspan="2">{l s='Discounts' mod='nimblepayment'}</th>
              </tr>
              <tr>
-                 <td class="nimble-date">{date("Y/m/d", strtotime($dateSale))|escape:'htmlall':'UTF-8'}</td>
+                 <td class="nimble-date">{date("Y-m-d", strtotime($dateSale))|escape:'htmlall':'UTF-8'}</td>
                  <td class="nimble-detail">{l s='Sale' mod='nimblepayment'}</td>
                  <td>{displayPrice price=($sale / 100) currency=$currency}</td>
                  <td class="nimble-empty"></td>
@@ -45,7 +45,7 @@
              </tr>
             {foreach from=$refunded item=list}
              <tr>
-                <td class="nimble-date">{date("Y/m/d", strtotime($list['date']))|escape:'htmlall':'UTF-8'}</td>
+                <td class="nimble-date">{date("Y-m-d", strtotime($list['date']))|escape:'htmlall':'UTF-8'}</td>
                 <td class="nimble-detail">{l s='Refund' mod='nimblepayment'}</td>
                 <td>- {displayPrice price=($list['amount'] / 100) currency=$list['currency']}</td>
                 <td class="nimble-empty"></td>
