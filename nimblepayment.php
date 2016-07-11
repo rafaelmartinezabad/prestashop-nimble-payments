@@ -219,6 +219,10 @@ class NimblePayment extends PaymentModule
         $admin_templates[] = 'payment_details';
         // Refund tpl
         $order = new Order((int)$params['id_order']);
+        if ($order->module != 'nimblepayment') {
+            return $this->_html;
+        }
+        
         if ($this->_canRefund((int)$params['id_order'])) {
             $transaction = $this->_getIdTransaction($params['id_order']);
             if( !empty($transaction) ){
@@ -232,12 +236,12 @@ class NimblePayment extends PaymentModule
                     $refunded += ($refund['refund']['amount']) / 100 ;
                 }
             }
-        } else if ($order->module == 'nimblepayment'){
+        } else{
             $admin_templates[] = 'authorize';
         }
 
         // Get order data
-        $order = new Order((int)$params['id_order']);
+        //$order = new Order((int)$params['id_order']);
         $currency = new Currency($order->id_currency);
         $ssl = ((!empty($_SERVER['HTTPS']) && Tools::strtolower($_SERVER['HTTPS']) != 'off')) ? 1 : 0;
 
