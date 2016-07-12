@@ -29,8 +29,8 @@
             <tr>
                <th scope="col">{l s='' mod='nimblepayment'}</th>
                <th scope="col">{l s='' mod='nimblepayment'}</th>
-               <th scope="col">{l s='Amount' mod='nimblepayment'}</th>
-               <th scope="col" colspan="2">{l s='Discounts' mod='nimblepayment'}</th>
+               <th scope="col">{l s='Amounts' mod='nimblepayment'}</th>
+               <th scope="col" colspan="2">{l s='Fees' mod='nimblepayment'}</th>
              </tr>
              <tr>
                  <td class="nimble-date">{date("Y-m-d", strtotime($dateSale))|escape:'htmlall':'UTF-8'}</td>
@@ -70,7 +70,7 @@
              <tr>
                 <td></td>
                 <td></td>
-                <td class="total" colspan="2">{l s='Final Balance' mod='nimblepayment'}</td>
+                <td class="total" colspan="2">{l s='Final balance' mod='nimblepayment'}</td>
                 <td class="total">{displayPrice price=($total / 100) currency=$currency}</td>
              </tr>
         </table>

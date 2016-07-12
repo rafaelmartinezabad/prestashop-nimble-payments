@@ -30,7 +30,7 @@
             <p>{l s='Total price:' mod='nimblepayment'}
                 <strong class="dark"> {$price|escape:'htmlall':'UTF-8'} </strong>
             </p>
-            <p>{l s='Your order ID is :' mod='nimblepayment'} 
+            <p>{l s='Your order ID is:' mod='nimblepayment'} 
                     <strong class="dark">
                     {if $smarty.const._PS_VERSION_ >= 1.5}
                             {if isset($order->reference)}

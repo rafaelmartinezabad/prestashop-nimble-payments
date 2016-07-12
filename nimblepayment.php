@@ -205,7 +205,7 @@ class NimblePayment extends PaymentModule
         $new_refund = Tools::getValue('np_refund', false) ? true : false;
         if ($new_refund){
             $new_refund_message_class = Tools::getValue('np_refund') == 'OK' ? 'success' : 'danger'; 
-            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('Refund OK') : $this->l('Refund KO'); 
+            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('La devolución se ha realizado correctamente.') : $this->l('No se ha podido realizar la devolución.'); 
         }
         $refunded = 0;
 
@@ -219,6 +219,10 @@ class NimblePayment extends PaymentModule
         $admin_templates[] = 'payment_details';
         // Refund tpl
         $order = new Order((int)$params['id_order']);
+        if ($order->module != 'nimblepayment') {
+            return $this->_html;
+        }
+        
         if ($this->_canRefund((int)$params['id_order'])) {
             $transaction = $this->_getIdTransaction($params['id_order']);
             if( !empty($transaction) ){
@@ -232,14 +236,14 @@ class NimblePayment extends PaymentModule
                     $refunded += ($refund['refund']['amount']) / 100 ;
                 }
             }
-        } else if ($order->module == 'nimblepayment'){
+        } else{
             $admin_templates[] = 'authorize';
         }
 
         // Get order data
-        $order = new Order((int)$params['id_order']);
+        //$order = new Order((int)$params['id_order']);
         $currency = new Currency($order->id_currency);
-        $ssl = Configuration::get('PS_SSL_ENABLED');
+        $ssl = ((!empty($_SERVER['HTTPS']) && Tools::strtolower($_SERVER['HTTPS']) != 'off')) ? 1 : 0;
 
         if (version_compare(_PS_VERSION_, '1.5', '>=')) {
             $order_state = $order->current_state;

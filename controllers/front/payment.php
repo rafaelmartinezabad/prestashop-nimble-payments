@@ -102,16 +102,12 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             }
 
             if (!isset($response["data"]) || !isset($response["data"]["paymentUrl"])) {
-                $this->result['error'] = array(
-                    'message' => $this->module->l('Unable to process payment. An error has occurred. ERR_CONEX code. Please try later.', 'payment')
-                    );
+                $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl, 'error_code' => 'ERR_CONEX'));
             } else {
                 $this->result['redirect'] = $response['data']['paymentUrl'];
             }
         } catch (Exception $e) {
-            $this->result['error'] = array(
-                'message' => $this->module->l('Unable to process payment. An error has occurred. ERR_PAG code. Please try later.', 'payment')
-                );
+            $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl, 'error_code' => 'ERR_PAG'));
         }
     }
 

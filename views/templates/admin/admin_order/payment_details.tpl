@@ -26,8 +26,10 @@
 <input id="payment_detail_ajax_url" type="hidden" name="payment_detail_ajax_url" value="{$link->getModuleLink('nimblepayment', 'paymentDetails', $parameters, $ssl)|escape:'htmlall':'UTF-8'}"/>
 <script type="text/javascript">
    $(document).ready(function () {
-        $(".open_payment_information").click(function(event) {
+        $(".open_payment_information").first().click(function(event) {
             if ( ! $(this).data('clicked') ){
+                $("tr.payment_information").first().html("");
+                $(this).data('clicked', true);
                 event.preventDefault();
                 $.ajax({
                     type: 'POST',
@@ -35,12 +37,11 @@
                     data: {
                         'order_id': $('input[name="id_order"]').val(),
                     },
-                    //dataType: 'json',
-                    async: false,
                     success: function(response) {
-                        //$('tr.payment_information').addClass('hidden');
-                        $("tr.payment_information").html("");
-                        $("tr.payment_information").append(response);
+                        $("tr.payment_information").first().append(response);
+                    },
+                    error: function() {
+                        console.log("Error on ajax")
                     }
                 });
             }
