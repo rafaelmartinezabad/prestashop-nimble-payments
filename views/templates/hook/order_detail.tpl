@@ -22,7 +22,6 @@
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<td id="nimble-payment-details-td" colspan="6">
     <div id="nimble-payment-details">
         <h3 class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Detail of movements' mod='nimblepayment'}</h3>
         <table>
@@ -75,7 +74,6 @@
              </tr>
         </table>
     </div>
-</td>
 
                  
                       
