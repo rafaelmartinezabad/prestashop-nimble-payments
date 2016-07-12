@@ -130,7 +130,7 @@ class NimblePayment extends PaymentModule
     public function hookDisplayBackOfficeHeader()
     {
         //Add as scoped CSS in back office header
-        $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css', 'all');
+        $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css?version=20160712', 'all', null, false);
     }
     
     /**
