@@ -69,7 +69,9 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
             $dateSale = $response['data']['date'];
             $balance = $response['data']['balance']['value'];
             $currency = $response['data']['balance']['currency'];
-            $refunds = $response['data']['refunds'];
+            if( isset($response['data']['refunds']) ){
+                $refunds = $response['data']['refunds'];
+            }
             $refunded = array();
             $fee = 0;
             $feecurrency = ' - ';
