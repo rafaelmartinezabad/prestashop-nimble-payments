@@ -26,6 +26,7 @@
 
 
 include_once(PS_ADMIN_DIR.'/../classes/AdminTab.php');
+require_once _PS_MODULE_DIR_ . 'nimblepayment/nimblepayment.php';
 /**
  * Empty tab for accessing module settings page
  */
@@ -37,8 +38,10 @@ class AdminNimbleConfig extends AdminTab
      */
     public function __construct()
     {
-        try {
-            Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN'));
+        
+        try {  
+            $nimblepayment = new NimblePayment();
+            Tools::redirectAdmin($nimblepayment->getConfigUrl());
         } catch (Exception $e) {
             $this->_errors = array($e->getMessage());
         }

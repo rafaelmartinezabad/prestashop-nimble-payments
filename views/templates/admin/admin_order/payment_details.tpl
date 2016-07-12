@@ -22,8 +22,7 @@
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-
-<input id="payment_detail_ajax_url" type="hidden" name="payment_detail_ajax_url" value="{$link->getModuleLink('nimblepayment', 'paymentDetails', $parameters, $ssl)|escape:'htmlall':'UTF-8'}"/>
+<input id="payment_detail_ajax_token" type="hidden" name="payment_detail_ajax_token" value="{$token}"/>
 <script type="text/javascript">
    $(document).ready(function () {
         $(".open_payment_information").first().click(function(event) {
@@ -33,9 +32,13 @@
                 event.preventDefault();
                 $.ajax({
                     type: 'POST',
-                    url: $('#payment_detail_ajax_url').val(),
+                    url : 'ajax-tab.php',
                     data: {
-                        'order_id': $('input[name="id_order"]').val(),
+                        ajax : true,
+                        controller : 'NimblePaymentAdminPaymentDetails',
+                        action : 'paymentDetails',
+                        token : $('#payment_detail_ajax_token').val(),
+                        order_id : $('input[name="id_order"]').val(),
                     },
                     success: function(response) {
                         $("tr.payment_information").first().append(response);

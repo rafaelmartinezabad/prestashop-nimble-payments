@@ -68,6 +68,13 @@ class NimblePayment extends PaymentModule
             'AdminNimbleConfig' => array (
                 'label' => $this->l('Nimble Payments'),
                 'rootClass' => true,
+                'active' => 1,
+                ),
+            //AJAX controller
+            'NimblePaymentAdminPaymentDetails' => array (
+                'label' => $this->l('Nimble Payments Details'),
+                'rootClass' => false,
+                'active' => 0,
                 )
         );
         // Set tabs for uninstall
@@ -78,10 +85,10 @@ class NimblePayment extends PaymentModule
             // Check if exists
             if (!$id_tab = Tab::getIdFromClassName($className)) {
                 if ($data['rootClass']) {
-                    $this->installModuleTab($className, $data['label'], 0);
+                    $this->installModuleTab($className, $data['label'], 0, $data['active']);
                     $rootClass = $className;
                 } else {
-                    $this->installModuleTab($className, $data['label'], (int)Tab::getIdFromClassName($rootClass));
+                    $this->installModuleTab($className, $data['label'], (int)Tab::getIdFromClassName($rootClass), $data['active']);
                 }
             }
         }
@@ -140,14 +147,14 @@ class NimblePayment extends PaymentModule
      */
     public function hookDashboardZoneOne($params)
     {
-        $admin_url = Configuration::get('NIMBLE_REQUEST_URI_ADMIN');
+        $admin_url = $this->getConfigUrl();
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
             if ( ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
                 $this->context->smarty->assign(
                     array(
                         'data' => "",
-                        'Oauth3Url' => $this->getOauth3Url(),
+                        'Oauth3Url' => $this->getAurhotizeUrl(),
                         'token' => false,
                         'admin_url' => $admin_url,
                     )
@@ -267,9 +274,8 @@ class NimblePayment extends PaymentModule
                 'ps_version' => _PS_VERSION_,
                 'new_refund_message_class' => $new_refund_message_class,
                 'new_refund_message' => $new_refund_message,
-                'Oauth3Url' => $this->getOauth3Url(),
-                'ssl'        => $ssl,
-                'parameters' => array()
+                'Oauth3Url' => $this->getAurhotizeUrl(),
+                'token' => Tools::getAdminTokenLite('NimblePaymentAdminPaymentDetails')
                 
             )
         );
@@ -311,9 +317,8 @@ class NimblePayment extends PaymentModule
         $url_nimble = $this->getGatewayUrl();
         $subtitle = $this->enabled ? $this->l('¡Tu pasarela Nimble Payments está lista para vender!') : $this->l('Cómo empezar a usar Nimble Payments en dos pasos.');
         $token = Tools::getAdminTokenLite('AdminModules');
-        $post_url = $this->context->link->getAdminLink('AdminModules', false)
-                . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name 
-                . '&token=' . $token;
+        $post_url = $this->getConfigUrl();
+        
         $error_message = (count($this->post_errors)) ? 1 : 0;
         $authorized = ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ) ? 1 : 0;
         $this->smarty->assign(
@@ -326,7 +331,7 @@ class NimblePayment extends PaymentModule
                 'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
                 'error_message' => $error_message,
                 'authorized' => $authorized,
-                'Oauth3Url' => $this->getOauth3Url(),
+                'Oauth3Url' => $this->getAurhotizeUrl(),
             )
         );
         return $this->display(__FILE__, 'gateway_config.tpl', '20160615');
@@ -335,11 +340,12 @@ class NimblePayment extends PaymentModule
     public function getContent()
     {
         $output = null;
-        Configuration::updateValue(
-            'NIMBLE_REQUEST_URI_ADMIN',
-            dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules')
-        );
         
+        if (Tools::getIsset('authorize')){            
+            //Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']) . '/' . $this->getConfigUrl());
+            Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', $_SERVER['HTTP_REFERER']);
+            Tools::redirect($this->getOauth3Url());
+        }
         if (Tools::isSubmit('removeOauth2')) {
             $this->removeOauthToken();
         }
@@ -622,9 +628,15 @@ class NimblePayment extends PaymentModule
         }
 
         // After process redirect to module settings page with oauth2callback parameter on URL
-        Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN').'&oauth2callback='.$oauth);
+        $this->redirectNimbleUrlAdmin($oauth);
     }
     
+    
+    public function redirectNimbleUrlAdmin($oauth){
+        $nimbleUrlAdmin = Configuration::get('NIMBLE_REQUEST_URI_ADMIN');
+        Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN');
+        Tools::redirectAdmin($nimbleUrlAdmin.'&oauth2callback='.$oauth);
+    }
     
     public function removeOauthToken()
     {
@@ -919,7 +931,18 @@ class NimblePayment extends PaymentModule
         }
         return $this->display(__FILE__, $name);
     }    
-     
+    
+    public function getConfigUrl(){
+        $url = $this->context->link->getAdminLink('AdminModules') . '&configure='.$this->name.'&module_name='.$this->name;
+        return $url;
+    }
+    
+    public function getAurhotizeUrl(){
+        $url = $this->getConfigUrl().'&authorize=true';
+        return $url;
+    }
+
+
     /**
      * PS module tab installation callback implementation
      * @param  string $tabClass    tab class
@@ -927,7 +950,7 @@ class NimblePayment extends PaymentModule
      * @param  int $idTabParent id tab parent
      * @return bool              wether or not tab was propery installed
      */
-    private function installModuleTab($tabClass, $tabName, $idTabParent)
+    private function installModuleTab($tabClass, $tabName, $idTabParent, $active)
     {
         $o = false;
 
@@ -937,6 +960,7 @@ class NimblePayment extends PaymentModule
         $tab->id_parent = $idTabParent;
         $tab->module = $this->name;
         $tab->name = array();
+        $tab->active = $active;
         foreach (Language::getLanguages(true) as $lang) {
             $tab->name[$lang['id_lang']] = $this->l($tabName);
         }

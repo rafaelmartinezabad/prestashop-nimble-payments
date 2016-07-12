@@ -28,19 +28,14 @@ require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAP
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
 
-class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontController
+class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
 {
-    /**
-     * @see FrontController::initContent()
-     */
-    
-    public function initContent()
+    public function ajaxProcesspaymentDetails()
     {
-        parent::initContent();
         $nimblePayment = new NimblePayment();
-        $Oauth3Url = $nimblePayment->getOauth3Url();
+        $authorizeUrl = $nimblePayment->getAurhotizeUrl();
         $this->context->smarty->assign(array(
-            'Oauth3Url'       => $Oauth3Url,
+            'Oauth3Url'       => $authorizeUrl,
         ));
         $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/admin/admin_order/authorize.tpl');
    

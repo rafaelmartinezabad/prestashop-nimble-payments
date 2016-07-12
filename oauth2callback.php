@@ -43,6 +43,6 @@ if (Tools::getValue('code')){
         }
     }
 } else {
-    Tools::redirect();
+    $nimble->redirectNimbleUrlAdmin('error');
 }
 
