@@ -67,6 +67,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
             if( isset($response['data']['refunds']) ){
                 $refunds = $response['data']['refunds'];
             }
+            $maskedpan = $response['data']['maskedPAN'];
             $refunded = array();
             $fee = 0;
             $feecurrency = ' - ';
@@ -95,6 +96,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
             $total = $balance - $feetotal;
             
             $this->context->smarty->assign(array(
+                'card'         => $maskedpan,
                 'sale'         => $sale,
                 'currency'     => $currency,
                 'balance'      => $balance,
