@@ -362,6 +362,8 @@ class NimblePayment extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
+        $cards = $this->getListStoredCards();
+        
         $ssl = Configuration::get('PS_SSL_ENABLED');
         $this->smarty->assign(
             array(
@@ -920,6 +922,26 @@ class NimblePayment extends PaymentModule
         return $this->display(__FILE__, $name);
     }    
      
+    /*
+     * Get all stored customer cards
+     */
+    public function getListStoredCards($NimbleApi){
+        
+        $cards = array();
+        
+        $userId = $customerData->getId();
+        try{
+            $result = NimbleAPIStoredCards::getStoredCards($NimbleApi, $userId);
+            if(isset($result['data']) && isset($result['data']['storedCards'])){
+                $cards = $result['data']['storedCards'];
+            }
+        } catch (Exception $e){
+            // warning: getStoredCard failed.
+        }
+            
+        return $cards;
+    }
+    
     /**
      * PS module tab installation callback implementation
      * @param  string $tabClass    tab class
