@@ -27,7 +27,7 @@
    $(document).ready(function () {
         $(".open_payment_information").first().click(function(event) {
             if ( ! $(this).data('clicked') ){
-                $("tr.payment_information").first().html("");
+                $("tr.payment_information").first().html('<td id="nimble-payment-details-td" colspan="6"></td>');
                 $(this).data('clicked', true);
                 event.preventDefault();
                 $.ajax({
@@ -41,7 +41,7 @@
                         order_id : $('input[name="id_order"]').val(),
                     },
                     success: function(response) {
-                        $("tr.payment_information").first().append(response);
+                        $("#nimble-payment-details-td").html(response);
                     },
                     error: function() {
                         console.log("Error on ajax")

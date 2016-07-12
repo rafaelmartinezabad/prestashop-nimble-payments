@@ -25,8 +25,6 @@
  */
  *}
 
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimblebackend.css" rel="stylesheet" type="text/css" media="all">
-
 <section id="dashnimbleactivity" class="panel widget">
         <div class="panel-heading">
 	       <i class="icon-AdminNimble"></i> {l s='Nimble Payments Account' mod='nimblepayment'}
