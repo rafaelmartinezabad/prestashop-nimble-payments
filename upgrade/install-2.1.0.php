@@ -28,10 +28,12 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_3_0_0($object)
+function upgrade_module_2_1_0($object)
 {
     $object->checkCredentials();
     return ($object->registerHook('adminOrder')
          && $object->registerHook('actionAdminLoginControllerSetMedia')   
-         && $object->registerHook('DisplayTop'));
+         && $object->registerHook('DisplayTop')
+         && $object->registerHook('displayBackOfficeHeader')
+         && $object->registerHook('dashboardZoneOne'));
 }
