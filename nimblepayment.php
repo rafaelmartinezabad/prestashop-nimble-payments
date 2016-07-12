@@ -628,6 +628,7 @@ class NimblePayment extends PaymentModule
     
     public function removeOauthToken()
     {
+        $this->refreshToken();
         Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', null);
         Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', null);
     }
