@@ -10,11 +10,10 @@ $_MODULE['<{nimblepayment}prestashop>authorize_f67553ab5da349bdd531c8ab60dbacf2'
 $_MODULE['<{nimblepayment}prestashop>authorize_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
 $_MODULE['<{nimblepayment}prestashop>refund_d798feab5b47ea8a51a7a2ea77d8e479'] = 'Devoluciones Nimble Payments';
 $_MODULE['<{nimblepayment}prestashop>refund_32faffc6582be7d293acb99fa95ba799'] = 'Concepto';
-$_MODULE['<{nimblepayment}prestashop>refund_409669c6725973c5e0e573f72f80c401'] = 'Devolución para el pédido';
+$_MODULE['<{nimblepayment}prestashop>refund_409669c6725973c5e0e573f72f80c401'] = 'Devolución para el pédido ';
 $_MODULE['<{nimblepayment}prestashop>refund_fffcb4d1e12c96b2f571f77ad25878b8'] = 'Selecciona el motivo';
 $_MODULE['<{nimblepayment}prestashop>refund_c12821b3b627485ddb98594153540bd2'] = 'Solicitado por el cliente';
 $_MODULE['<{nimblepayment}prestashop>refund_ed75712b0eb1913c28a3872731ffd48d'] = 'Duplicado';
-$_MODULE['<{nimblepayment}prestashop>refund_38c83e1bc99da7300d8c30aeb87d2bad'] = 'No informado';
 $_MODULE['<{nimblepayment}prestashop>refund_dd8366c780bd2ce22a842d6384fec8b2'] = 'Importe';
 $_MODULE['<{nimblepayment}prestashop>refund_76f0ed934de85cc7131910b32ede7714'] = 'Devolver';
 $_MODULE['<{nimblepayment}prestashop>refund_bc7686a1400ef1b7977ee977680bfbe8'] = 'Devoluciones previas';
