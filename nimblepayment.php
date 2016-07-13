@@ -63,35 +63,8 @@ class NimblePayment extends PaymentModule
             return false;
         }
 
-        // Mapping Nimble Tabs
-        $tabs = array(
-            'AdminNimbleConfig' => array (
-                'label' => $this->l('Nimble Payments'),
-                'rootClass' => true,
-                'active' => 1,
-                ),
-            //AJAX controller
-            'NimblePaymentAdminPaymentDetails' => array (
-                'label' => $this->l('Nimble Payments Details'),
-                'rootClass' => false,
-                'active' => 0,
-                )
-        );
-        // Set tabs for uninstall
-        Configuration::updateValue('PS_ADMIN_NIMBLE_TABS', serialize($tabs));
-
-        // Build menu tabs
-        foreach ($tabs as $className => $data) {
-            // Check if exists
-            if (!$id_tab = Tab::getIdFromClassName($className)) {
-                if ($data['rootClass']) {
-                    $this->installModuleTab($className, $data['label'], 0, $data['active']);
-                    $rootClass = $className;
-                } else {
-                    $this->installModuleTab($className, $data['label'], (int)Tab::getIdFromClassName($rootClass), $data['active']);
-                }
-            }
-        }
+        //process news tab
+        $this->installTab();
         
         if (!parent::install() || ! $this->registerHook('adminOrder') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('displayTop')
             || !$this->registerHook('actionAdminLoginControllerSetMedia') || ! $this->registerHook('displayBackOfficeHeader') || ! $this->registerHook('dashboardZoneOne') ) {
@@ -300,6 +273,40 @@ class NimblePayment extends PaymentModule
             return $this->display(__FILE__, 'display_top.tpl', '20160617');
         }
     }
+    
+    public function installTab()
+    {
+         // Mapping Nimble Tabs
+        $tabs = array(
+            'AdminNimbleConfig' => array (
+                'label' => $this->l('Nimble Payments'),
+                'rootClass' => true,
+                'active' => 1,
+                ),
+            //AJAX controller
+            'NimblePaymentAdminPaymentDetails' => array (
+                'label' => $this->l('Nimble Payments Details'),
+                'rootClass' => false,
+                'active' => 0,
+                )
+        );
+        // Set tabs for uninstall
+        Configuration::updateValue('PS_ADMIN_NIMBLE_TABS', serialize($tabs));
+
+        // Build menu tabs
+        foreach ($tabs as $className => $data) {
+            // Check if exists
+            if (!$id_tab = Tab::getIdFromClassName($className)) {
+                if ($data['rootClass']) {
+                    $this->installModuleTab($className, $data['label'], 0, $data['active']);
+                    $rootClass = $className;
+                } else {
+                    $this->installModuleTab($className, $data['label'], (int)Tab::getIdFromClassName($rootClass), $data['active']);
+                }
+            }
+        }
+    }
+
 
     private function postValidation()
     {
