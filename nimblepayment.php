@@ -943,12 +943,12 @@ class NimblePayment extends PaymentModule
      * @param  string $name tpl name
      * @return object       tpl display object
      */
-    public function fetchTemplate($name, $cache_id = null)
+    public function fetchTemplate($name)
     {
         if (version_compare(_PS_VERSION_, '1.4', '<')) {
             $this->context->smarty->currentTemplate = $name;
         } elseif (version_compare(_PS_VERSION_, '1.5', '<')) {
-            return $this->display(__FILE__, $name, $cache_id);
+            return $this->display(__FILE__, $name);
         }
         return $this->display(__FILE__, $name);
     }    
