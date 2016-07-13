@@ -29,7 +29,7 @@ if (!defined('_PS_VERSION_')) {
 }
 
 function upgrade_module_2_1_0($object)
-{  
+{
     $id_hook_action_oder_status = Hook::getIdByName('actionOrderStatusPostUpdate');
     $module_action = Hook::getModulesFromHook($id_hook_action_oder_status, $object->id);
     if (count($module_action)) {

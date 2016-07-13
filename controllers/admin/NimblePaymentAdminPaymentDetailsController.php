@@ -39,7 +39,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
         ));
         $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/admin/admin_order/authorize.tpl');
    
-        if (Tools::getIsset('order_id')){
+        if (Tools::getIsset('order_id')) {
             $order_id = Tools::getValue('order_id');
             
             $nimblePayment = new NimblePayment();
@@ -65,7 +65,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
             $balance = $response['data']['balance']['value'];
             $currency = $response['data']['balance']['currency'];
             $refunds = array();
-            if( isset($response['data']['refunds']) ){
+            if (isset($response['data']['refunds'])) {
                 $refunds = $response['data']['refunds'];
             }
             $maskedpan = $response['data']['maskedPAN'];
@@ -78,16 +78,16 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
             $feetotalRefund = 0;
             $total = 0;
             
-            if( 'SETTLED' == $response['data']['state'] && isset($response['data']['fee']) && isset($response['data']['fee']['amount']) ){
+            if ('SETTLED' == $response['data']['state'] && isset($response['data']['fee']) && isset($response['data']['fee']['amount'])) {
                     $fee = $response['data']['fee']['amount'];
-                    $feecurrency = $response['data']['fee']['currency'];    
-            }   
+                    $feecurrency = $response['data']['fee']['currency'];
+            }
 
-            for($i=0; $i<count($refunds); $i++){
+            for($i=0; $i<count($refunds); $i++) {
                 $refunded[$i]['amount']   = $refunds[$i]['refund']['amount'];
                 $refunded[$i]['currency'] = $refunds[$i]['refund']['currency'];
                 $refunded[$i]['date']     = $refunds[$i]['refundDate'];
-                if( 'SETTLED' == $response['data']['state'] && isset($refunds[$i]['refundFee']) && isset($refunds[$i]['refundFee']['amount']) ){
+                if ('SETTLED' == $response['data']['state'] && isset($refunds[$i]['refundFee']) && isset($refunds[$i]['refundFee']['amount'])) {
                     $feeRefund = $refunds[$i]['refundFee']['amount'];
                     $feeRefundcurrency = $refunds[$i]['refundFee']['currency'];
                     $feetotalRefund += $refunds[$i]['refundFee']['amount'];

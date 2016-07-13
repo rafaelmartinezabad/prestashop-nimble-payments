@@ -40,7 +40,7 @@ class NimblePaymentPaymentKoModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
         $error_code = "";
-        if (Tools::getIsset('error_code')){
+        if (Tools::getIsset('error_code')) {
             $error_code = "&error_code=" . Tools::getValue('error_code');
         }
         if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 1) {
