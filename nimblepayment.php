@@ -53,6 +53,15 @@ class NimblePayment extends PaymentModule
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
         $this->post_errors = array();
+        $this->hooks = array(
+            'adminOrder',
+            'payment',
+            'paymentReturn',
+            'displayTop',
+            'actionAdminLoginControllerSetMedia',
+            'displayBackOfficeHeader',
+            'dashboardZoneOne',
+            );
     }
 
     public function install()
@@ -66,9 +75,15 @@ class NimblePayment extends PaymentModule
         //process news tab
         $this->installTab();
         
-        if (!parent::install() || ! $this->registerHook('adminOrder') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('displayTop')
-            || !$this->registerHook('actionAdminLoginControllerSetMedia') || ! $this->registerHook('displayBackOfficeHeader') || ! $this->registerHook('dashboardZoneOne') ) {
+        if (!parent::install() ) {
             return false;
+        }
+        
+        // Register hooks
+        foreach ($this->hooks as $hook){
+            if ( ! $this->registerHook($hook) ){
+                return false;
+            }
         }
 
         return true;
@@ -77,13 +92,10 @@ class NimblePayment extends PaymentModule
     public function uninstall()
     {
         // Unregister hooks
-        $this->unregisterHook('adminOrder');
-        $this->unregisterHook('payment');
-        $this->unregisterHook('paymentReturn');
-        $this->unregisterHook('displayTop');
-        $this->unregisterHook('dashboardZoneOne');
-        $this->unregisterHook('actionAdminControllerSetMedia');
-        $this->unregisterHook('displayBackOfficeHeader');
+        foreach ($this->hooks as $hook){
+            $this->unregisterHook($hook);
+        }
+
         $tabs = unserialize(Configuration::get('PS_ADMIN_NIMBLE_TABS'));
 
         // Unbuild Menu
@@ -351,6 +363,7 @@ class NimblePayment extends PaymentModule
             Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', $_SERVER['HTTP_REFERER']);
             Tools::redirect($this->getOauth3Url());
         }
+        
         if (Tools::isSubmit('removeOauth2')) {
             $this->removeOauthToken();
         }
@@ -677,6 +690,8 @@ class NimblePayment extends PaymentModule
             Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
         }
         
+        //Force remove NIMBLE_REQUEST_URI_ADMIN
+        Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN');
     }
     
     /**************************************************************
