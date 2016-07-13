@@ -351,6 +351,7 @@ class NimblePayment extends PaymentModule
             Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', $_SERVER['HTTP_REFERER']);
             Tools::redirect($this->getOauth3Url());
         }
+        
         if (Tools::isSubmit('removeOauth2')) {
             $this->removeOauthToken();
         }
@@ -677,6 +678,8 @@ class NimblePayment extends PaymentModule
             Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
         }
         
+        //Force remove NIMBLE_REQUEST_URI_ADMIN
+        Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN');
     }
     
     /**************************************************************
