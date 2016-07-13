@@ -30,6 +30,7 @@ $_MODULE['<{nimblepayment}prestashop>refund_665dfe0dbd66a2ad49f695d99dc959ce'] =
 $_MODULE['<{nimblepayment}prestashop>refund_29f57a4ae3c3c63ab886072fb9929e3a'] = 'Concepto';
 $_MODULE['<{nimblepayment}prestashop>error_d16d84c0038bfbf8cbcf29c4a5d92525'] = 'Se ha producido un error. Por favor, contacta con el comerciante.';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_c0d3ef76579d995d96b7ed5908a25c5a'] = 'Cuenta Nimble Payments';
+$_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_f1206f9fadc5ce41694f69129aecac26'] = 'Configurar';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_e6df931082bce2b7c4e2ad7a9528686e'] = 'Desde Prestashop podrás gestionar todas tus ventas, ver los movimientos de tu cuenta, hacer devoluciones, etc.';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_15494258dcb144a2c887c56739bc748f'] = 'Para acceder a todas las funcionalidades de Nimble Payments desde Prestashop, es necesario que te identifiques en Nimble Payments y des permiso a Prestashop para poder acceder a esta operativa.';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
@@ -48,6 +49,7 @@ $_MODULE['<{nimblepayment}prestashop>gateway_config_d81e9ec12af383e44e42d9012955
 $_MODULE['<{nimblepayment}prestashop>gateway_config_ad679e800cf9d24e1c73d818f32b1736'] = 'Datos de pasarela no validos para aceptar pagos.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_0188a3da554dbdcff7b2bfe3f78fe093'] = 'API client id';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_1b4739e491387ef5d8a546854308e5fe'] = 'Client secret';
+$_MODULE['<{nimblepayment}prestashop>gateway_config_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_9a24e25a186a9213bfa7c485a76304ad'] = 'DATOS DE MI PASARELA NIMBLE PAYMENTS';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_88918335f0a17747e255f8875b3d86f3'] = 'Desde prestashop podrás gestionar todas tus ventas,';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_9533accf0d210e48d16dc28434057a37'] = 'ver los movimientos de tu cuenta , hacer devoluciones, etc.';

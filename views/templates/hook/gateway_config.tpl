@@ -46,7 +46,7 @@
         <img class="logo" alt="logo-config" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_configura.png"/>
         <div class="contentStep">
             <p class="subtitle">{l s='To be able to accept payments you only need to use the credentials you get in Nimble Payments.' mod='nimblepayment'}</p>
-            <p>{l s="If you don't have them available, check there here." mod='nimblepayment'}
+            <p>{l s='If you don\'t have them available, check there here.' mod='nimblepayment'}
                 <img class="link" alt="logo-gateway-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_consultalos.png"/>
                 <a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Check them here' mod='nimblepayment'}</a>
             </p>
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div class="form-footer">
-                    <button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'}</button>
+                    <button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'  mod='nimblepayment'}</button>
                 </div>
             </form>
         </div>
@@ -94,7 +94,7 @@
                     </div>
                 </div>
                 <div class="form-footer">
-                    <button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'}</button>
+                    <button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save' mod='nimblepayment'}</button>
                 </div>
             </form>
         </div>

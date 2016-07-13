@@ -29,7 +29,7 @@
         <div class="panel-heading">
 	       <i class="icon-AdminNimble"></i> {l s='Nimble Payments Account' mod='nimblepayment'}
 		<span class="panel-heading-action">
-			<a class="list-toolbar-btn" href="{$admin_url}" title="{l s='Configure'}">
+			<a class="list-toolbar-btn" href="{$admin_url}" title="{l s='Configure' mod='nimblepayment'}">
 				<i class="process-icon-configure"></i>
 			</a>
 		</span>

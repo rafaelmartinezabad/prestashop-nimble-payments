@@ -49,7 +49,7 @@
                                     <div class="radio col">
                                         <input type="radio" name="refundType" value="refundTotal" checked="checked" id="refundAll"> 
                                         <label for="refundAll" class="label-text">
-                                            {capture "refundable"}{l s="(_AMOUNT__CURRENCY_ sale)" mod='nimblepayment'}{/capture}
+                                            {capture "refundable"}{l s='(_AMOUNT__CURRENCY_ sale)' mod='nimblepayment'}{/capture}
                                             <span>{l s='Total refund' mod='nimblepayment'} <strong>{$smarty.capture.refundable|replace:'_AMOUNT_':$refundable|replace:'_CURRENCY_':$order_currency|escape:'htmlall':'UTF-8'}</strong></span>
                                         </label>
                                     </div>
