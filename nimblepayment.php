@@ -334,7 +334,6 @@ class NimblePayment extends PaymentModule
     {
         $url_nimble = $this->getGatewayUrl();
         $subtitle = $this->enabled ? $this->l('Your Nimble Payments gateway is ready to sell!') : $this->l('How to star using Nimble Payments in two steps.');
-        $token = Tools::getAdminTokenLite('AdminModules');
         $post_url = $this->getConfigUrl();
         
         $error_message = (count($this->post_errors)) ? 1 : 0;
@@ -754,7 +753,7 @@ class NimblePayment extends PaymentModule
         
 
         $transaction = $this->_getIdTransaction($id_order);
-        $response = $this->_makeRefund($transaction, $id_order, (float)($amt), $description, $reason);
+        $response = $this->_makeRefund($transaction, (float)($amt), $description, $reason);
 
         //OPEN OPT
         if (isset($response['result']) && isset($response['result']['code']) && 428 == $response['result']['code']
@@ -828,7 +827,7 @@ class NimblePayment extends PaymentModule
      * @param  string  $description    description for refund
      * @return array                 refund API callback response
      */
-    private function _makeRefund($id_transaction, $id_order, $amt, $description = "", $reason)
+    private function _makeRefund($id_transaction, $amt, $description, $reason)
     {
         if (!$id_transaction) {
             die(Tools::displayError('Fatal Error: id_transaction is null'));
@@ -974,8 +973,6 @@ class NimblePayment extends PaymentModule
      */
     private function installModuleTab($tabClass, $tabName, $idTabParent, $active)
     {
-        $o = false;
-
         // Create tab object
         $tab = new Tab();
         $tab->class_name = $tabClass;
