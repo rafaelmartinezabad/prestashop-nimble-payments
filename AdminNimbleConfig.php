@@ -24,7 +24,6 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-
 include_once(PS_ADMIN_DIR.'/../classes/AdminTab.php');
 require_once _PS_MODULE_DIR_ . 'nimblepayment/nimblepayment.php';
 /**
