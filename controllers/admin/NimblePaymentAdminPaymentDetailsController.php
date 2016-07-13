@@ -37,7 +37,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
         $this->context->smarty->assign(array(
             'Oauth3Url'       => $authorizeUrl,
         ));
-        $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/admin/admin_order/authorize.tpl', '20160713');
+        $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/admin/admin_order/authorize.tpl');
    
         if (Tools::getIsset('order_id')){
             $order_id = Tools::getValue('order_id');
@@ -64,6 +64,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
             $dateSale = $response['data']['date'];
             $balance = $response['data']['balance']['value'];
             $currency = $response['data']['balance']['currency'];
+            $refunds = array();
             if( isset($response['data']['refunds']) ){
                 $refunds = $response['data']['refunds'];
             }
@@ -110,7 +111,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
                 'total'       => $total
             ));
 
-            $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/hook/order_detail.tpl', '20160713');
+            $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/hook/order_detail.tpl');
         }
         
         die($template);
