@@ -159,7 +159,7 @@ class NimblePayment extends PaymentModule
                         'admin_url' => $admin_url,
                     )
                 );
-                return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
+                return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160713');
             } else {
                 try {
                     $params = array(
@@ -189,7 +189,7 @@ class NimblePayment extends PaymentModule
                                 'admin_url' => $admin_url,
                             )
                         );
-                        return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
+                        return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160713');
                     }
                 } catch (Exception $e) {
                     //to do
@@ -279,7 +279,7 @@ class NimblePayment extends PaymentModule
         );
         
         foreach ($admin_templates as $admin_template) {
-            $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl', '20160630');
+            $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl', '20160713');
         }
 
         return $this->_html;
@@ -295,7 +295,7 @@ class NimblePayment extends PaymentModule
     {
         $error = Tools::getValue("error");
         if (Tools::getIsset("error") && !empty($error)) {
-            return $this->display(__FILE__, 'display_top.tpl', '20160617');
+            return $this->display(__FILE__, 'display_top.tpl', '20160713');
         }
     }
 
@@ -332,7 +332,7 @@ class NimblePayment extends PaymentModule
                 'Oauth3Url' => $this->getAurhotizeUrl(),
             )
         );
-        return $this->display(__FILE__, 'gateway_config.tpl', '20160615');
+        return $this->display(__FILE__, 'gateway_config.tpl', '20160713');
     }
 
     public function getContent()
@@ -379,7 +379,7 @@ class NimblePayment extends PaymentModule
         
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            return $this->display(__FILE__, 'payment.tpl', '20160705');
+            return $this->display(__FILE__, 'payment.tpl', '20160713');
         }
     }
 
@@ -489,7 +489,7 @@ class NimblePayment extends PaymentModule
         } else {
             $this->smarty->assign('status', 'failed');
         }
-        return $this->display(__FILE__, 'payment_return.tpl', '20160617');
+        return $this->display(__FILE__, 'payment_return.tpl', '20160713');
     }
 
     public function checkCurrency($cart)
