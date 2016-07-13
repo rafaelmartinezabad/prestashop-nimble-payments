@@ -103,3 +103,12 @@
     background: #ccc;
     font-weight: bold;
 }
+#nimble-payment-details table tr.card-info td{
+    border-bottom: solid 1px #ccc;
+    text-align: left;
+}
+#nimble-payment-details table tr.card-info td.title {
+    font-weight: bold;
+    padding-left: 10px;
+    
+}

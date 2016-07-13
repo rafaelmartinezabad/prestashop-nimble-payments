@@ -23,11 +23,18 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
     <div id="nimble-payment-details">
-        <h3 class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Detail of movements' mod='nimblepayment'}</h3>
+        <h3 class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Movements detail' mod='nimblepayment'}</h3>
         <table>
+            <tr class="card-info">
+                <td class="title">{l s='Card:' mod='nimblepayment'}</td>
+                <td class="masked">{$card}</td>
+                <td></td>
+                <td class="nimble-empty"></td>
+                <td></td>
+            </tr>
             <tr>
-               <th scope="col">{l s='' mod='nimblepayment'}</th>
-               <th scope="col">{l s='' mod='nimblepayment'}</th>
+               <th scope="col"></th>
+               <th scope="col"></th>
                <th scope="col">{l s='Amounts' mod='nimblepayment'}</th>
                <th scope="col" colspan="2">{l s='Fees' mod='nimblepayment'}</th>
              </tr>
