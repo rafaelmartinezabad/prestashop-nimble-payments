@@ -77,7 +77,7 @@
                                     <div class="amount hidden">
                                         <label for="amount">
                                             <span class="label-text">{l s='Amount:' mod='nimblepayment'}</span>
-                                            <input type="number" min="0.06" max="{$refundable|string_format:'%.2f'}" step="0.01" class="refundfield-amount" name="amount" value="{$refundable|string_format:'%.2f'}" />
+                                            <input type="number" min="0.06" max="{$refundable|string_format:'%.2f'|escape:'htmlall':'UTF-8'}" step="0.01" class="refundfield-amount" name="amount" value="{$refundable|string_format:'%.2f'|escape:'htmlall':'UTF-8'}" />
                                         </label>
                                     </div>
                                     <p class="btn-autorize">

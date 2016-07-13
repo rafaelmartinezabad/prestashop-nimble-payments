@@ -27,7 +27,7 @@
         <div class="panel-heading">
 	       <i class="icon-AdminNimble"></i> {l s='Nimble Payments Account' mod='nimblepayment'}
 		<span class="panel-heading-action">
-			<a class="list-toolbar-btn" href="{$admin_url}" title="{l s='Configure' mod='nimblepayment'}">
+			<a class="list-toolbar-btn" href="{$admin_url|escape:'htmlall':'UTF-8'}" title="{l s='Configure' mod='nimblepayment'}">
 				<i class="process-icon-configure"></i>
 			</a>
 		</span>
@@ -39,7 +39,7 @@
                             <p>{l s='To release all features of Nimble Payments from Prestashop, you need to login in Nimble Payments and grant access to Prestashop in order to access to this operative.' mod='nimblepayment'}</p>                   
                     </div>
                     <div class="btn-autorize">
-                        <a href="{$Oauth3Url}" class="btn btn-nimble link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
+                        <a href="{$Oauth3Url|escape:'htmlall':'UTF-8'}" class="btn btn-nimble link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
                     </div>    
                 {else}
                     <ul class="data_list_vertical">

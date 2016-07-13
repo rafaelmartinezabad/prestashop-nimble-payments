@@ -27,7 +27,7 @@
         <table>
             <tr class="card-info">
                 <td class="title">{l s='Card:' mod='nimblepayment'}</td>
-                <td class="masked">{$card}</td>
+                <td class="masked">{$card|escape:'htmlall':'UTF-8'}</td>
                 <td></td>
                 <td class="nimble-empty"></td>
                 <td></td>

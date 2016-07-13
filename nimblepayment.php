@@ -306,7 +306,8 @@ class NimblePayment extends PaymentModule
         // Build menu tabs
         foreach ($tabs as $className => $data) {
             // Check if exists
-            if (!$id_tab = Tab::getIdFromClassName($className)) {
+            $id_tab = Tab::getIdFromClassName($className);
+            if (!$id_tab) {
                 if ($data['rootClass']) {
                     $this->installModuleTab($className, $data['label'], 0, $data['active']);
                     $rootClass = $className;

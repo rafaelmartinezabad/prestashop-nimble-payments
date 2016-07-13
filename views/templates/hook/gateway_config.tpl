@@ -110,7 +110,7 @@
                 <p>{l s='To access to all the Nimble Payments features from Prestashop, you have to be identified in Nimble Payments and allow Prestashop to access to this information.' mod='nimblepayment'}</p>
             </div>
             <div class="box">
-                <a id="authorize_btn" href="{$Oauth3Url}" class="link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
+                <a id="authorize_btn" href="{$Oauth3Url|escape:'htmlall':'UTF-8'}" class="link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
             </div>
         </div>
     {else}

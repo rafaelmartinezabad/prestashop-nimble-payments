@@ -22,7 +22,7 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<input id="payment_detail_ajax_token" type="hidden" name="payment_detail_ajax_token" value="{$token}"/>
+<input id="payment_detail_ajax_token" type="hidden" name="payment_detail_ajax_token" value="{$token|escape:'htmlall':'UTF-8'}"/>
 <script type="text/javascript">
    $(document).ready(function () {
         $(".open_payment_information").first().click(function(event) {
