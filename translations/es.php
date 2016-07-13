@@ -62,7 +62,7 @@ $_MODULE['<{nimblepayment}prestashop>order_detail_006300efaf063e1705dd614ea0ae9e
 $_MODULE['<{nimblepayment}prestashop>order_detail_f2cd171bd42220283b7a595c3ff2aaaf'] = 'Venta';
 $_MODULE['<{nimblepayment}prestashop>order_detail_76f0ed934de85cc7131910b32ede7714'] = 'Devolución';
 $_MODULE['<{nimblepayment}prestashop>order_detail_b2c53e2828c8c6f5ce6f219a0073c529'] = 'Saldo final';
-$_MODULE['<{nimblepayment}prestashop>payment_return_88526efe38fd18179a127024aba8c1d7'] = 'Su pedido en %s ha sido completado.';
+$_MODULE['<{nimblepayment}prestashop>payment_return_3835bbb0d0b90eb77d1c23976d481afa'] = 'Su pedido en %s ha sido completado.';
 $_MODULE['<{nimblepayment}prestashop>payment_return_f7bf0110b8a7f32f448b77b63b29d5b0'] = 'Precio total:';
 $_MODULE['<{nimblepayment}prestashop>payment_return_e19e31ddb54b493059808ec4f2dab4cb'] = 'El ID de su pedido es:';
 $_MODULE['<{nimblepayment}prestashop>payment_return_914419aa32f04011357d3b604a86d7eb'] = 'Transportista';

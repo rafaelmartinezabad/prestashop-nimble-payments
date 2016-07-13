@@ -24,7 +24,7 @@
 *}
 
 {if $status == 'ok'}
-    <p class="alert alert-success">{l s='Your order on %s is complete.' sprintf=$shop_name mod='nimblepayment'}</p>
+    <p class="alert alert-success">{l s='Your order on %s is completed.' sprintf=$shop_name mod='nimblepayment'}</p>
     {if isset($order)}
     <div class="info-order box">
             <p>{l s='Total price:' mod='nimblepayment'}
