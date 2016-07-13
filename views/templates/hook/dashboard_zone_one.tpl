@@ -37,7 +37,7 @@
 	<section>
                 {if $token == false}
                     <div class="text">
-                            <p>{l s='From Prestashop you can manage all ypur sales, see the movements of your account, make refunds, etc.' mod='nimblepayment'}</p>
+                            <p>{l s='From Prestashop you can manage all your sales, see the movements of your account, make refunds, etc.' mod='nimblepayment'}</p>
                             <p>{l s='To release all features of Nimble Payments from Prestashop, you need to login in Nimble Payments and grant access to Prestashop in order to access to this operative.' mod='nimblepayment'}</p>                   
                     </div>
                     <div class="btn-autorize">

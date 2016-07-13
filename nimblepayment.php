@@ -212,7 +212,7 @@ class NimblePayment extends PaymentModule
         $new_refund = Tools::getValue('np_refund', false) ? true : false;
         if ($new_refund){
             $new_refund_message_class = Tools::getValue('np_refund') == 'OK' ? 'success' : 'danger'; 
-            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('La devolución se ha realizado correctamente.') : $this->l('No se ha podido realizar la devolución.'); 
+            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('The refund was succesful.') : $this->l('It was not possible to make the refund.'); 
         }
         $refunded = 0;
 
@@ -248,9 +248,7 @@ class NimblePayment extends PaymentModule
         }
 
         // Get order data
-        //$order = new Order((int)$params['id_order']);
         $currency = new Currency($order->id_currency);
-        $ssl = ((!empty($_SERVER['HTTPS']) && Tools::strtolower($_SERVER['HTTPS']) != 'off')) ? 1 : 0;
 
         if (version_compare(_PS_VERSION_, '1.5', '>=')) {
             $order_state = $order->current_state;
@@ -265,12 +263,12 @@ class NimblePayment extends PaymentModule
                 'module_name' => $this->name,
                 'order_state' => $order_state,
                 'params' => $params,
-                'id_currency' => $currency->getSign(),
                 'list_refunds' => $refunds,
                 'order_amount' => (float)$order->total_paid,
                 'order_currency' => $currency->sign,
+                'refundable' => $order->total_paid - $refunded,
                 'refunded' => $refunded,
-                'description' => $order->reference,
+                'order_reference' => $order->reference,
                 'ps_version' => _PS_VERSION_,
                 'new_refund_message_class' => $new_refund_message_class,
                 'new_refund_message' => $new_refund_message,
@@ -315,7 +313,7 @@ class NimblePayment extends PaymentModule
     private function displaynimblepayment()
     {
         $url_nimble = $this->getGatewayUrl();
-        $subtitle = $this->enabled ? $this->l('¡Tu pasarela Nimble Payments está lista para vender!') : $this->l('Cómo empezar a usar Nimble Payments en dos pasos.');
+        $subtitle = $this->enabled ? $this->l('Your Nimble Payments gateway is ready to sell!') : $this->l('How to star using Nimble Payments in two steps.');
         $token = Tools::getAdminTokenLite('AdminModules');
         $post_url = $this->getConfigUrl();
         

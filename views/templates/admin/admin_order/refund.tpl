@@ -44,39 +44,40 @@
                             <form method="post" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}">
                                 <input type="hidden" name="id_order" value="{$params.id_order|intval}" />
                                 <input type="hidden" name="refunded" id="totalQtyRefunded"value="{$refunded|escape:'htmlall':'UTF-8'}" />
-                                <input type="hidden" name="order_amount" id="totalQtyPaid"value="{$order_amount|escape:'htmlall':'UTF-8'}" />    
+                                <input type="hidden" name="order_amount" id="totalQtyPaid"value="{$order_amount|escape:'htmlall':'UTF-8'}" />
                                 <fieldset class="radio-group">
                                     <div class="radio col">
                                         <input type="radio" name="refundType" value="refundTotal" checked="checked" id="refundAll"> 
                                         <label for="refundAll" class="label-text">
-                                            <span>Refund total <strong>(sales {($order_amount-$refunded)|escape:'htmlall':'UTF-8'} {$list_refunds['0'].refund['currency']|escape:'htmlall':'UTF-8'})</strong></span>
+                                            {capture "refundable"}{l s="(_AMOUNT__CURRENCY_ sale)" mod='nimblepayment'}{/capture}
+                                            <span>{l s='Total refund' mod='nimblepayment'} <strong>{$smarty.capture.refundable|replace:'_AMOUNT_':$refundable|replace:'_CURRENCY_':$order_currency|escape:'htmlall':'UTF-8'}</strong></span>
                                         </label>
                                     </div>
 
                                     <div class="radio col">
                                         <input type="radio" name="refundType" value="refundPartial" id="refundPartial">
                                         <label for="refundPartial" class="label-text">
-                                            <span>  Refund partial </span>
+                                            <span>{l s='Partial refund' mod='nimblepayment'}</span>
                                         </label>
                                     </div>
                                  </fieldset>
                                     <label for="description">
-                                        <span class="label-text">{l s='Refund concept' mod='nimblepayment'}:</span>
-                                        <input type="text" class="refundfield desc" name="description" value="{l s='Refund for order with reference ' mod='nimblepayment'}{$description|escape:'htmlall':'UTF-8'}"  required/>
+                                        <span class="label-text">{l s='Concept:' mod='nimblepayment'}</span>
+                                        <input type="text" class="refundfield desc" name="description" value="{l s='Order refund with reference ' mod='nimblepayment'}{$order_reference|escape:'htmlall':'UTF-8'}"  required/>
                                     </label>
 
                                     <label for="reason">
                                         <select name="reason">
-                                            <option value="NO_INFORMED" selected>{l s='Reason' mod='nimblepayment'}</option>
-                                            <option value="REQUEST_BY_CUSTOMER">{l s='Request by customer' mod='nimblepayment'}</option>
-                                            <option value="DUPLICATE">{l s='Duplicate' mod='nimblepayment'}</option>
+                                            <option value="NO_INFORMED" selected>{l s='Select the reason' mod='nimblepayment'}</option>
+                                            <option value="REQUEST_BY_CUSTOMER">{l s='Customer request' mod='nimblepayment'}</option>
+                                            <option value="DUPLICATE">{l s='Duplicated' mod='nimblepayment'}</option>
                                             <option value="FRAUDULENT">{l s='Fraudulent' mod='nimblepayment'}</option>
                                         </select>
                                     </label>
                                     <div class="amount hidden">
                                         <label for="amount">
-                                            <span class="label-text">{l s='Refund amount' mod='nimblepayment'}:</span>
-                                            <input type="number" min="0.06" max="{($order_amount-$refunded)|escape:'htmlall':'UTF-8'}" step="0.01" class="refundfield-amount" name="amount" value="{($order_amount-$refunded)|escape:'htmlall':'UTF-8'}" />
+                                            <span class="label-text">{l s='Amount:' mod='nimblepayment'}</span>
+                                            <input type="number" min="0.06" max="{$refundable|string_format:'%.2f'}" step="0.01" class="refundfield-amount" name="amount" value="{$refundable|string_format:'%.2f'}" />
                                         </label>
                                     </div>
                                     <p class="btn-autorize">
@@ -94,7 +95,7 @@
                             <table class="table" width="100%" cellspacing="10" cellpadding="10">
                                 <tr>
                                    <td class="refund-nimble-title">{l s='Refund Date' mod='nimblepayment'}</td>
-                                   <td class="refund-nimble-title">{l s='Refund Amount' mod='nimblepayment'}</td>
+                                   <td class="refund-nimble-title">{l s='Refunded Amount' mod='nimblepayment'}</td>
                                    <td class="refund-nimble-title">{l s='Refund Concept' mod='nimblepayment'}</td>
                                  </tr>
                                 {foreach from=$list_refunds item=list}   
