@@ -50,7 +50,6 @@
                         'action': 'payment',
                     },
                     dataType: 'json',
-                    async: false,
                     success: function(response) {
                         if ('redirect' in response){
                             $('#nimblepayment_gateway').attr('href', response['redirect']);
