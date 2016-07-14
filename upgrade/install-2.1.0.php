@@ -48,5 +48,6 @@ function upgrade_module_2_1_0($object)
     return ($object->registerHook('adminOrder')
          && $object->registerHook('actionAdminLoginControllerSetMedia')
          && $object->registerHook('displayBackOfficeHeader')
-         && $object->registerHook('dashboardZoneOne'));
+         && $object->registerHook('dashboardZoneOne')
+         && $object->registerHook('displayAdminHomeInfos'));
 }

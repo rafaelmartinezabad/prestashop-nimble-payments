@@ -61,6 +61,7 @@ class NimblePayment extends PaymentModule
             'actionAdminLoginControllerSetMedia',
             'displayBackOfficeHeader',
             'dashboardZoneOne',
+            'displayAdminHomeInfos',
             );
     }
 
@@ -125,6 +126,9 @@ class NimblePayment extends PaymentModule
         $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css?version=20160712', 'all', null, false);
     }
     
+    public function hookDisplayAdminHomeInfos(){
+        return '<div class="table_info">' . $this->hookDashboardZoneOne(array()) . '</div>';
+    }
     /**
      * DashboardZoneOne Hook implementation
      * @param  array $params hook data
