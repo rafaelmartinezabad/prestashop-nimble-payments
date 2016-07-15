@@ -419,3 +419,6 @@ p#block_top_title{
 #btn-refund-order{
     margin-top: 20px;
 }
+.form div.hidden{
+    display:none;
+}
