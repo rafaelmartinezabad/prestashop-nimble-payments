@@ -29,7 +29,11 @@
     <div class="row">
 	<div class="col-lg-12">
             <div class="panel">
-                <div class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Nimble Payments Refunds' mod='nimblepayment'}</div>
+                {if $smarty.const._PS_VERSION_ >= 1.6}
+                    <div class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Nimble Payments Refunds' mod='nimblepayment'}</div>
+                {else}
+                    <div class="panel-heading ps15-title"><i class="icon-AdminNimble"></i> {l s='Nimble Payments Refunds' mod='nimblepayment'}</div>                    
+                {/if}
                 {if $new_refund_message_class != ""}
                     <div class="bootstrap">
                         <div class="module_confirmation conf confirm alert alert-{$new_refund_message_class|escape:'htmlall':'UTF-8'}">
@@ -40,7 +44,11 @@
                 {/if}
                 <div class="row">
                     <div id="refund-form-wrapper" class="col-xs-4">
-                        <div class="form">
+                        {if $smarty.const._PS_VERSION_ >= 1.6}
+                            <div class="form">
+                        {else}
+                            <div class="form ps15">
+                        {/if}
                             <form method="post" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}">
                                 <input type="hidden" name="id_order" value="{$params.id_order|intval}" />
                                 <input type="hidden" name="refunded" id="totalQtyRefunded"value="{$refunded|escape:'htmlall':'UTF-8'}" />
