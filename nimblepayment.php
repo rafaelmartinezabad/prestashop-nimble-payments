@@ -43,7 +43,7 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.0';
+        $this->version = '2.1.2';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
@@ -53,6 +53,16 @@ class NimblePayment extends PaymentModule
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
         $this->post_errors = array();
+        $this->hooks = array(
+            'adminOrder',
+            'payment',
+            'paymentReturn',
+            'displayTop',
+            'actionAdminLoginControllerSetMedia',
+            'displayBackOfficeHeader',
+            'dashboardZoneOne',
+            'displayAdminHomeInfos',
+            );
     }
 
     public function install()
@@ -63,32 +73,18 @@ class NimblePayment extends PaymentModule
             return false;
         }
 
-        // Mapping Nimble Tabs
-        $tabs = array(
-            'AdminNimbleConfig' => array (
-                'label' => $this->l('Nimble Payments'),
-                'rootClass' => true,
-                )
-        );
-        // Set tabs for uninstall
-        Configuration::updateValue('PS_ADMIN_NIMBLE_TABS', serialize($tabs));
-
-        // Build menu tabs
-        foreach ($tabs as $className => $data) {
-            // Check if exists
-            if (!$id_tab = Tab::getIdFromClassName($className)) {
-                if ($data['rootClass']) {
-                    $this->installModuleTab($className, $data['label'], 0);
-                    $rootClass = $className;
-                } else {
-                    $this->installModuleTab($className, $data['label'], (int)Tab::getIdFromClassName($rootClass));
-                }
-            }
+        //process news tab
+        $this->installTab();
+        
+        if (!parent::install() ) {
+            return false;
         }
         
-        if (!parent::install() || ! $this->registerHook('adminOrder') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('displayTop')
-            || !$this->registerHook('actionAdminLoginControllerSetMedia') || ! $this->registerHook('displayBackOfficeHeader') || ! $this->registerHook('dashboardZoneOne') ) {
-            return false;
+        // Register hooks
+        foreach ($this->hooks as $hook){
+            if ( ! $this->registerHook($hook) ){
+                return false;
+            }
         }
 
         return true;
@@ -97,13 +93,10 @@ class NimblePayment extends PaymentModule
     public function uninstall()
     {
         // Unregister hooks
-        $this->unregisterHook('adminOrder');
-        $this->unregisterHook('payment');
-        $this->unregisterHook('paymentReturn');
-        $this->unregisterHook('displayTop');
-        $this->unregisterHook('dashboardZoneOne');
-        $this->unregisterHook('actionAdminControllerSetMedia');
-        $this->unregisterHook('displayBackOfficeHeader');
+        foreach ($this->hooks as $hook){
+            $this->unregisterHook($hook);
+        }
+
         $tabs = unserialize(Configuration::get('PS_ADMIN_NIMBLE_TABS'));
 
         // Unbuild Menu
@@ -130,9 +123,12 @@ class NimblePayment extends PaymentModule
     public function hookDisplayBackOfficeHeader()
     {
         //Add as scoped CSS in back office header
-        $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css', 'all');
+        $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css?version=20160712', 'all', null, false);
     }
     
+    public function hookDisplayAdminHomeInfos(){
+        return '<div class="table_info">' . $this->hookDashboardZoneOne(array()) . '</div>';
+    }
     /**
      * DashboardZoneOne Hook implementation
      * @param  array $params hook data
@@ -140,19 +136,19 @@ class NimblePayment extends PaymentModule
      */
     public function hookDashboardZoneOne($params)
     {
-        $admin_url = Configuration::get('NIMBLE_REQUEST_URI_ADMIN');
+        $admin_url = $this->getConfigUrl();
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
             if ( ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
                 $this->context->smarty->assign(
                     array(
                         'data' => "",
-                        'Oauth3Url' => $this->getOauth3Url(),
+                        'Oauth3Url' => $this->getAurhotizeUrl(),
                         'token' => false,
                         'admin_url' => $admin_url,
                     )
                 );
-                return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
+                return $this->display(__FILE__, 'dashboard_zone_one.tpl');
             } else {
                 try {
                     $params = array(
@@ -182,7 +178,7 @@ class NimblePayment extends PaymentModule
                                 'admin_url' => $admin_url,
                             )
                         );
-                        return $this->display(__FILE__, 'dashboard_zone_one.tpl', '20160617');
+                        return $this->display(__FILE__, 'dashboard_zone_one.tpl');
                     }
                 } catch (Exception $e) {
                     //to do
@@ -205,7 +201,7 @@ class NimblePayment extends PaymentModule
         $new_refund = Tools::getValue('np_refund', false) ? true : false;
         if ($new_refund){
             $new_refund_message_class = Tools::getValue('np_refund') == 'OK' ? 'success' : 'danger'; 
-            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('La devolución se ha realizado correctamente.') : $this->l('No se ha podido realizar la devolución.'); 
+            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('The refund was succesful.') : $this->l('It was not possible to make the refund.'); 
         }
         $refunded = 0;
 
@@ -241,9 +237,7 @@ class NimblePayment extends PaymentModule
         }
 
         // Get order data
-        //$order = new Order((int)$params['id_order']);
         $currency = new Currency($order->id_currency);
-        $ssl = ((!empty($_SERVER['HTTPS']) && Tools::strtolower($_SERVER['HTTPS']) != 'off')) ? 1 : 0;
 
         if (version_compare(_PS_VERSION_, '1.5', '>=')) {
             $order_state = $order->current_state;
@@ -258,24 +252,23 @@ class NimblePayment extends PaymentModule
                 'module_name' => $this->name,
                 'order_state' => $order_state,
                 'params' => $params,
-                'id_currency' => $currency->getSign(),
                 'list_refunds' => $refunds,
                 'order_amount' => (float)$order->total_paid,
                 'order_currency' => $currency->sign,
+                'refundable' => $order->total_paid - $refunded,
                 'refunded' => $refunded,
-                'description' => $order->reference,
+                'order_reference' => $order->reference,
                 'ps_version' => _PS_VERSION_,
                 'new_refund_message_class' => $new_refund_message_class,
                 'new_refund_message' => $new_refund_message,
-                'Oauth3Url' => $this->getOauth3Url(),
-                'ssl'        => $ssl,
-                'parameters' => array()
+                'Oauth3Url' => $this->getAurhotizeUrl(),
+                'token' => Tools::getAdminTokenLite('NimblePaymentAdminPaymentDetails')
                 
             )
         );
         
         foreach ($admin_templates as $admin_template) {
-            $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl', '20160630');
+            $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl');
         }
 
         return $this->_html;
@@ -291,9 +284,44 @@ class NimblePayment extends PaymentModule
     {
         $error = Tools::getValue("error");
         if (Tools::getIsset("error") && !empty($error)) {
-            return $this->display(__FILE__, 'display_top.tpl', '20160617');
+            return $this->display(__FILE__, 'display_top.tpl');
         }
     }
+    
+    public function installTab()
+    {
+         // Mapping Nimble Tabs
+        $tabs = array(
+            'AdminNimbleConfig' => array (
+                'label' => $this->l('Nimble Payments'),
+                'rootClass' => true,
+                'active' => 1,
+                ),
+            //AJAX controller
+            'NimblePaymentAdminPaymentDetails' => array (
+                'label' => $this->l('Nimble Payments Details'),
+                'rootClass' => false,
+                'active' => 0,
+                )
+        );
+        // Set tabs for uninstall
+        Configuration::updateValue('PS_ADMIN_NIMBLE_TABS', serialize($tabs));
+
+        // Build menu tabs
+        foreach ($tabs as $className => $data) {
+            // Check if exists
+            $id_tab = Tab::getIdFromClassName($className);
+            if (!$id_tab) {
+                if ($data['rootClass']) {
+                    $this->installModuleTab($className, $data['label'], 0, $data['active']);
+                    $rootClass = $className;
+                } else {
+                    $this->installModuleTab($className, $data['label'], (int)Tab::getIdFromClassName($rootClass), $data['active']);
+                }
+            }
+        }
+    }
+
 
     private function postValidation()
     {
@@ -309,11 +337,9 @@ class NimblePayment extends PaymentModule
     private function displaynimblepayment()
     {
         $url_nimble = $this->getGatewayUrl();
-        $subtitle = $this->enabled ? $this->l('¡Tu pasarela Nimble Payments está lista para vender!') : $this->l('Cómo empezar a usar Nimble Payments en dos pasos.');
-        $token = Tools::getAdminTokenLite('AdminModules');
-        $post_url = $this->context->link->getAdminLink('AdminModules', false)
-                . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name 
-                . '&token=' . $token;
+        $subtitle = $this->enabled ? $this->l('Your Nimble Payments gateway is ready to sell!') : $this->l('How to star using Nimble Payments in two steps.');
+        $post_url = $this->getConfigUrl();
+        
         $error_message = (count($this->post_errors)) ? 1 : 0;
         $authorized = ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ) ? 1 : 0;
         $this->smarty->assign(
@@ -326,19 +352,21 @@ class NimblePayment extends PaymentModule
                 'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
                 'error_message' => $error_message,
                 'authorized' => $authorized,
-                'Oauth3Url' => $this->getOauth3Url(),
+                'Oauth3Url' => $this->getAurhotizeUrl(),
             )
         );
-        return $this->display(__FILE__, 'gateway_config.tpl', '20160615');
+        return $this->display(__FILE__, 'gateway_config.tpl');
     }
 
     public function getContent()
     {
         $output = null;
-        Configuration::updateValue(
-            'NIMBLE_REQUEST_URI_ADMIN',
-            dirname($_SERVER['REQUEST_URI']) . '/' . AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules')
-        );
+        
+        if (Tools::getIsset('authorize')){            
+            //Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']) . '/' . $this->getConfigUrl());
+            Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', $_SERVER['HTTP_REFERER']);
+            Tools::redirect($this->getOauth3Url());
+        }
         
         if (Tools::isSubmit('removeOauth2')) {
             $this->removeOauthToken();
@@ -377,7 +405,7 @@ class NimblePayment extends PaymentModule
         
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            return $this->display(__FILE__, 'payment.tpl', '20160705');
+            return $this->display(__FILE__, 'payment.tpl');
         }
     }
 
@@ -487,7 +515,7 @@ class NimblePayment extends PaymentModule
         } else {
             $this->smarty->assign('status', 'failed');
         }
-        return $this->display(__FILE__, 'payment_return.tpl', '20160617');
+        return $this->display(__FILE__, 'payment_return.tpl');
     }
 
     public function checkCurrency($cart)
@@ -624,12 +652,19 @@ class NimblePayment extends PaymentModule
         }
 
         // After process redirect to module settings page with oauth2callback parameter on URL
-        Tools::redirectAdmin(Configuration::get('NIMBLE_REQUEST_URI_ADMIN').'&oauth2callback='.$oauth);
+        $this->redirectNimbleUrlAdmin($oauth);
     }
     
     
+    public function redirectNimbleUrlAdmin($oauth){
+        $nimbleUrlAdmin = Configuration::get('NIMBLE_REQUEST_URI_ADMIN');
+        Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN');
+        Tools::redirectAdmin($nimbleUrlAdmin.'&oauth2callback='.$oauth);
+    }
+    
     public function removeOauthToken()
     {
+        $this->refreshToken();
         Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', null);
         Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', null);
     }
@@ -661,6 +696,8 @@ class NimblePayment extends PaymentModule
             Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
         }
         
+        //Force remove NIMBLE_REQUEST_URI_ADMIN
+        Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN');
     }
     
     /**************************************************************
@@ -722,7 +759,7 @@ class NimblePayment extends PaymentModule
         
 
         $transaction = $this->_getIdTransaction($id_order);
-        $response = $this->_makeRefund($transaction, $id_order, (float)($amt), $description, $reason);
+        $response = $this->_makeRefund($transaction, (float)($amt), $description, $reason);
 
         //OPEN OPT
         if (isset($response['result']) && isset($response['result']['code']) && 428 == $response['result']['code']
@@ -796,7 +833,7 @@ class NimblePayment extends PaymentModule
      * @param  string  $description    description for refund
      * @return array                 refund API callback response
      */
-    private function _makeRefund($id_transaction, $id_order, $amt, $description = "", $reason)
+    private function _makeRefund($id_transaction, $amt, $description, $reason)
     {
         if (!$id_transaction) {
             die(Tools::displayError('Fatal Error: id_transaction is null'));
@@ -912,12 +949,12 @@ class NimblePayment extends PaymentModule
      * @param  string $name tpl name
      * @return object       tpl display object
      */
-    public function fetchTemplate($name, $cache_id = null)
+    public function fetchTemplate($name)
     {
         if (version_compare(_PS_VERSION_, '1.4', '<')) {
             $this->context->smarty->currentTemplate = $name;
         } elseif (version_compare(_PS_VERSION_, '1.5', '<')) {
-            return $this->display(__FILE__, $name, $cache_id);
+            return $this->display(__FILE__, $name);
         }
         return $this->display(__FILE__, $name);
     }    
@@ -942,6 +979,16 @@ class NimblePayment extends PaymentModule
         return $cards;
     }
     
+    public function getConfigUrl(){
+        $url = $this->context->link->getAdminLink('AdminModules') . '&configure='.$this->name.'&module_name='.$this->name;
+        return $url;
+    }
+    
+    public function getAurhotizeUrl(){
+        $url = $this->getConfigUrl().'&authorize=true';
+        return $url;
+    }
+
     /**
      * PS module tab installation callback implementation
      * @param  string $tabClass    tab class
@@ -949,16 +996,15 @@ class NimblePayment extends PaymentModule
      * @param  int $idTabParent id tab parent
      * @return bool              wether or not tab was propery installed
      */
-    private function installModuleTab($tabClass, $tabName, $idTabParent)
+    private function installModuleTab($tabClass, $tabName, $idTabParent, $active)
     {
-        $o = false;
-
         // Create tab object
         $tab = new Tab();
         $tab->class_name = $tabClass;
         $tab->id_parent = $idTabParent;
         $tab->module = $this->name;
         $tab->name = array();
+        $tab->active = $active;
         foreach (Language::getLanguages(true) as $lang) {
             $tab->name[$lang['id_lang']] = $this->l($tabName);
         }

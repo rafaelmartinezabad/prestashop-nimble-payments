@@ -28,10 +28,26 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_3_0_0($object)
+function upgrade_module_2_1_0($object)
 {
+    $id_hook_action_oder_status = Hook::getIdByName('actionOrderStatusPostUpdate');
+    $module_action = Hook::getModulesFromHook($id_hook_action_oder_status, $object->id);
+    if (count($module_action)) {
+        $object->unregisterHook('actionOrderStatusPostUpdate');
+    }
+    
+    $id_hook_display_top = Hook::getIdByName('displayTop');
+    $module_display = Hook::getModulesFromHook($id_hook_display_top, $object->id);
+    if (! count($module_display)) {
+        $object->registerHook('displayTop');
+    }
+    
+    $object->installTab();
     $object->checkCredentials();
+    
     return ($object->registerHook('adminOrder')
-         && $object->registerHook('actionAdminLoginControllerSetMedia')   
-         && $object->registerHook('DisplayTop'));
+         && $object->registerHook('actionAdminLoginControllerSetMedia')
+         && $object->registerHook('displayBackOfficeHeader')
+         && $object->registerHook('dashboardZoneOne')
+         && $object->registerHook('displayAdminHomeInfos'));
 }

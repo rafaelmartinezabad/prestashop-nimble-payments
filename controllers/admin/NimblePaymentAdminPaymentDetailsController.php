@@ -28,23 +28,18 @@ require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAP
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
 
-class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontController
+class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
 {
-    /**
-     * @see FrontController::initContent()
-     */
-    
-    public function initContent()
+    public function ajaxProcesspaymentDetails()
     {
-        parent::initContent();
         $nimblePayment = new NimblePayment();
-        $Oauth3Url = $nimblePayment->getOauth3Url();
+        $authorizeUrl = $nimblePayment->getAurhotizeUrl();
         $this->context->smarty->assign(array(
-            'Oauth3Url'       => $Oauth3Url,
+            'Oauth3Url'       => $authorizeUrl,
         ));
         $template = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'nimblepayment/views/templates/admin/admin_order/authorize.tpl');
    
-        if (Tools::getIsset('order_id')){
+        if (Tools::getIsset('order_id')) {
             $order_id = Tools::getValue('order_id');
             
             $nimblePayment = new NimblePayment();
@@ -69,9 +64,11 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
             $dateSale = $response['data']['date'];
             $balance = $response['data']['balance']['value'];
             $currency = $response['data']['balance']['currency'];
-            if( isset($response['data']['refunds']) ){
+            $refunds = array();
+            if (isset($response['data']['refunds'])) {
                 $refunds = $response['data']['refunds'];
             }
+            $maskedpan = $response['data']['maskedPAN'];
             $refunded = array();
             $fee = 0;
             $feecurrency = ' - ';
@@ -81,16 +78,16 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
             $feetotalRefund = 0;
             $total = 0;
             
-            if( 'SETTLED' == $response['data']['state'] && isset($response['data']['fee']) && isset($response['data']['fee']['amount']) ){
+            if ('SETTLED' == $response['data']['state'] && isset($response['data']['fee']) && isset($response['data']['fee']['amount'])) {
                     $fee = $response['data']['fee']['amount'];
-                    $feecurrency = $response['data']['fee']['currency'];    
-            }   
+                    $feecurrency = $response['data']['fee']['currency'];
+            }
 
-            for($i=0; $i<count($refunds); $i++){
+            for($i=0; $i<count($refunds); $i++) {
                 $refunded[$i]['amount']   = $refunds[$i]['refund']['amount'];
                 $refunded[$i]['currency'] = $refunds[$i]['refund']['currency'];
                 $refunded[$i]['date']     = $refunds[$i]['refundDate'];
-                if( 'SETTLED' == $response['data']['state'] && isset($refunds[$i]['refundFee']) && isset($refunds[$i]['refundFee']['amount']) ){
+                if ('SETTLED' == $response['data']['state'] && isset($refunds[$i]['refundFee']) && isset($refunds[$i]['refundFee']['amount'])) {
                     $feeRefund = $refunds[$i]['refundFee']['amount'];
                     $feeRefundcurrency = $refunds[$i]['refundFee']['currency'];
                     $feetotalRefund += $refunds[$i]['refundFee']['amount'];
@@ -100,6 +97,7 @@ class NimblePaymentPaymentDetailsModuleFrontController extends ModuleFrontContro
             $total = $balance - $feetotal;
             
             $this->context->smarty->assign(array(
+                'card'         => $maskedpan,
                 'sale'         => $sale,
                 'currency'     => $currency,
                 'balance'      => $balance,

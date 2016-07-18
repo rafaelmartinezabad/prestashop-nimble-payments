@@ -1,5 +1,5 @@
 {*
-* 2007-2015 PrestaShop
+* 2007-2016 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -40,28 +40,29 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#nimblepayment_gateway").click(function(event) {
+        $("#nimblepayment_gateway").one( "click", function(event) {
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: $(this).data('href'),
+                data: {
+                    'action': 'payment',
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if ('redirect' in response){
+                        $('#nimblepayment_gateway').attr('href', response['redirect']);
+                        $(location).attr('href', response['redirect'])
+                    } else if ('error' in response){
+                        $('#HOOK_PAYMENT .alert').remove();
+                        $('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">' + response['error']['message'] + '</p>');
+                    }
+                    $(this).data('clicked', true);
+                }
+            });
+        }).click(function(){
             if ( ! $(this).data('clicked') ){
                 event.preventDefault();
-                $.ajax({
-                    type: 'POST',
-                    url: $(this).data('href'),
-                    data: {
-                        'action': 'payment',
-                    },
-                    dataType: 'json',
-                    async: false,
-                    success: function(response) {
-                        if ('redirect' in response){
-                            $('#nimblepayment_gateway').attr('href', response['redirect']);
-                            $(location).attr('href', response['redirect'])
-                        } else if ('error' in response){
-                            $('#HOOK_PAYMENT .alert').remove();
-                            $('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">' + response['error']['message'] + '</p>');
-                        }
-                        $(this).data('clicked', true);
-                    }
-                });
             }
         });
     });

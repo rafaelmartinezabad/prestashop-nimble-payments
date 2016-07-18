@@ -1,5 +1,5 @@
 {*
-* 2007-2015 PrestaShop
+* 2007-2016 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -17,18 +17,24 @@
 * versions in the future. If you wish to customize PrestaShop for your
 * needs please refer to http://www.prestashop.com for more information.
 *
-*  @author    Devtopia Coop <hello@devtopia.coop>
-*  @copyright 2007-2015 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+*  @author PrestaShop SA <contact@prestashop.com>
+*  @copyright  2007-2016 PrestaShop SA
+*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<td id="nimble-payment-details-td" colspan="6">
     <div id="nimble-payment-details">
-        <h3 class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Detail of movements' mod='nimblepayment'}</h3>
+        <h3 class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Movements detail' mod='nimblepayment'}</h3>
         <table>
+            <tr class="card-info">
+                <td class="title">{l s='Card:' mod='nimblepayment'}</td>
+                <td class="masked">{$card|escape:'htmlall':'UTF-8'}</td>
+                <td></td>
+                <td class="nimble-empty"></td>
+                <td></td>
+            </tr>
             <tr>
-               <th scope="col">{l s='' mod='nimblepayment'}</th>
-               <th scope="col">{l s='' mod='nimblepayment'}</th>
+               <th scope="col"></th>
+               <th scope="col"></th>
                <th scope="col">{l s='Amounts' mod='nimblepayment'}</th>
                <th scope="col" colspan="2">{l s='Fees' mod='nimblepayment'}</th>
              </tr>
@@ -75,7 +81,6 @@
              </tr>
         </table>
     </div>
-</td>
 
                  
                       

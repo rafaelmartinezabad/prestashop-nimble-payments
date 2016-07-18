@@ -28,21 +28,20 @@ include(dirname(__FILE__).'/../../config/config.inc.php');
 require_once _PS_MODULE_DIR_.'nimblepayment/nimblepayment.php';
 
 $nimble = new NimblePayment();
-if (Tools::getValue('code')){
-   $nimble->nimbleOauth2callback();
-} else if(Tools::getValue('ticket')){
+if (Tools::getValue('code')) {
+    $nimble->nimbleOauth2callback();
+} elseif (Tools::getValue('ticket')) {
     $ticket = Tools::getValue('ticket');
     $refund_info = unserialize(Configuration::get('NIMBLEPAYMENTS_REFUND_INFO'));
     $result = Tools::getValue('result');
     // $cashout_info = unserialize(Configuration::get('NIMBLEPAYMENTS_CASHOUT_INFO'));
-    if( $refund_info['ticket'] == $ticket ){
-        if ($result == "OK"){
+    if ($refund_info['ticket'] == $ticket) {
+        if ($result == "OK") {
             $nimble->nimbleProcessRefund($refund_info);
         } else {
             Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=error#nimble-refund-panel');
         }
     }
 } else {
-    Tools::redirect();
+    $nimble->redirectNimbleUrlAdmin('error');
 }
-

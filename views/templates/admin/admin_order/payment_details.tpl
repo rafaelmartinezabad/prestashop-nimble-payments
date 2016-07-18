@@ -1,5 +1,5 @@
 {*
-* 2007-2015 PrestaShop
+* 2007-2016 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -17,28 +17,31 @@
 * versions in the future. If you wish to customize PrestaShop for your
 * needs please refer to http://www.prestashop.com for more information.
 *
-*  @author    Devtopia Coop <hello@devtopia.coop>
-*  @copyright 2007-2015 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+*  @author PrestaShop SA <contact@prestashop.com>
+*  @copyright  2007-2016 PrestaShop SA
+*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-
-<input id="payment_detail_ajax_url" type="hidden" name="payment_detail_ajax_url" value="{$link->getModuleLink('nimblepayment', 'paymentDetails', $parameters, $ssl)|escape:'htmlall':'UTF-8'}"/>
+<input id="payment_detail_ajax_token" type="hidden" name="payment_detail_ajax_token" value="{$token|escape:'htmlall':'UTF-8'}"/>
 <script type="text/javascript">
    $(document).ready(function () {
         $(".open_payment_information").first().click(function(event) {
             if ( ! $(this).data('clicked') ){
-                $("tr.payment_information").first().html("");
+                $("tr.payment_information").first().html('<td id="nimble-payment-details-td" colspan="6"></td>');
                 $(this).data('clicked', true);
                 event.preventDefault();
                 $.ajax({
                     type: 'POST',
-                    url: $('#payment_detail_ajax_url').val(),
+                    url : 'ajax-tab.php',
                     data: {
-                        'order_id': $('input[name="id_order"]').val(),
+                        ajax : true,
+                        controller : 'NimblePaymentAdminPaymentDetails',
+                        action : 'paymentDetails',
+                        token : $('#payment_detail_ajax_token').val(),
+                        order_id : $('input[name="id_order"]').val(),
                     },
                     success: function(response) {
-                        $("tr.payment_information").first().append(response);
+                        $("#nimble-payment-details-td").html(response);
                     },
                     error: function() {
                         console.log("Error on ajax")

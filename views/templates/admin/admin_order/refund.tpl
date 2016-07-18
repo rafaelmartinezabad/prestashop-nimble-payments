@@ -1,5 +1,5 @@
 {*
-* 2007-2015 PrestaShop
+* 2007-2016 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -17,9 +17,9 @@
 * versions in the future. If you wish to customize PrestaShop for your
 * needs please refer to http://www.prestashop.com for more information.
 *
-*  @author    Devtopia Coop <hello@devtopia.coop>
-*  @copyright 2007-2015 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+*  @author PrestaShop SA <contact@prestashop.com>
+*  @copyright  2007-2016 PrestaShop SA
+*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
@@ -29,7 +29,11 @@
     <div class="row">
 	<div class="col-lg-12">
             <div class="panel">
-                <div class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Nimble Payments Refunds' mod='nimblepayment'}</div>
+                {if $smarty.const._PS_VERSION_ >= 1.6}
+                    <div class="panel-heading"><i class="icon-AdminNimble"></i> {l s='Nimble Payments Refunds' mod='nimblepayment'}</div>
+                {else}
+                    <div class="panel-heading ps15-title"><i class="icon-AdminNimble"></i> {l s='Nimble Payments Refunds' mod='nimblepayment'}</div>                    
+                {/if}
                 {if $new_refund_message_class != ""}
                     <div class="bootstrap">
                         <div class="module_confirmation conf confirm alert alert-{$new_refund_message_class|escape:'htmlall':'UTF-8'}">
@@ -40,43 +44,48 @@
                 {/if}
                 <div class="row">
                     <div id="refund-form-wrapper" class="col-xs-4">
-                        <div class="form">
+                        {if $smarty.const._PS_VERSION_ >= 1.6}
+                            <div class="form">
+                        {else}
+                            <div class="form ps15">
+                        {/if}
                             <form method="post" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}">
                                 <input type="hidden" name="id_order" value="{$params.id_order|intval}" />
                                 <input type="hidden" name="refunded" id="totalQtyRefunded"value="{$refunded|escape:'htmlall':'UTF-8'}" />
-                                <input type="hidden" name="order_amount" id="totalQtyPaid"value="{$order_amount|escape:'htmlall':'UTF-8'}" />    
+                                <input type="hidden" name="order_amount" id="totalQtyPaid"value="{$order_amount|escape:'htmlall':'UTF-8'}" />
                                 <fieldset class="radio-group">
                                     <div class="radio col">
                                         <input type="radio" name="refundType" value="refundTotal" checked="checked" id="refundAll"> 
                                         <label for="refundAll" class="label-text">
-                                            <span>Refund total <strong>(sales {($order_amount-$refunded)|escape:'htmlall':'UTF-8'} {$list_refunds['0'].refund['currency']|escape:'htmlall':'UTF-8'})</strong></span>
+                                            {capture "refundable"}{l s='(_AMOUNT__CURRENCY_ sale)' mod='nimblepayment'}{/capture}
+                                            <span>{l s='Total refund' mod='nimblepayment'} <strong>{$smarty.capture.refundable|replace:'_AMOUNT_':$refundable|replace:'_CURRENCY_':$order_currency|escape:'htmlall':'UTF-8'}</strong></span>
                                         </label>
                                     </div>
 
                                     <div class="radio col">
                                         <input type="radio" name="refundType" value="refundPartial" id="refundPartial">
                                         <label for="refundPartial" class="label-text">
-                                            <span>  Refund partial </span>
+                                            <span>{l s='Partial refund' mod='nimblepayment'}</span>
                                         </label>
                                     </div>
                                  </fieldset>
                                     <label for="description">
-                                        <span class="label-text">{l s='Refund concept' mod='nimblepayment'}:</span>
-                                        <input type="text" class="refundfield desc" name="description" value="{l s='Refund for order with reference ' mod='nimblepayment'}{$description|escape:'htmlall':'UTF-8'}"  required/>
+                                        <span class="label-text">{l s='Concept:' mod='nimblepayment'}</span>
+                                        <input type="text" class="refundfield desc" name="description" value="{l s='Order refund with reference ' mod='nimblepayment'}{$order_reference|escape:'htmlall':'UTF-8'}"  required/>
                                     </label>
 
                                     <label for="reason">
-                                        <span class="label-text">{l s='Reason' mod='nimblepayment'}:</span>
                                         <select name="reason">
-                                            <option value="REQUEST_BY_CUSTOMER" selected>{l s='Request by customer' mod='nimblepayment'}</option>
-                                            <option value="DUPLICATE">{l s='Duplicate' mod='nimblepayment'}</option>
-                                            <option value="NO_INFORMED">{l s='No informated' mod='nimblepayment'}</option>
+                                            <option value="NO_INFORMED" selected>{l s='Select the reason' mod='nimblepayment'}</option>
+                                            <option value="REQUEST_BY_CUSTOMER">{l s='Customer request' mod='nimblepayment'}</option>
+                                            <option value="DUPLICATE">{l s='Duplicated' mod='nimblepayment'}</option>
+                                            <option value="FRAUDULENT">{l s='Fraudulent' mod='nimblepayment'}</option>
                                         </select>
                                     </label>
                                     <div class="amount hidden">
                                         <label for="amount">
-                                            <span class="label-text">{l s='Refund amount' mod='nimblepayment'}:</span>
-                                            <input type="number" min="0.06" max="{($order_amount-$refunded)|escape:'htmlall':'UTF-8'}" step="0.01" class="refundfield-amount" name="amount" value="{($order_amount-$refunded)|escape:'htmlall':'UTF-8'}" />
+                                            <span class="label-text">{l s='Amount:' mod='nimblepayment'}</span>
+                                            <input type="number" min="0.06" max="{$refundable|string_format:'%.2f'|escape:'htmlall':'UTF-8'}" step="0.01" class="refundfield-amount" name="amount" value="{$refundable|string_format:'%.2f'|escape:'htmlall':'UTF-8'}" />
                                         </label>
                                     </div>
                                     <p class="btn-autorize">
@@ -94,7 +103,7 @@
                             <table class="table" width="100%" cellspacing="10" cellpadding="10">
                                 <tr>
                                    <td class="refund-nimble-title">{l s='Refund Date' mod='nimblepayment'}</td>
-                                   <td class="refund-nimble-title">{l s='Refund Amount' mod='nimblepayment'}</td>
+                                   <td class="refund-nimble-title">{l s='Refunded Amount' mod='nimblepayment'}</td>
                                    <td class="refund-nimble-title">{l s='Refund Concept' mod='nimblepayment'}</td>
                                  </tr>
                                 {foreach from=$list_refunds item=list}   
