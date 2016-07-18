@@ -103,7 +103,7 @@
         <div class="nimbleAuthorize">
             <div class="title">
                 <p>{l s='From Prestashop you will be able to manage all your sales,' mod='nimblepayment'}<br/>
-                {l s='check your account movements, make refunds, etc' mod='nimblepayment'}</p>
+                {l s='make refunds, etc' mod='nimblepayment'}</p>
             </div>
             <div class="separator"></div>
             <div class="box">

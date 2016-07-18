@@ -52,8 +52,8 @@ $_MODULE['<{nimblepayment}prestashop>gateway_config_1b4739e491387ef5d8a546854308
 $_MODULE['<{nimblepayment}prestashop>gateway_config_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_9a24e25a186a9213bfa7c485a76304ad'] = 'DATOS DE MI PASARELA NIMBLE PAYMENTS';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_88918335f0a17747e255f8875b3d86f3'] = 'Desde prestashop podrás gestionar todas tus ventas,';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_9533accf0d210e48d16dc28434057a37'] = 'ver los movimientos de tu cuenta , hacer devoluciones, etc.';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_3748a0e40e1da54099248183c18aa402'] = 'Para acceder a toda la potencia de Nimble Payments desde prestashop, es necesario que te identifiques y des permiso a Prestashop a acceder a estos datos.';
+$_MODULE['<{nimblepayment}prestashop>gateway_config_0fe98aba6b1672bfdc486515c85bbefc'] = 'hacer devoluciones, etc.';
+$_MODULE['<{nimblepayment}prestashop>gateway_config_3748a0e40e1da54099248183c18aa402'] = 'Para acceder a toda la potencia de Nimble Payments desde Prestashop, es necesario que te identifiques y des permiso a Prestashop a acceder a estos datos.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_ea95c17d2fc5faba9c95c331e45e7038'] = 'Tienda vinculada a Nimble Payments';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_9d4d7d9342553769bfba0a1210a61cd9'] = 'Desvincular';
