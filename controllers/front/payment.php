@@ -27,6 +27,7 @@
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
+require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIStoredCards.php';
 
 class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 {
@@ -59,11 +60,64 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $total = $cart->getOrderTotal(true, Cart::BOTH) * 100;
         $order_num = str_pad($cart->id, 8, '0', STR_PAD_LEFT);
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
-        $this->sendPayment($total, $paramurl);
+        $storedCard = Tools::getValue('nimblepayment_storedcard');
+        if( isset($storedCard) && !empty($storedCard) ){
+            $this->storedCardPayment($total, $paramurl, $storedCard);
+        } else {
+            $this->sendPayment($total, $paramurl);
+        }
         if (Tools::getIsset('action')) {
             die(Tools::jsonEncode($this->result));
         }
         Tools::redirect($this->result['redirect']);
+    }
+    
+    public function storedCardPayment($total, $paramurl, $storedCard)
+    {
+        $cart = $this->context->cart;
+        $userId = $this->context->customer->id;
+        $id_address = Address::getFirstCustomerAddressId($userId);
+        error_log("id_address: " . $id_address);
+        $id_address_delivery = (int) $this->context->cart->id_address_delivery;
+        error_log("id_address_delivery: " . $id_address_delivery);
+        $id_address_invoice = (int) $this->context->cart->id_address_invoice;
+        error_log("id_address_invoice: " . $id_address_invoice);
+         
+        try{
+            $params = array(
+            'clientId' => $this->nimblepayment_client_id,
+            'clientSecret' => $this->nimblepayment_client_secret
+            );
+            $nimbleApi = new NimbleAPI($params);
+            
+            //ADD HEADER SOURCE CALLER
+            $nimblePayment = new NimblePayment();
+            $version = $nimblePayment->getVersionPlugin();
+            $nimbleApi->authorization->addHeader('source-caller', 'PRESTASHOP_'.$version);
+            
+            $storedCardPaymentInfo = array(
+                'amount' => $total,
+                'currency' => $this->getCurrency(),
+                'merchantOrderId' => $cart->id,
+                "cardHolderId"  =>  $userId
+            );
+            
+            $preorder = NimbleAPIStoredCards::preorderPayment($nimbleApi, $storedCardPaymentInfo);
+            
+            if ( isset($preorder["data"]) && isset($preorder["data"]["id"])){
+                //Save transaction_id to this order
+                $this->context->cookie->__set('nimble_transaction_id', $preorder['data']['id']);
+                $response = NimbleAPIStoredCards::confirmPayment($nimbleApi, $preorder["data"]);
+                //error_log(print_r($response,true));
+                $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl));
+            } else {
+                $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
+            }
+        }
+        catch (Exception $e) {
+            //Error
+            error_log(print_r($e, true));
+        }
     }
     
     public function sendPayment($total, $paramurl)
@@ -75,7 +129,6 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             'clientId' => $this->nimblepayment_client_id,
             'clientSecret' => $this->nimblepayment_client_secret
             );
-            
             $this->nimbleapi = new NimbleAPI($params);
 
             $payment = array(

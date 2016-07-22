@@ -35,7 +35,14 @@
                 
                 <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
             </a>
-        </p>
+        </p>    
+        <li>
+            <input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $cards['default']}  checked {/if} value="{$cards|json_encode|base64_encode}" />
+            <label for="nimblepayment_storedcard_1" class="stored_card {$cards['cardBrand']|lower}"> {$cards['maskedPan']}</label>
+            <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard"  value="" />
+            <label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
+        </li>
+
     </div>
 </div>
 <script type="text/javascript">
@@ -47,6 +54,7 @@
                 url: $(this).data('href'),
                 data: {
                     'action': 'payment',
+                    'nimblepayment_storedcard': $('input[name="nimblepayment_storedcard"]:checked').val()
                 },
                 dataType: 'json',
                 success: function(response) {
