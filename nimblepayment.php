@@ -59,10 +59,15 @@ class NimblePayment extends PaymentModule
             'payment',
             'paymentReturn',
             'displayTop',
+            'displayLeftColumnProduct',
+            'displayRightColumnProduct',
+            'rightColumn',
+            'displayProductButtons',
             'actionAdminLoginControllerSetMedia',
             'displayBackOfficeHeader',
             'dashboardZoneOne',
             'displayAdminHomeInfos',
+            'displayShoppingCart',
             );
     }
 
@@ -116,7 +121,7 @@ class NimblePayment extends PaymentModule
 
         return true;
     }
-
+    
     /**
      * DisplayBackOfficeHeader Hook implementation
      * @return string html content for back office header
@@ -281,6 +286,50 @@ class NimblePayment extends PaymentModule
         $this->refreshToken();
     }
     
+    public function HookDisplayShoppingCart()
+    {   
+        $cart = $this->context->cart;
+        
+        // Si no hay productos o el modulo no es nimblepayments
+        // redirigir o no mostrar el boton de faster checkout
+        
+        if ($cart->nbProducts() <=0) {
+            Tools::redirect('index.php?controller=order');
+        }
+        if ($this->name != 'nimblepayment') {
+            Tools::redirect('index.php?controller=order');
+        }
+                        
+        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', array('paymentcode' => 'fastercheckout'));
+        $this->context->smarty->assign(
+                array(
+                       'url_faster_checkout' => $url_faster_checkout
+                )
+        );
+                 
+        return $this->display(__FILE__, 'shopping_cart.tpl');
+    }
+    
+    public function hookDisplayProductButtons()
+    {        error_log("1");
+            return "<h1>hookDisplayProductButtons</h1>";
+    }
+    
+    public function HookDisplayRightColumnProduct()
+    {        error_log("2");
+            return "<h1>HookDisplayRightColumnProduct</h1>";
+    }
+    
+    public function HookDisplayLeftColumnProduct()
+    {        error_log("3");
+            return "<h1>HookDisplayLeftColumnProduct</h1>";
+    }
+    public function hookRightColumn()
+    {
+        error_log("5");
+            return "<h1>hookRightColumn</h1>";
+    }
+     
     public function hookDisplayTop()
     {
         $error = Tools::getValue("error");
@@ -392,7 +441,7 @@ class NimblePayment extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
-        
+        error_log(print_r($params,true) );
         //si hay tarjetas
         $cart_id_delivery = $this->context->cart->id_address_delivery;
         $userId = $this->context->customer->id;
@@ -1033,7 +1082,7 @@ class NimblePayment extends PaymentModule
         $url = $this->getConfigUrl().'&authorize=true';
         return $url;
     }
-
+    
     /**
      * PS module tab installation callback implementation
      * @param  string $tabClass    tab class
