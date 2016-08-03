@@ -22,13 +22,22 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-                {include file="$tpl_dir./order-address.tpl"}
-
-		<!-- Carrier -->
-		{include file="$tpl_dir./order-carrier.tpl"}
-		<!-- END Carrier -->
-	
-		<!-- Payment -->
-		{include file="$tpl_dir./order-payment.tpl"}
-
-
+	{if $isLogged}
+		{if $productNumber}
+			{include file="$tpl_dir./order-address.tpl"}
+			<!-- Carrier -->
+			{include file="$tpl_dir./order-carrier.tpl"}
+			<!-- END Carrier -->
+			<!-- Payment -->
+			{include file="$tpl_dir./order-payment.tpl"}
+		{else}
+			{capture name=path}{l s='Your shopping cart'}{/capture}
+			<h2 class="page-heading">{l s='Your shopping cart'}</h2>
+			{include file="$tpl_dir./errors.tpl"}
+			<p class="alert alert-warning">{l s='Your shopping cart is empty.'}</p>
+		{/if}
+	{else}
+		<h2 class="page-heading">{l s='User is not logged'}</h2>
+		{include file="$tpl_dir./errors.tpl"}
+		<p class="alert alert-warning">{l s='User is not logged '}</p>
+	{/if}

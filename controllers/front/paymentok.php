@@ -74,9 +74,7 @@ class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
             );
         } else {
             //Tools::redirect('index.php');
-            $display = (_PS_VERSION_ < '1.5') ? new BWDisplay() : new FrontController();
-            $display->setTemplate(_PS_MODULE_DIR_.'nimblepayment/views/templates/front/error.tpl');
-            $display->run();
+            $this->setTemplate('error.tpl');
         }
     }
 }

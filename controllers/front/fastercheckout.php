@@ -39,31 +39,36 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
     public $type_error = 0;
     public $nimbleapi;
 
-    /**
-     * Initialize order opc controller
-     * @see FrontController::init()
-     */
-    public function initContent()
-    {
-			parent::initContent();
-            $this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
-            $this->context->cart->checkedTOS = 1;
+	public function __construct()
+	{
+		parent::__construct();
+		$this->context = Context::getContext();
+	}
+	public function initContent()
+	{
+		parent::initContent();
+		$this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
+		$this->context->cart->checkedTOS = 1;
 
-            $this->context->smarty->assign('checkedTOS', $this->context->cart->checkedTOS);
-            $this->context->smarty->assign('isVirtualCart', $this->context->cart->isVirtualCart());
-            $this->_processAddressFormat();
-            $this->_assignAddress();
-            $this->_getCarrierList();
-            $this->_assignPayment();
-            $this->context->smarty->assign('back', Tools::safeOutput(Tools::getValue('back')));
-            
-            $display = (_PS_VERSION_ < '1.5') ? new BWDisplay() : new FrontController();
-            $display->setTemplate(_PS_MODULE_DIR_.'nimblepayment/views/templates/hook/fastercheckout.tpl');
-            $display->run();
-    }   
-    
-    
- protected function _assignAddress()
+		$this->context->smarty->assign(
+			array(
+				'checkedTOS'	=>	$this->context->cart->checkedTOS,
+				'isVirtualCart'	=>	$this->context->cart->isVirtualCart(),
+				'productNumber'	=>	$this->context->cart->nbProducts(),
+				'back'			=>	Tools::safeOutput(Tools::getValue('back')),
+				'isLogged'		=>	$this->isLogged
+				)
+		);
+
+		$this->_assignAddress();
+		$this->_getCarrierList();
+		$this->_assignPayment();
+
+		$this->setTemplate('fastercheckout.tpl');
+
+	}
+
+	protected function _assignAddress()
     {
         //if guest checkout disabled and flag is_guest  in cookies is actived
         if (Configuration::get('PS_GUEST_CHECKOUT_ENABLED') == 0 && ((int)$this->context->customer->is_guest != Configuration::get('PS_GUEST_CHECKOUT_ENABLED'))) {
@@ -165,22 +170,19 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             $this->context->smarty->assign('oldMessage', $oldMessage['message']);
         }
     }
-    
-    
-  public function setMedia()
+
+	public function setMedia()
     {
         parent::setMedia();
 
-        
-         if (!$this->useMobileTheme()) {
+        if (!$this->useMobileTheme()) {
             // Adding CSS style sheet
             $this->addCSS(_THEME_CSS_DIR_.'addresses.css');
         }
-            $this->addJS(_THEME_JS_DIR_.'order-address.js');
 
         // Adding JS files
         $this->addJS(_THEME_JS_DIR_.'tools.js');  // retro compat themes 1.5
-        if ((Configuration::get('PS_ORDER_PROCESS_TYPE') == 0 && Tools::getValue('step') == 1) || Configuration::get('PS_ORDER_PROCESS_TYPE') == 1) {
+        if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 0) {
             $this->addJS(_THEME_JS_DIR_.'order-address.js');
         }
         $this->addJqueryPlugin('fancybox');
@@ -189,99 +191,6 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             $this->addJqueryPlugin('typewatch');
             $this->addJS(_THEME_JS_DIR_.'cart-summary.js');
         }
-        
-        
-        
-        if (!$this->useMobileTheme()) {
-            // Adding CSS style sheet
-            $this->addCSS(_THEME_CSS_DIR_.'order-opc.css');
-            // Adding JS files
-            $this->addJS(_THEME_JS_DIR_.'order-opc.js');
-            $this->addJqueryPlugin('scrollTo');
-        } else {
-            $this->addJS(_THEME_MOBILE_JS_DIR_.'opc.js');
-        }
-
-        $this->addJS(array(
-            _THEME_JS_DIR_.'tools/vatManagement.js',
-            _THEME_JS_DIR_.'tools/statesManagement.js',
-            _THEME_JS_DIR_.'order-carrier.js',
-            _PS_JS_DIR_.'validate.js'
-        ));
-    }
-
-    /**
-     * Assign template vars related to page content
-     * @see FrontController::initContent()
-     */
-
-    protected function _getGuestInformations()
-    {
-        $customer = $this->context->customer;
-        $address_delivery = new Address($this->context->cart->id_address_delivery);
-
-        $id_address_invoice = $this->context->cart->id_address_invoice != $this->context->cart->id_address_delivery ? (int)$this->context->cart->id_address_invoice : 0;
-        $address_invoice = new Address($id_address_invoice);
-
-        if ($customer->birthday) {
-            $birthday = explode('-', $customer->birthday);
-        } else {
-            $birthday = array('0', '0', '0');
-        }
-
-        return array(
-            'id_customer' => (int)$customer->id,
-            'email' => Tools::htmlentitiesUTF8($customer->email),
-            'customer_lastname' => Tools::htmlentitiesUTF8($customer->lastname),
-            'customer_firstname' => Tools::htmlentitiesUTF8($customer->firstname),
-            'newsletter' => (int)$customer->newsletter,
-            'optin' => (int)$customer->optin,
-            'id_address_delivery' => (int)$this->context->cart->id_address_delivery,
-            'company' => Tools::htmlentitiesUTF8($address_delivery->company),
-            'lastname' => Tools::htmlentitiesUTF8($address_delivery->lastname),
-            'firstname' => Tools::htmlentitiesUTF8($address_delivery->firstname),
-            'vat_number' => Tools::htmlentitiesUTF8($address_delivery->vat_number),
-            'dni' => Tools::htmlentitiesUTF8($address_delivery->dni),
-            'address1' => Tools::htmlentitiesUTF8($address_delivery->address1),
-            'postcode' => Tools::htmlentitiesUTF8($address_delivery->postcode),
-            'city' => Tools::htmlentitiesUTF8($address_delivery->city),
-            'phone' => Tools::htmlentitiesUTF8($address_delivery->phone),
-            'phone_mobile' => Tools::htmlentitiesUTF8($address_delivery->phone_mobile),
-            'id_country' => (int)$address_delivery->id_country,
-            'id_state' => (int)$address_delivery->id_state,
-            'id_gender' => (int)$customer->id_gender,
-            'sl_year' => $birthday[0],
-            'sl_month' => $birthday[1],
-            'sl_day' => $birthday[2],
-            'company_invoice' => Tools::htmlentitiesUTF8($address_invoice->company),
-            'lastname_invoice' => Tools::htmlentitiesUTF8($address_invoice->lastname),
-            'firstname_invoice' => Tools::htmlentitiesUTF8($address_invoice->firstname),
-            'vat_number_invoice' => Tools::htmlentitiesUTF8($address_invoice->vat_number),
-            'dni_invoice' => Tools::htmlentitiesUTF8($address_invoice->dni),
-            'address1_invoice' => Tools::htmlentitiesUTF8($address_invoice->address1),
-            'address2_invoice' => Tools::htmlentitiesUTF8($address_invoice->address2),
-            'postcode_invoice' => Tools::htmlentitiesUTF8($address_invoice->postcode),
-            'city_invoice' => Tools::htmlentitiesUTF8($address_invoice->city),
-            'phone_invoice' => Tools::htmlentitiesUTF8($address_invoice->phone),
-            'phone_mobile_invoice' => Tools::htmlentitiesUTF8($address_invoice->phone_mobile),
-            'id_country_invoice' => (int)$address_invoice->id_country,
-            'id_state_invoice' => (int)$address_invoice->id_state,
-            'id_address_invoice' => $id_address_invoice,
-            'invoice_company' => Tools::htmlentitiesUTF8($address_invoice->company),
-            'invoice_lastname' => Tools::htmlentitiesUTF8($address_invoice->lastname),
-            'invoice_firstname' => Tools::htmlentitiesUTF8($address_invoice->firstname),
-            'invoice_vat_number' => Tools::htmlentitiesUTF8($address_invoice->vat_number),
-            'invoice_dni' => Tools::htmlentitiesUTF8($address_invoice->dni),
-            'invoice_address' => $this->context->cart->id_address_invoice !== $this->context->cart->id_address_delivery,
-            'invoice_address1' => Tools::htmlentitiesUTF8($address_invoice->address1),
-            'invoice_address2' => Tools::htmlentitiesUTF8($address_invoice->address2),
-            'invoice_postcode' => Tools::htmlentitiesUTF8($address_invoice->postcode),
-            'invoice_city' => Tools::htmlentitiesUTF8($address_invoice->city),
-            'invoice_phone' => Tools::htmlentitiesUTF8($address_invoice->phone),
-            'invoice_phone_mobile' => Tools::htmlentitiesUTF8($address_invoice->phone_mobile),
-            'invoice_id_country' => (int)$address_invoice->id_country,
-            'invoice_id_state' => (int)$address_invoice->id_state,
-        );
     }
 
     protected function _assignCarrier()
@@ -305,7 +214,6 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
     }
 
-
     
     protected function _assignPayment()
     {
@@ -317,15 +225,12 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 'link_conditions' => $this->link_conditions
             ));
         } else {
-            error_log(print_r($this->_getPaymentMethods(),true));
             $this->context->smarty->assign(array(
                 'HOOK_TOP_PAYMENT' => ($this->isLogged ? Hook::exec('displayPaymentTop') : ''),
                 'HOOK_PAYMENT' => $this->_getPaymentMethods()
             ));
         }
     }
-
-   
 
     protected function _getCarrierList()
     {
@@ -413,72 +318,6 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
     }
 
-    protected function _processAddressFormat()
-    {
-        $address_delivery = new Address((int)$this->context->cart->id_address_delivery);
-        $address_invoice = new Address((int)$this->context->cart->id_address_invoice);
-
-        $inv_adr_fields = AddressFormat::getOrderedAddressFields((int)$address_delivery->id_country, false, true);
-        $dlv_adr_fields = AddressFormat::getOrderedAddressFields((int)$address_invoice->id_country, false, true);
-        $require_form_fields_list = AddressFormat::getFieldsRequired();
-
-        // Add missing require fields for a new user susbscription form
-        foreach ($require_form_fields_list as $field_name) {
-            if (!in_array($field_name, $dlv_adr_fields)) {
-                $dlv_adr_fields[] = trim($field_name);
-            }
-        }
-
-        foreach ($require_form_fields_list as $field_name) {
-            if (!in_array($field_name, $inv_adr_fields)) {
-                $inv_adr_fields[] = trim($field_name);
-            }
-        }
-
-        $inv_all_fields = array();
-        $dlv_all_fields = array();
-
-        foreach (array('inv', 'dlv') as $adr_type) {
-            foreach (${$adr_type.'_adr_fields'} as $fields_line) {
-                foreach (explode(' ', $fields_line) as $field_item) {
-                    ${$adr_type.'_all_fields'}[] = trim($field_item);
-                }
-            }
-
-            ${$adr_type.'_adr_fields'} = array_unique(${$adr_type.'_adr_fields'});
-            ${$adr_type.'_all_fields'} = array_unique(${$adr_type.'_all_fields'});
-
-            $this->context->smarty->assign(array(
-                $adr_type.'_adr_fields' => ${$adr_type.'_adr_fields'},
-                $adr_type.'_all_fields' => ${$adr_type.'_all_fields'},
-                'required_fields' => $require_form_fields_list
-            ));
-        }
-    }
-
-    protected function getFormatedSummaryDetail()
-    {
-        $result = array('summary' => $this->context->cart->getSummaryDetails(),
-                        'customizedDatas' => Product::getAllCustomizedDatas($this->context->cart->id, null, true));
-
-        foreach ($result['summary']['products'] as $key => &$product) {
-            $product['quantity_without_customization'] = $product['quantity'];
-            if ($result['customizedDatas']) {
-                if (isset($result['customizedDatas'][(int)$product['id_product']][(int)$product['id_product_attribute']])) {
-                    foreach ($result['customizedDatas'][(int)$product['id_product']][(int)$product['id_product_attribute']] as $addresses) {
-                        foreach ($addresses as $customization) {
-                            $product['quantity_without_customization'] -= (int)$customization['quantity'];
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($result['customizedDatas']) {
-            Product::addCustomizationPrice($result['summary']['products'], $result['customizedDatas']);
-        }
-        return $result;
-    }
     protected function _getPaymentMethods()
     {
         if (!$this->isLogged) {
@@ -547,4 +386,5 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
         return $return;
     }
+
 }

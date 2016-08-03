@@ -24,9 +24,10 @@
 *}
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimblebackend.css" rel="stylesheet" type="text/css" media="all">
 
-<p class="cart_navigation clearfix">
-        <a href="{$url_faster_checkout|escape:'htmlall':'UTF-8'}" class="button btn btn-default standard-checkout button-medium" title="{l s='Faster checkout' mod='nimblepayment'}">
-                <span><i class="icon-AdminNimble"></i> {l s='Faster checkout' mod='nimblepayment'}</span>
-        </a>
-</p>
-{$tpl_dir}
+{if $order_process_type != 1}
+	<p class="cart_navigation clearfix">
+		<a href="{$url_faster_checkout|escape:'htmlall':'UTF-8'}" class="button btn btn-default standard-checkout button-medium" title="{l s='Faster checkout' mod='nimblepayment'}">
+			<span><i class="icon-AdminNimble"></i> {l s='Faster checkout' mod='nimblepayment'}</span>
+		</a>
+	</p>
+{/if}

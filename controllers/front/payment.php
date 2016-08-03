@@ -56,7 +56,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             //Tools::redirect('index.php?controller=order');
             $this->result['redirect'] = 'index.php?controller=order';
         }
-        
+
         $total = $cart->getOrderTotal(true, Cart::BOTH) * 100;
         $order_num = str_pad($cart->id, 8, '0', STR_PAD_LEFT);
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
@@ -71,7 +71,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         }
         Tools::redirect($this->result['redirect']);
     }
-    
+
     public function storedCardPayment($total, $paramurl, $storedCard)
     {
         $cart = $this->context->cart;
@@ -82,7 +82,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         error_log("id_address_delivery: " . $id_address_delivery);
         $id_address_invoice = (int) $this->context->cart->id_address_invoice;
         error_log("id_address_invoice: " . $id_address_invoice);
-         
+
         try{
             $params = array(
             'clientId' => $this->nimblepayment_client_id,
@@ -101,9 +101,9 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
                 'merchantOrderId' => $cart->id,
                 "cardHolderId"  =>  $userId
             );
-            
+
             $preorder = NimbleAPIStoredCards::preorderPayment($nimbleApi, $storedCardPaymentInfo);
-            
+
             if ( isset($preorder["data"]) && isset($preorder["data"]["id"])){
                 //Save transaction_id to this order
                 $this->context->cookie->__set('nimble_transaction_id', $preorder['data']['id']);
@@ -119,7 +119,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
             error_log(print_r($e, true));
         }
     }
-    
+
     public function sendPayment($total, $paramurl)
     {
         $cart = $this->context->cart;
@@ -138,9 +138,9 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
                 'paymentSuccessUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl)),
                 'paymentErrorUrl' => $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl))
             );
-            
+
             $this->result['redirect'] = $payment['paymentErrorUrl'];
-                    
+
             //ADD HEADER SOURCE CALLER
             $nimblePayment = new NimblePayment();
             $version = $nimblePayment->getVersionPlugin();
@@ -169,7 +169,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $cart = $this->context->cart;
         $currency_order = new Currency($cart->id_currency);
         $current_currency = $currency_order->iso_code;
-        
+
         return $current_currency;
     }
 }
