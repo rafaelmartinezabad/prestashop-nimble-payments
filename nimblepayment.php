@@ -410,70 +410,72 @@ class NimblePayment extends PaymentModule
         return $output;
     }
 
-    public function hookPayment($params)
-    {
-        $cards = array();
-        if (!$this->active) {
-            return;
-        }
-        if (!$this->checkCurrency($params['cart'])) {
-            return;
-        }
-        //si hay tarjetas
-        $cart_id_delivery = $this->context->cart->id_address_delivery;
-        $userId = $this->context->customer->id;
-        $orderByCustomer = Order::getCustomerOrders($userId,true);
-        $found_module = false;
-        $found_delivery = false;
-        
-        $i = 0;
-        while(!$found_module && count($orderByCustomer[$i])>0){
-            if($orderByCustomer[$i]['module'] == 'nimblepayment'){ 
-                $found_module = true;
-                if($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery){
-                    $found_delivery = true;
-                }     
-            }
-            $i++;
-        }
-        
-        if($found_module && !$found_delivery){
-            try{
-                    $params = array(
-                        'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-                        'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
-                    );
-                    $nimbleApi = new NimbleAPI($params);
-                    NimbleAPIStoredCards::deleteAllCards($nimbleApi, $userId);  
-                    error_log("borro las tarjetas");
-                } catch (Exception $ex) {
-                    //to do
-                }
-        }
-        
-        //$cards = $this->getListStoredCards($userId);
-        //PRUEBAS STORED CARDS
-        $cards['maskedPan'] = "************0004";
-        $cards['cardBrand'] = "VISA";
-        $cards['default']   = true;
-        // FIN DE PRUEBAS
-        $ssl = Configuration::get('PS_SSL_ENABLED');
-        $this->smarty->assign(
-            array(
-                'ssl'           => $ssl,
-                'params'        => array(),
-                'this_path'     => $this->_path,
-                'this_path_bw'  => $this->_path,
-                'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-                'cards'         => $cards
-                )
-        );
-        
-        $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
-        if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            return $this->display(__FILE__, 'payment.tpl');
-        }
-    }
+	public function hookPayment($params)
+	{
+		$cards = array();
+		if (!$this->active) {
+			return;
+		}
+		if (!$this->checkCurrency($params['cart'])) {
+			return;
+		}
+		//si hay tarjetas
+		$cart_id_delivery = $this->context->cart->id_address_delivery;
+		$userId = $this->context->customer->id;
+		$orderByCustomer = Order::getCustomerOrders($userId,true);
+		$found_module = false;
+		$found_delivery = false;
+
+		$i = 0;
+		while(!$found_module && count($orderByCustomer[$i])>0){
+			if($orderByCustomer[$i]['module'] == 'nimblepayment'){
+				$found_module = true;
+				if($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery){
+					$found_delivery = true;
+				}
+			}
+			$i++;
+		}
+
+		if($found_module && !$found_delivery){
+			try{
+					$params = array(
+						'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+						'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
+					);
+					$nimbleApi = new NimbleAPI($params);
+					NimbleAPIStoredCards::deleteAllCards($nimbleApi, $userId);  
+					error_log("borro las tarjetas");
+				} catch (Exception $ex) {
+					//to do
+				}
+		}
+
+		$cards = $this->getListStoredCards();
+		error_log("cards");
+		error_log(print_r($cards,true));
+		/*PRUEBAS STORED CARDS
+		$cards['maskedPan'] = "************0004";
+		$cards['cardBrand'] = "VISA";
+		$cards['default']   = true;
+		*/// FIN DE PRUEBAS
+		$ssl = Configuration::get('PS_SSL_ENABLED');
+		$this->smarty->assign(
+			array(
+				'ssl'				=>	$ssl,
+				'params'			=>	array(),
+				'this_path'			=>	$this->_path,
+				'this_path_bw'		=>	$this->_path,
+				'this_path_ssl'		=>	Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+				'cards'				=>	$cards
+				)
+		);
+
+		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+		if (isset($nimble_credentials) && $nimble_credentials == 1) {
+			return $this->display(__FILE__, 'payment.tpl');
+		}
+	}
 
     public function hookPaymentReturn($params)
     {
@@ -1028,27 +1030,27 @@ class NimblePayment extends PaymentModule
     /*
      * Get all stored customer cards
      */
-    public function getListStoredCards($userId)
-    {
-        $userId = $this->context->customer->id;       
-        $cards = array();                
-        try{
-            $params = array(
-                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
-            );
+	public function getListStoredCards()
+	{
+		$userId = $this->context->customer->id;
+		$cards = array();
+		try{
+			$params = array(
+				'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+				'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
+			);
 
-            $nimbleApi = new NimbleAPI($params);
-            $result = NimbleAPIStoredCards::getStoredCards($nimbleApi, $userId);
-            if(isset($result['data']) && isset($result['data']['storedCards'])){
-                $cards = $result['data']['storedCards'];
-            }
-        } catch (Exception $e){
-            // getStoredCard failed.
-        }
-           
-        return $cards;
-    }
+			$nimbleApi = new NimbleAPI($params);
+			$result = NimbleAPIStoredCards::getStoredCards($nimbleApi, $userId);
+			if(isset($result['data']) && isset($result['data']['storedCards'])){
+				$cards = $result['data']['storedCards'];
+			}
+		} catch (Exception $e){
+			// getStoredCard failed.
+		}
+
+		return $cards;
+	}
     
     public function getConfigUrl(){
         $url = $this->context->link->getAdminLink('AdminModules') . '&configure='.$this->name.'&module_name='.$this->name;
@@ -1059,7 +1061,7 @@ class NimblePayment extends PaymentModule
         $url = $this->getConfigUrl().'&authorize=true';
         return $url;
     }
-    
+
     /**
      * PS module tab installation callback implementation
      * @param  string $tabClass    tab class
