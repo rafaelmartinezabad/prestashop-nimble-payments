@@ -35,14 +35,21 @@
                 
                 <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
             </a>
-        </p>    
-        <li>
-            <input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $cards['default']}  checked {/if} value="{$cards|json_encode|base64_encode}" />
-            <label for="nimblepayment_storedcard_1" class="stored_card {$cards['cardBrand']|lower}"> {$cards['maskedPan']}</label>
-            <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard"  value="" />
-            <label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
-        </li>
-
+        </p>
+        {if ! empty($cards) }
+            <ul>
+                {foreach from=$cards key=card_number item=card}
+                    <li>
+                        <input type="radio" id="nimblepayment_storedcard_{$card_number}" name="nimblepayment_storedcard"  value="{$card|json_encode|base64_encode}" {if $card['default'] } checked="checked" {/if} />
+                        <label for="nimblepayment_storedcard_{$card_number}" class="stored_card">{$card['maskedPan']} {$card['cardBrand']}</label>
+                    </li>
+                {/foreach}
+                <li>
+                    <input type="radio" id="nimblepayment_storedcard_new" name="nimblepayment_storedcard"  value="" />
+                    <label for="nimblepayment_storedcard_new" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
+                </li>
+            </ul>
+        {/if}
     </div>
 </div>
 <script type="text/javascript">

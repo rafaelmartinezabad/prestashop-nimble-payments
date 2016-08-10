@@ -412,7 +412,6 @@ class NimblePayment extends PaymentModule
 
 	public function hookPayment($params)
 	{
-		$cards = array();
 		if (!$this->active) {
 			return;
 		}
@@ -452,13 +451,6 @@ class NimblePayment extends PaymentModule
 		}
 
 		$cards = $this->getListStoredCards();
-		error_log("cards");
-		error_log(print_r($cards,true));
-		/*PRUEBAS STORED CARDS
-		$cards['maskedPan'] = "************0004";
-		$cards['cardBrand'] = "VISA";
-		$cards['default']   = true;
-		*/// FIN DE PRUEBAS
 		$ssl = Configuration::get('PS_SSL_ENABLED');
 		$this->smarty->assign(
 			array(
