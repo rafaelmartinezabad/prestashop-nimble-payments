@@ -513,6 +513,22 @@ p#block_top_title{
     position: relative;
 }
 
+.box-info-product #faster_checkout a::before {
+    bottom: 0;
+    color: #fff;
+    content: "";
+    font-family: "FontAwesome";
+    font-size: 25px;
+    right: 5px;
+    line-height: 47px;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0 1px #419813;
+    top: 10px;
+    width: 51px;
+    z-index: 2;
+}
+
 .box-info-product #faster_checkout a:focus, .box-info-product #faster_checkout a:active {
     text-decoration: none;
 }
