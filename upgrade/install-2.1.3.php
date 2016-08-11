@@ -30,5 +30,6 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_2_1_3($object)
 {
-    return ($object->registerHook('displayShoppingCart'));
+    return ($object->registerHook('displayShoppingCartFooter')
+            && $object->registerHook('displayProductButtons'));
 }

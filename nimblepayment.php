@@ -63,7 +63,8 @@ class NimblePayment extends PaymentModule
             'displayBackOfficeHeader',
             'dashboardZoneOne',
             'displayAdminHomeInfos',
-            'displayShoppingCart',
+            'displayShoppingCartFooter',
+            'displayProductButtons'
             );
     }
 
@@ -282,30 +283,34 @@ class NimblePayment extends PaymentModule
         $this->refreshToken();
     }
     
-    public function HookDisplayShoppingCart()
-    {   
-        $cart = $this->context->cart;
-        
-        // Si no hay productos o el modulo no es nimblepayments
-        // redirigir o no mostrar el boton de faster checkout
-        
-        if ($cart->nbProducts() <=0) {
-            Tools::redirect('index.php?controller=order');
-        }
-        if ($this->name != 'nimblepayment') {
-            Tools::redirect('index.php?controller=order');
-        }
-		
-		$order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
-        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', array('paymentcode' => 'fastercheckout'));
+    public function HookDisplayShoppingCartFooter($summary)
+    {
+        $order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
+        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
         $this->context->smarty->assign(
-				array(
-					'url_faster_checkout'	=>	$url_faster_checkout,
-					'order_process_type'	=>	$order_process_type
-					)
+            array(
+                    'url_faster_checkout'	=>	$url_faster_checkout,
+                    'order_process_type'	=>	$order_process_type
+            )
         );
 
         return $this->display(__FILE__, 'shopping_cart.tpl');
+    }
+    
+    public function HookDisplayProductButtons($params)
+    {
+        $this->product = $params['product'];
+        
+        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', array('paymentcode' => 'fastercheckout'));
+        $this->context->smarty->assign(
+            array(
+                'url_faster_checkout'	=>	$url_faster_checkout,
+                'product' => $this->product,
+                'allow_oosp' => $this->product->isAvailableWhenOutOfStock((int)$this->product->out_of_stock),
+            )
+        );
+
+        return $this->display(__FILE__, 'product_buttons.tpl');
     }
 
     public function hookDisplayTop()
