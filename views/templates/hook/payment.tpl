@@ -24,30 +24,39 @@
 *}
 
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
+
 <div class="row">
 	<div class="col-xs-12 col-md-6">
-        <p class="payment_module">
-            <a id="nimblepayment_gateway"
-            class="nimblepayment bankwire"
-            href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
-            title="{l s='Pay by Credit card' mod='nimblepayment'}">
-                {l s='Pay by Credit card' mod='nimblepayment'} 
-                
-                <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
-            </a>
-        </p>    
-        <li>
-            <input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $cards['default']}  checked {/if} value="{$cards|json_encode|base64_encode}" />
-            <label for="nimblepayment_storedcard_1" class="stored_card {$cards['cardBrand']|lower}"> {$cards['maskedPan']}</label>
-            <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard"  value="" />
-            <label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
-        </li>
+		<p class="payment_module">
+			<a id="nimblepayment_gateway"
+			class="nimblepayment bankwire"
+			href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
+			title="{l s='Pay by Credit card' mod='nimblepayment'}">
+				{l s='Pay by Credit card' mod='nimblepayment'} 
 
-    </div>
+				<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
+			</a>
+		</p>
+		<ul>
+			<li>
+				{if $cards && !empty($cards)}
+					{foreach from=$cards item=card}
+						<input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
+						<label for="nimblepayment_storedcard_1" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
+					{/foreach}
+					<input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" value=""/>
+				{else}
+					<input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" checked value=""/>
+				{/if}
+				<label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
+			</li>
+		</ul>
+	</div>
 </div>
+
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#nimblepayment_gateway").one( "click", function(event) {
+	$(document).ready(function () {
+		$("#nimblepayment_gateway").one( "click", function(event) {
 			event.preventDefault();
 			$.ajax({
 				type: 'POST',
@@ -70,7 +79,7 @@
 					$('#nimblepayment_gateway').data('clicked', true);
 				}
 			});
-        }).click(function(){
+		}).click(function(){
 			if ($('#cgv:checked').length == 0) {
 				$('#HOOK_PAYMENT .alert').remove();
 				$('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">RAFIKI</p>');
@@ -78,6 +87,6 @@
 			} else if ( ! $(this).data('clicked') ){
 				event.preventDefault();
 			}
-        });
-    });
-</script>            
+		});
+	});
+</script>
