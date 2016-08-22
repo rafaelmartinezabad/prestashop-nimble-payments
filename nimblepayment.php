@@ -423,39 +423,41 @@ class NimblePayment extends PaymentModule
 		if (!$this->checkCurrency($params['cart'])) {
 			return;
 		}
-		//si hay tarjetas
-		$cart_id_delivery = $this->context->cart->id_address_delivery;
-		$userId = $this->context->customer->id;
-		$orderByCustomer = Order::getCustomerOrders($userId,true);
-		$found_module = false;
-		$found_delivery = false;
-
-		$i = 0;
-		while(!$found_module && count($orderByCustomer[$i])>0){
-			if($orderByCustomer[$i]['module'] == 'nimblepayment'){
-				$found_module = true;
-				if($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery){
-					$found_delivery = true;
-				}
-			}
-			$i++;
-		}
-
-		if($found_module && !$found_delivery){
-			try{
-					$params = array(
-						'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-						'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
-					);
-					$nimbleApi = new NimbleAPI($params);
-					NimbleAPIStoredCards::deleteAllCards($nimbleApi, $userId);  
-					error_log("borro las tarjetas");
-				} catch (Exception $ex) {
-					//to do
-				}
-		}
-
+		//If exist card payment
 		$cards = $this->getListStoredCards();
+		if($cards){
+			$cart_id_delivery = $this->context->cart->id_address_delivery;
+			$userId = $this->context->customer->id;
+			$orderByCustomer = Order::getCustomerOrders($userId,true);
+			$found_module = false;
+			$found_delivery = false;
+
+			$i = 0;
+			while(!$found_module && count($orderByCustomer[$i])>0){
+				if($orderByCustomer[$i]['module'] == 'nimblepayment'){
+					$found_module = true;
+					if($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery){
+						$found_delivery = true;
+					}
+				}
+				$i++;
+			}
+
+			if($found_module && !$found_delivery){
+				try{
+						$params = array(
+							'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+							'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
+						);
+						$nimbleApi = new NimbleAPI($params);
+						NimbleAPIStoredCards::deleteAllCards($nimbleApi, $userId);
+						error_log("borro las tarjetas");
+					} catch (Exception $ex) {
+						//to do
+					}
+			}
+		}
+
 		$ssl = Configuration::get('PS_SSL_ENABLED');
 		$this->smarty->assign(
 			array(

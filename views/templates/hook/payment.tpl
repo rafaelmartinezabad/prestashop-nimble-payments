@@ -38,16 +38,18 @@
 		</p>
 		<ul>
 			<li>
-				{if $cards && !empty($cards)}
-					{foreach from=$cards item=card}
-						<input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
-						<label for="nimblepayment_storedcard_1" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
-					{/foreach}
-					<input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" value=""/>
-				{else}
-					<input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" checked value=""/>
+				{if $cards}
+					{if !empty($cards)}
+						{foreach from=$cards item=card}
+							<input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
+							<label for="nimblepayment_storedcard_1" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
+						{/foreach}
+						<input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" value=""/>
+					{else}
+						<input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" checked value=""/>
+					{/if}
+					<label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
 				{/if}
-				<label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
 			</li>
 		</ul>
 	</div>
