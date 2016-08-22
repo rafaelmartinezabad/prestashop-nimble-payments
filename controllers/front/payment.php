@@ -117,7 +117,6 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 		}
 		catch (Exception $e) {
 			//Error
-			error_log(print_r($e, true));
 		}
 	}
 

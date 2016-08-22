@@ -22,12 +22,12 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimblebackend.css" rel="stylesheet" type="text/css" media="all">
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
 
 {if $order_process_type != 1}
-	<p class="cart_navigation clearfix">
+	<p id="faster_checkout" class="cart_navigation clearfix">
 		<a href="{$url_faster_checkout|escape:'htmlall':'UTF-8'}" class="button btn btn-default standard-checkout button-medium" title="{l s='Faster checkout' mod='nimblepayment'}">
-			<span><i class="icon-AdminNimble"></i> {l s='Faster checkout' mod='nimblepayment'}</span>
+			<span>{l s='Faster checkout' mod='nimblepayment'} <i class="icon-rocket right"></i></span>
 		</a>
 	</p>
 {/if}

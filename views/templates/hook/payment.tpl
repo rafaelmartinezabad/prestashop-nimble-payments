@@ -33,7 +33,6 @@
 			href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
 			title="{l s='Pay by Credit card' mod='nimblepayment'}">
 				{l s='Pay by Credit card' mod='nimblepayment'} 
-
 				<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
 			</a>
 		</p>
@@ -69,9 +68,9 @@
 				success: function(response) {
 					if ('redirect' in response){
 						$('#nimblepayment_gateway').attr('href', response['redirect']);
-						if ($('#cgv:checked').length != 0) {
+						//if ($('#cgv:checked').length != 0) {
 							$(location).attr('href', response['redirect'])
-						}
+						//}
 					} else if ('error' in response){
 						$('#HOOK_PAYMENT .alert').remove();
 						$('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">' + response['error']['message'] + '</p>');
@@ -80,11 +79,12 @@
 				}
 			});
 		}).click(function(){
-			if ($('#cgv:checked').length == 0) {
-				$('#HOOK_PAYMENT .alert').remove();
-				$('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">RAFIKI</p>');
-				event.preventDefault();
-			} else if ( ! $(this).data('clicked') ){
+			//if ($('#cgv:checked').length == 0) {
+			//	$('#HOOK_PAYMENT .alert').remove();
+			//	$('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">RAFIKI</p>');
+			//	event.preventDefault();
+			//} else
+			if ( ! $(this).data('clicked') ){
 				event.preventDefault();
 			}
 		});

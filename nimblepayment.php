@@ -44,7 +44,7 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '2.1.2';
+        $this->version = '2.1.3';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
@@ -63,7 +63,8 @@ class NimblePayment extends PaymentModule
             'displayBackOfficeHeader',
             'dashboardZoneOne',
             'displayAdminHomeInfos',
-            'displayShoppingCart',
+            'displayShoppingCartFooter',
+            'displayProductButtons'
             );
     }
 
@@ -282,30 +283,34 @@ class NimblePayment extends PaymentModule
         $this->refreshToken();
     }
     
-    public function HookDisplayShoppingCart()
-    {   
-        $cart = $this->context->cart;
-        
-        // Si no hay productos o el modulo no es nimblepayments
-        // redirigir o no mostrar el boton de faster checkout
-        
-        if ($cart->nbProducts() <=0) {
-            Tools::redirect('index.php?controller=order');
-        }
-        if ($this->name != 'nimblepayment') {
-            Tools::redirect('index.php?controller=order');
-        }
-		
-		$order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
-        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', array('paymentcode' => 'fastercheckout'));
+    public function HookDisplayShoppingCartFooter($summary)
+    {
+        $order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
+        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
         $this->context->smarty->assign(
-				array(
-					'url_faster_checkout'	=>	$url_faster_checkout,
-					'order_process_type'	=>	$order_process_type
-					)
+            array(
+                    'url_faster_checkout'	=>	$url_faster_checkout,
+                    'order_process_type'	=>	$order_process_type
+            )
         );
 
         return $this->display(__FILE__, 'shopping_cart.tpl');
+    }
+    
+    public function HookDisplayProductButtons($params)
+    {
+        $this->product = $params['product'];
+        
+        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', array('paymentcode' => 'fastercheckout'));
+        $this->context->smarty->assign(
+            array(
+                'url_faster_checkout'	=>	$url_faster_checkout,
+                'product' => $this->product,
+                'allow_oosp' => $this->product->isAvailableWhenOutOfStock((int)$this->product->out_of_stock),
+            )
+        );
+
+        return $this->display(__FILE__, 'product_buttons.tpl');
     }
 
     public function hookDisplayTop()
@@ -412,7 +417,6 @@ class NimblePayment extends PaymentModule
 
 	public function hookPayment($params)
 	{
-		$cards = array();
 		if (!$this->active) {
 			return;
 		}
@@ -452,13 +456,6 @@ class NimblePayment extends PaymentModule
 		}
 
 		$cards = $this->getListStoredCards();
-		error_log("cards");
-		error_log(print_r($cards,true));
-		/*PRUEBAS STORED CARDS
-		$cards['maskedPan'] = "************0004";
-		$cards['cardBrand'] = "VISA";
-		$cards['default']   = true;
-		*/// FIN DE PRUEBAS
 		$ssl = Configuration::get('PS_SSL_ENABLED');
 		$this->smarty->assign(
 			array(
