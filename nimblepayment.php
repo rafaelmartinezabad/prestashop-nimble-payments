@@ -301,7 +301,7 @@ class NimblePayment extends PaymentModule
     {
         $this->product = $params['product'];
         
-        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', array('paymentcode' => 'fastercheckout'));
+        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
         $this->context->smarty->assign(
             array(
                 'url_faster_checkout'	=>	$url_faster_checkout,
