@@ -50,13 +50,15 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 		$this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
 		$this->context->cart->checkedTOS = 1;
 
+		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
 		$this->context->smarty->assign(
 			array(
-				'checkedTOS'	=>	$this->context->cart->checkedTOS,
-				'isVirtualCart'	=>	$this->context->cart->isVirtualCart(),
-				'productNumber'	=>	$this->context->cart->nbProducts(),
-				'back'			=>	Tools::safeOutput(Tools::getValue('back')),
-				'isLogged'		=>	$this->isLogged
+				'checkedTOS'					=>	$this->context->cart->checkedTOS,
+				'isVirtualCart'					=>	$this->context->cart->isVirtualCart(),
+				'productNumber'					=>	$this->context->cart->nbProducts(),
+				'back'							=>	Tools::safeOutput(Tools::getValue('back')),
+				'isLogged'						=>	$this->isLogged,
+				'faster_checkout_enabled'		=>	$faster_checkout_enabled
 				)
 		);
 

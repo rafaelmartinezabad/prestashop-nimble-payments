@@ -78,17 +78,20 @@ class NimblePayment extends PaymentModule
 
         //process news tab
         $this->installTab();
-        
+
         if (!parent::install() ) {
             return false;
         }
-        
+
         // Register hooks
         foreach ($this->hooks as $hook){
             if ( ! $this->registerHook($hook) ){
                 return false;
             }
         }
+
+		//Enabled Faster Checkout
+		Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
 
         return true;
     }
@@ -107,18 +110,19 @@ class NimblePayment extends PaymentModule
             $this->uninstallModuleTab($className);
         }
 
-        // Remove system variables
-        Configuration::deleteByName('PS_ADMIN_NIMBLE_TABS');
-        
+		// Remove system variables
+		Configuration::deleteByName('PS_ADMIN_NIMBLE_TABS');
+
         if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || !Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN')
-         || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !Configuration::deleteByName('NIMBLEPAYMENTS_REFUND_INFO')  || !parent::uninstall()
+		|| !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !Configuration::deleteByName('NIMBLEPAYMENTS_REFUND_INFO') 
+		|| !Configuration::deleteByName('FASTER_CHECKOUT_NIMBLE') || !parent::uninstall()
         ) {
             return false;
         }
 
         return true;
     }
-    
+
     /**
      * DisplayBackOfficeHeader Hook implementation
      * @return string html content for back office header
@@ -282,36 +286,42 @@ class NimblePayment extends PaymentModule
     {
         $this->refreshToken();
     }
-    
-    public function HookDisplayShoppingCartFooter($summary)
-    {
-        $order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
-        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
-        $this->context->smarty->assign(
-            array(
-                    'url_faster_checkout'	=>	$url_faster_checkout,
-                    'order_process_type'	=>	$order_process_type
-            )
-        );
 
-        return $this->display(__FILE__, 'shopping_cart.tpl');
-    }
-    
-    public function HookDisplayProductButtons($params)
-    {
-        $this->product = $params['product'];
-        
-        $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
-        $this->context->smarty->assign(
-            array(
-                'url_faster_checkout'	=>	$url_faster_checkout,
-                'product' => $this->product,
-                'allow_oosp' => $this->product->isAvailableWhenOutOfStock((int)$this->product->out_of_stock),
-            )
-        );
+	public function HookDisplayShoppingCartFooter($summary)
+	{
+		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+		if($faster_checkout_enabled){
+			$order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
+			$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
+			$this->context->smarty->assign(
+				array(
+						'url_faster_checkout'	=>	$url_faster_checkout,
+						'order_process_type'	=>	$order_process_type
+				)
+			);
 
-        return $this->display(__FILE__, 'product_buttons.tpl');
-    }
+			return $this->display(__FILE__, 'shopping_cart.tpl');
+		}
+	}
+
+	public function HookDisplayProductButtons($params)
+	{
+		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+		if($faster_checkout_enabled){
+			$this->product = $params['product'];
+
+			$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
+			$this->context->smarty->assign(
+				array(
+					'url_faster_checkout'	=>	$url_faster_checkout,
+					'product' => $this->product,
+					'allow_oosp' => $this->product->isAvailableWhenOutOfStock((int)$this->product->out_of_stock),
+				)
+			);
+
+			return $this->display(__FILE__, 'product_buttons.tpl');
+		}
+	}
 
     public function hookDisplayTop()
     {
@@ -320,7 +330,7 @@ class NimblePayment extends PaymentModule
             return $this->display(__FILE__, 'display_top.tpl');
         }
     }
-    
+
     public function installTab()
     {
          // Mapping Nimble Tabs
@@ -355,7 +365,6 @@ class NimblePayment extends PaymentModule
         }
     }
 
-
     private function postValidation()
     {
         if (Tools::isSubmit('saveCredentials')) {
@@ -372,9 +381,10 @@ class NimblePayment extends PaymentModule
         $url_nimble = $this->getGatewayUrl();
         $subtitle = $this->enabled ? $this->l('Your Nimble Payments gateway is ready to sell!') : $this->l('How to star using Nimble Payments in two steps.');
         $post_url = $this->getConfigUrl();
-        
+
         $error_message = (count($this->post_errors)) ? 1 : 0;
         $authorized = ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ) ? 1 : 0;
+		$faster_checkout = Configuration::get('FASTER_CHECKOUT_NIMBLE');
         $this->smarty->assign(
             array(
                 'url_nimble' => $url_nimble,
@@ -386,6 +396,7 @@ class NimblePayment extends PaymentModule
                 'error_message' => $error_message,
                 'authorized' => $authorized,
                 'Oauth3Url' => $this->getAurhotizeUrl(),
+				'faster_checkout' => $faster_checkout
             )
         );
         return $this->display(__FILE__, 'gateway_config.tpl');
@@ -394,24 +405,29 @@ class NimblePayment extends PaymentModule
     public function getContent()
     {
         $output = null;
-        
-        if (Tools::getIsset('authorize')){            
+
+        if (Tools::getIsset('authorize')){
             //Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']) . '/' . $this->getConfigUrl());
             Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', $_SERVER['HTTP_REFERER']);
             Tools::redirect($this->getOauth3Url());
         }
-        
         if (Tools::isSubmit('removeOauth2')) {
             $this->removeOauthToken();
         }
-        
         if (Tools::isSubmit('saveCredentials')) {
             $this->postValidation();
         }
-        
+		if (Tools::isSubmit('saveFaster')) {
+			if (Tools::getValue("fasterCheckout") == 0){
+				Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 0);
+			} else {
+				Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
+			}
+		}
+
         $this->enabled = Configuration::get('PS_NIMBLE_CREDENTIALS');
         $output .= $this->displaynimblepayment();
-        
+
         return $output;
     }
 
@@ -1047,7 +1063,6 @@ class NimblePayment extends PaymentModule
 		} catch (Exception $e){
 			// getStoredCard failed.
 		}
-
 		return $cards;
 	}
     

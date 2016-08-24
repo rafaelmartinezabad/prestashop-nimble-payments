@@ -99,6 +99,29 @@
             </form>
         </div>
     </div>
+	<div class="nimbleStepBox">
+		<h3>{l s='Faster Checkout Nimble Payments' mod='nimblepayment'}</h3>
+		<div class="contentStep">
+			<input type="hidden" value="1" name="saveFaster">
+			<form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
+				<div class="form-group">
+					<label>{l s='Enabled/Disable' mod='nimblepayment'}</label>
+				</div>
+				<div class="col-lg-9">
+					<span class="switch prestashop-switch fixed-width-lg">
+						<input type="radio" name="fasterCheckout" id="fasterCheckout_on" value="1" {if $faster_checkout} checked="checked" {/if}>
+						<label for="fasterCheckout_on" class="radioCheck">Sí</label>
+						<input type="radio" name="fasterCheckout" id="fasterCheckout_off" value="0" {if !$faster_checkout} checked="checked" {/if}>
+						<label for="fasterCheckout_off" class="radioCheck">No</label>
+						<a class="slide-button btn"></a>
+					</span>
+				</div>
+				<div class="form-footer">
+					<button name="saveFaster" id="module_form_submit_btn" value="1" type="submit">{l s='Save' mod='nimblepayment'}</button>
+				</div>
+			</form>
+		</div>
+	</div>
     {if !$authorized}
         <div class="nimbleAuthorize">
             <div class="title">

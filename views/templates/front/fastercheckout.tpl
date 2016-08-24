@@ -23,18 +23,24 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 	{if $isLogged}
-		{if $productNumber}
-			{include file="$tpl_dir./order-address.tpl"}
-			<!-- Carrier -->
-			{include file="$tpl_dir./order-carrier.tpl"}
-			<!-- END Carrier -->
-			<!-- Payment -->
-			{include file="$tpl_dir./order-payment.tpl"}
+		{if $faster_checkout_enabled}
+			{if $productNumber}
+				{include file="$tpl_dir./order-address.tpl"}
+				<!-- Carrier -->
+				{include file="$tpl_dir./order-carrier.tpl"}
+				<!-- END Carrier -->
+				<!-- Payment -->
+				{include file="$tpl_dir./order-payment.tpl"}
+			{else}
+				{capture name=path}{l s='Your shopping cart'}{/capture}
+				<h2 class="page-heading">{l s='Your shopping cart'}</h2>
+				{include file="$tpl_dir./errors.tpl"}
+				<p class="alert alert-warning">{l s='Your shopping cart is empty.'}</p>
+			{/if}
 		{else}
-			{capture name=path}{l s='Your shopping cart'}{/capture}
-			<h2 class="page-heading">{l s='Your shopping cart'}</h2>
+			<h2 class="page-heading">{l s='Faster Checkout is disable' mod='nimblepayment'}</h2>
 			{include file="$tpl_dir./errors.tpl"}
-			<p class="alert alert-warning">{l s='Your shopping cart is empty.'}</p>
+			<p class="alert alert-warning">{l s='Faster Checkout is disable' mod='nimblepayment'}</p>
 		{/if}
 	{else}
 		<h2 class="page-heading">{l s='User is not logged'}</h2>
