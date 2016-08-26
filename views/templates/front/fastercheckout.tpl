@@ -25,12 +25,25 @@
 	{if $isLogged}
 		{if $faster_checkout_enabled}
 			{if $productNumber}
-				{include file="$tpl_dir./order-address.tpl"}
-				<!-- Carrier -->
-				{include file="$tpl_dir./order-carrier.tpl"}
-				<!-- END Carrier -->
-				<!-- Payment -->
-				{include file="$tpl_dir./order-payment.tpl"}
+				<div class="nimble-left">
+					<div class="nimble-block" id="nimble-shopping-cart">
+						{include file="$tpl_dir./shopping-cart.tpl"}
+					</div>	
+					<div class="nimble-block" id="nimble-order-carrier">
+						<!-- Carrier -->
+						{include file="$tpl_dir./order-carrier.tpl"}
+						<!-- END Carrier -->
+					</div>
+				</div>
+				<div class="nimble-right">	
+					<div class="nimble-block" id="nimble-order-address">
+						{include file="$tpl_dir./order-address.tpl"}
+					</div>
+					<div class="nimble-block" id="nimble-order-payment">
+						<!-- Payment -->
+						{include file="$tpl_dir./order-payment.tpl"}
+					</div>
+				</div>
 			{else}
 				{capture name=path}{l s='Your shopping cart'}{/capture}
 				<h2 class="page-heading">{l s='Your shopping cart'}</h2>

@@ -552,3 +552,18 @@ p#block_top_title{
     float: right;
     margin-left: 10px;
 }
+
+.nimble-left {
+	width: 45%;
+	float: left;
+	margin: 0px;
+}
+
+.nimble-right {
+	width: 48%;
+	float: right;
+	border-left-style: solid;
+	border-left-color: grey;
+	border-left-width: 5px;
+	padding-left: 25px;
+}

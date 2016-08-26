@@ -26,7 +26,7 @@
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
 
 <div class="row">
-	<div class="col-xs-12 col-md-6">
+	<div class="col-xs-12 col-md-12">
 		<p class="payment_module">
 			<a id="nimblepayment_gateway"
 			class="nimblepayment bankwire"
