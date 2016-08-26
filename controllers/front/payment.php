@@ -47,6 +47,24 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 		$this->nimblepayment_client_secret = Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET');
 		$this->nimblepayment_client_id = Configuration::get('NIMBLEPAYMENT_CLIENT_ID');
 		parent::initContent();
+
+		$nimblePayment = new NimblePayment();
+		$removeCards = $nimblePayment->checkStoredCard();
+		if($removeCards){
+			$userId = $this->context->customer->id;
+			try{
+				$params = array(
+					'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+					'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
+				);
+				$nimbleApi = new NimbleAPI($params);
+				NimbleAPIStoredCards::deleteAllCards($nimbleApi, $userId);
+				error_log("borro las tarjetas");
+			} catch (Exception $ex) {
+				//to do
+			}
+		}
+
 		$cart = $this->context->cart;
 		if ($cart->nbProducts() <=0) {
 			//Tools::redirect('index.php?controller=order');

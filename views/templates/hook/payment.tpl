@@ -38,7 +38,7 @@
 		</p>
 		<ul>
 			<li>
-				{if $cards}
+				{if !$hideCards}
 					{if !empty($cards)}
 						{foreach from=$cards item=card}
 							<input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
