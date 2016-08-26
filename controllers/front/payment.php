@@ -95,11 +95,8 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 		$cart = $this->context->cart;
 		$userId = $this->context->customer->id;
 		$id_address = Address::getFirstCustomerAddressId($userId);
-		error_log("id_address: " . $id_address);
 		$id_address_delivery = (int) $this->context->cart->id_address_delivery;
-		error_log("id_address_delivery: " . $id_address_delivery);
 		$id_address_invoice = (int) $this->context->cart->id_address_invoice;
-		error_log("id_address_invoice: " . $id_address_invoice);
 
 		try{
 			$params = array(

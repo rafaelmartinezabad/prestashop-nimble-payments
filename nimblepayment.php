@@ -44,7 +44,7 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '2.1.3';
+        $this->version = '2.1.4';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         parent::__construct();
@@ -445,8 +445,7 @@ class NimblePayment extends PaymentModule
 		if($cards){
 			$hideCards = $this->checkStoredCard();
 		}
-		error_log(print_r($cards, true));
-		error_log("hide: " . $hideCards);
+
 		$ssl = Configuration::get('PS_SSL_ENABLED');
 		$this->smarty->assign(
 			array(
@@ -583,9 +582,8 @@ class NimblePayment extends PaymentModule
 		$found_module = false;
 		$found_delivery = false;
 		$removeCards = false;
-		error_log("delivery: " . $cart_id_delivery);
+
 		$i = 0;
-		error_log(print_r($orderByCustomer, true));
 		while(!$found_module && count($orderByCustomer[$i])>0){
 			if($orderByCustomer[$i]['module'] == 'nimblepayment'){
 				$found_module = true;
