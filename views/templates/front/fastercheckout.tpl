@@ -22,6 +22,7 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
+{if $nimble_credentials}
 	{if $isLogged}
 		{if $faster_checkout_enabled}
 			{if $productNumber}
@@ -60,3 +61,8 @@
 		{include file="$tpl_dir./errors.tpl"}
 		<p class="alert alert-warning">{l s='User is not logged '}</p>
 	{/if}
+{else}
+	<h2 class="page-heading">{l s='The gateway Nimble Payments is not active'}</h2>
+	{include file="$tpl_dir./errors.tpl"}
+	<p class="alert alert-warning">{l s='The gateway Nimble Payments is not active'}</p>
+{/if}

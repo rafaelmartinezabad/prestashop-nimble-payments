@@ -289,37 +289,43 @@ class NimblePayment extends PaymentModule
 
 	public function HookDisplayShoppingCartFooter($summary)
 	{
-		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
-		if($faster_checkout_enabled){
-			$order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
-			$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
-			$this->context->smarty->assign(
-				array(
-						'url_faster_checkout'	=>	$url_faster_checkout,
-						'order_process_type'	=>	$order_process_type
-				)
-			);
+		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+		if($nimble_credentials){
+			$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+			if($faster_checkout_enabled){
+				$order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
+				$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
+				$this->context->smarty->assign(
+					array(
+							'url_faster_checkout'	=>	$url_faster_checkout,
+							'order_process_type'	=>	$order_process_type
+					)
+				);
 
-			return $this->display(__FILE__, 'shopping_cart.tpl');
+				return $this->display(__FILE__, 'shopping_cart.tpl');
+			}
 		}
 	}
 
 	public function HookDisplayProductButtons($params)
 	{
-		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
-		if($faster_checkout_enabled){
-			$this->product = $params['product'];
+		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+		if($nimble_credentials){
+			$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+			if($faster_checkout_enabled){
+				$this->product = $params['product'];
 
-			$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
-			$this->context->smarty->assign(
-				array(
-					'url_faster_checkout'	=>	$url_faster_checkout,
-					'product' => $this->product,
-					'allow_oosp' => $this->product->isAvailableWhenOutOfStock((int)$this->product->out_of_stock),
-				)
-			);
+				$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
+				$this->context->smarty->assign(
+					array(
+						'url_faster_checkout'	=>	$url_faster_checkout,
+						'product' => $this->product,
+						'allow_oosp' => $this->product->isAvailableWhenOutOfStock((int)$this->product->out_of_stock),
+					)
+				);
 
-			return $this->display(__FILE__, 'product_buttons.tpl');
+				return $this->display(__FILE__, 'product_buttons.tpl');
+			}
 		}
 	}
 
