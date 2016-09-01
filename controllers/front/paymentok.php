@@ -32,13 +32,12 @@
 class NimblePaymentPaymentOkModuleFrontController extends ModuleFrontController
 {
     public $nimblepayment_client_secret = '';
+    
     /**
-     * @see FrontController::initContent()
+     * @see FrontController::postProcess()
      */
-
-    public function initContent()
+    public function postProcess()
     {
-        parent::initContent();
         $code = Tools::getValue('paymentcode');
         $cart = (int)Tools::substr($code, 0, 8);
         
