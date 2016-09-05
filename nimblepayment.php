@@ -727,15 +727,20 @@ class NimblePayment extends PaymentModule
                     'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
                     'oauth_code' => Tools::getValue('code')
             );
-            $nimble_api = new NimbleAPI($params);
-
-            // Check if NimbleAPI object has properly perform the authorization process
-            if ($nimble_api != null && $nimble_api->authorization->isAccessParams()) {
-                $oauth = 'success';
-                // Set token data on PS variables
-                Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $nimble_api->authorization->getAccessToken());
-                Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $nimble_api->authorization->getRefreshToken());
-            } else {
+            
+            try {
+                $nimble_api = new NimbleAPI($params);
+                
+                // Check if NimbleAPI object has properly perform the authorization process
+                if ($nimble_api != null && $nimble_api->authorization->isAccessParams()) {
+                    $oauth = 'success';
+                    // Set token data on PS variables
+                    Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $nimble_api->authorization->getAccessToken());
+                    Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $nimble_api->authorization->getRefreshToken());
+                } else {
+                    $oauth = 'error';
+                }
+            } catch (Exception $e) {
                 $oauth = 'error';
             }
         }

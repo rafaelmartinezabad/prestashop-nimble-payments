@@ -31,13 +31,13 @@ require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPI
 
 class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontController
 {
-    public $ssl = true;
-    public $display_column_left = false;
-    public $display_column_right = false;
-    public $nimblepayment_client_secret = '';
-    public $nimblepayment_client_id = '';
-    public $type_error = 0;
-    public $nimbleapi;
+        public $ssl = true;
+        public $display_column_left = false;
+        public $display_column_right = false;
+        public $nimblepayment_client_secret = '';
+        public $nimblepayment_client_id = '';
+        public $type_error = 0;
+        public $nimbleapi;
 
 	public function __construct()
 	{

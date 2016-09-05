@@ -28,21 +28,21 @@
 			{if $productNumber}
 				<div class="nimble-left">
 					<div class="nimble-block" id="nimble-shopping-cart">
-						{include file="$tpl_dir./shopping-cart.tpl"}
+						{include file="./shopping-cart.tpl"}
 					</div>	
 					<div class="nimble-block" id="nimble-order-carrier">
 						<!-- Carrier -->
-						{include file="$tpl_dir./order-carrier.tpl"}
+						{include file="./order-carrier.tpl"}
 						<!-- END Carrier -->
 					</div>
 				</div>
 				<div class="nimble-right">	
 					<div class="nimble-block" id="nimble-order-address">
-						{include file="$tpl_dir./order-address.tpl"}
+						{include file="./order-address.tpl"}
 					</div>
 					<div class="nimble-block" id="nimble-order-payment">
 						<!-- Payment -->
-						{include file="$tpl_dir./order-payment.tpl"}
+						{include file="./order-payment.tpl"}
 					</div>
 				</div>
 			{else}
