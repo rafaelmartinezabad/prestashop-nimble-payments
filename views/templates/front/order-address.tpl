@@ -22,7 +22,7 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-{assign var="back_order_page" value="order-opc.php"}
+{assign var="back_order_page" value=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|escape:'htmlall':'UTF-8'}
 <h1 class="page-heading step-num"><span>3</span> {l s='Addresses'}</h1>
 <div id="opc_account" class="opc-main-block">
     <div id="opc_account-overlay" class="opc-overlay" style="display: none;"></div>
@@ -56,7 +56,7 @@
                                             {/section}
                                             </select><span class="waitimage"></span>
                                     {else}
-                                            <a href="{$link->getPageLink('address', true, NULL, "back={$back_order_page}?step=1&select_address=1{if $back}&mod={$back}{/if}")|escape:'html':'UTF-8'}" title="{l s='Add'}" class="button button-small btn btn-default">
+                                            <a href="{$link->getPageLink('address', true, NULL, "back={$back_order_page}&select_address=1{if $back}&mod={$back}{/if}")|escape:'html':'UTF-8'}" title="{l s='Add'}" class="button button-small btn btn-default">
                                                     <span>
                                                             {l s='Add a new address'}
                                                             <i class="icon-chevron-right right"></i>
@@ -77,7 +77,7 @@
                     </div>
             </div> <!-- end row -->
             <p class="address_add submit">
-                    <a href="{$link->getPageLink('address', true, NULL, "back={$back_order_page}?step=1{if $back}&mod={$back}{/if}")|escape:'html':'UTF-8'}" title="{l s='Add'}" class="button button-small btn btn-default">
+                    <a href="{$link->getPageLink('address', true, NULL, "back={$back_order_page}{if $back}&mod={$back}{/if}")|escape:'html':'UTF-8'}" title="{l s='Add'}" class="button button-small btn btn-default">
                             <span>{l s='Add a new address'}<i class="icon-chevron-right right"></i></span>
                     </a>
             </p>
@@ -85,7 +85,7 @@
 </div> <!--  end opc_account -->
 {strip}
 {capture}{if $back}&mod={$back|urlencode}{/if}{/capture}
-{capture name=addressUrl}{$link->getPageLink('address', true, NULL, 'back='|cat:$back_order_page|cat:'?step=1'|cat:$smarty.capture.default)|escape:'quotes':'UTF-8'}{/capture}
+{capture name=addressUrl}{$link->getPageLink('address', true, NULL, 'back='|cat:$back_order_page|cat:$smarty.capture.default)|escape:'quotes':'UTF-8'}{/capture}
 {addJsDef addressUrl=$smarty.capture.addressUrl}
 {capture}{'&multi-shipping=1'|urlencode}{/capture}
 {addJsDef addressMultishippingUrl=$smarty.capture.addressUrl|cat:$smarty.capture.default}

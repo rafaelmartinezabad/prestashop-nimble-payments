@@ -44,6 +44,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 		parent::__construct();
 		$this->context = Context::getContext();
 	}
+
 	public function initContent()
 	{
 		parent::initContent();
@@ -52,6 +53,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 
 		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
 		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+		$ssl = Configuration::get('PS_SSL_ENABLED');
+
 		$this->context->smarty->assign(
 			array(
 				'checkedTOS'					=>	$this->context->cart->checkedTOS,
@@ -60,7 +63,9 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 				'back'							=>	Tools::safeOutput(Tools::getValue('back')),
 				'isLogged'						=>	$this->isLogged,
 				'faster_checkout_enabled'		=>	$faster_checkout_enabled,
-				'nimble_credentials'			=>	$nimble_credentials
+				'nimble_credentials'			=>	$nimble_credentials,
+				'ssl'							=>	$ssl,
+				'params'						=>	array()
 				)
 		);
 
