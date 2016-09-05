@@ -31,21 +31,21 @@ require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPI
 
 class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontController
 {
-        public $ssl = true;
-        public $display_column_left = false;
-        public $display_column_right = false;
-        public $nimblepayment_client_secret = '';
-        public $nimblepayment_client_id = '';
-        public $type_error = 0;
-        public $nimbleapi;
+	public $ssl = true;
+	public $display_column_left = false;
+	public $display_column_right = false;
+	public $nimblepayment_client_secret = '';
+	public $nimblepayment_client_id = '';
+	public $type_error = 0;
+	public $nimbleapi;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->context = Context::getContext();
 	}
-        
-        public function initContent()
+
+	public function initContent()
 	{
 		parent::initContent();
                 
@@ -56,46 +56,46 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
 		$ssl = Configuration::get('PS_SSL_ENABLED');
 
-                if ($this->context->cart->nbProducts()) {
-                    if (Tools::isSubmit('ajax')) {
-                        if (Tools::isSubmit('method')) {
-                            switch (Tools::getValue('method')) {
-                                case 'updateCarrierAndGetPayments':
-                                    if ((Tools::isSubmit('delivery_option') || Tools::isSubmit('id_carrier')) && Tools::isSubmit('recyclable') && Tools::isSubmit('gift') && Tools::isSubmit('gift_message')) {
-                                        //$this->_assignWrappingAndTOS();
-                                        if ($this->_processCarrier()) {
-                                            $carriers = $this->context->cart->simulateCarriersOutput();
-                                            $return = array_merge(array(
-                                                'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
-                                                'HOOK_PAYMENT' => $this->_getPaymentMethods(),
-                                                'carrier_data' => $this->_getCarrierList(),
-                                                'HOOK_BEFORECARRIER' => Hook::exec('displayBeforeCarrier', array('carriers' => $carriers))
-                                                ),
-                                                $this->getFormatedSummaryDetail()
-                                            );
-                                            Cart::addExtraCarriers($return);
-                                            $this->ajaxDie(Tools::jsonEncode($return));
-                                        } else {
-                                            $this->errors[] = Tools::displayError('An error occurred while updating the cart.');
-                                        }
-                                        if (count($this->errors)) {
-                                            $this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
-                                        }
-                                        exit;
-                                    }
-                                    break;
+		if ($this->context->cart->nbProducts()) {
+			if (Tools::isSubmit('ajax')) {
+				if (Tools::isSubmit('method')) {
+					switch (Tools::getValue('method')) {
+						case 'updateCarrierAndGetPayments':
+							if ((Tools::isSubmit('delivery_option') || Tools::isSubmit('id_carrier')) && Tools::isSubmit('recyclable') && Tools::isSubmit('gift') && Tools::isSubmit('gift_message')) {
+								//$this->_assignWrappingAndTOS();
+								if ($this->_processCarrier()) {
+									$carriers = $this->context->cart->simulateCarriersOutput();
+									$return = array_merge(array(
+										'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
+										'HOOK_PAYMENT' => $this->_getPaymentMethods(),
+										'carrier_data' => $this->_getCarrierList(),
+										'HOOK_BEFORECARRIER' => Hook::exec('displayBeforeCarrier', array('carriers' => $carriers))
+										),
+										$this->getFormatedSummaryDetail()
+									);
+									Cart::addExtraCarriers($return);
+									$this->ajaxDie(Tools::jsonEncode($return));
+								} else {
+									$this->errors[] = Tools::displayError('An error occurred while updating the cart.');
+								}
+								if (count($this->errors)) {
+									$this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
+								}
+								exit;
+							}
+							break;
 
-                                default:
-                                    throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
-                            }
-                        } else {
-                            throw new PrestaShopException('Method is not defined');
-                        }
-                    }
-                } elseif (Tools::isSubmit('ajax')) {
-                    $this->errors[] = Tools::displayError('There is no product in your cart.');
-                    $this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
-                }
+						default:
+							throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
+					}
+				} else {
+					throw new PrestaShopException('Method is not defined');
+				}
+			}
+		} elseif (Tools::isSubmit('ajax')) {
+			$this->errors[] = Tools::displayError('There is no product in your cart.');
+			$this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
+		}
                 
                 
 		$this->context->smarty->assign(
@@ -210,7 +210,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 	}
 
 	protected function _assignAddress()
-    {
+	{
         //if guest checkout disabled and flag is_guest  in cookies is actived
         if (Configuration::get('PS_GUEST_CHECKOUT_ENABLED') == 0 && ((int)$this->context->customer->is_guest != Configuration::get('PS_GUEST_CHECKOUT_ENABLED'))) {
             $this->context->customer->logout();
@@ -529,8 +529,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
         return $return;
     }
-    
-    
+
     /**
      * Validate get/post param delivery option
      *
@@ -564,7 +563,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 $this->context->cart->gift_message = strip_tags(Tools::getValue('gift_message'));
             }
         }
-
+		
         if (isset($this->context->customer->id) && $this->context->customer->id) {
             $address = new Address((int)$this->context->cart->id_address_delivery);
             if (!($id_zone = Address::getZoneById($address->id))) {
@@ -573,7 +572,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         } else {
             $id_zone = (int)Country::getIdZone((int)Tools::getCountry());
         }
-
+		
         if (Tools::getIsset('delivery_option')) {
             if ($this->validateDeliveryOption(Tools::getValue('delivery_option'))) {
                 $this->context->cart->setDeliveryOption(Tools::getValue('delivery_option'));
