@@ -60,7 +60,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 				'back'							=>	Tools::safeOutput(Tools::getValue('back')),
 				'isLogged'						=>	$this->isLogged,
 				'faster_checkout_enabled'		=>	$faster_checkout_enabled,
-				'nimble_credentials'				=>	$nimble_credentials
+				'nimble_credentials'			=>	$nimble_credentials
 				)
 		);
 
@@ -160,7 +160,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 			'HOOK_SHOPPING_CART' => ''
 		));
 	}
-	
+
 	protected function _assignAddress()
     {
         //if guest checkout disabled and flag is_guest  in cookies is actived
@@ -308,7 +308,6 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
     }
 
-    
     protected function _assignPayment()
     {
         if ((bool)Configuration::get('PS_ADVANCED_PAYMENT_API')) {
