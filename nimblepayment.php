@@ -437,39 +437,41 @@ class NimblePayment extends PaymentModule
         return $output;
     }
 
-	public function hookPayment($params)
-	{
-		$hideCards = false;
-		if (!$this->active) {
-			return;
-		}
-		if (!$this->checkCurrency($params['cart'])) {
-			return;
-		}
-		
-		$cards = $this->getListStoredCards();
-		if($cards){
-			$hideCards = $this->checkStoredCard();
-		}
+    public function hookPayment($params)
+    {
+        
+        $hideCards = false;
+        if (!$this->active) {
+                return;
+        }
+        if (!$this->checkCurrency($params['cart'])) {
+                return;
+        }
 
-		$ssl = Configuration::get('PS_SSL_ENABLED');
-		$this->smarty->assign(
-			array(
-				'ssl'				=>	$ssl,
-				'params'			=>	array(),
-				'this_path'			=>	$this->_path,
-				'this_path_bw'		=>	$this->_path,
-				'this_path_ssl'		=>	Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-				'hideCards'			=>	$hideCards,
-				'cards'				=>	$cards
-				)
-		);
+        $cards = $this->getListStoredCards();
+        error_log(print_r($cards, true));
+        if($cards){
+            $hideCards = $this->checkStoredCard();
+        }
 
-		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
-		if (isset($nimble_credentials) && $nimble_credentials == 1) {
-			return $this->display(__FILE__, 'payment.tpl');
-		}
-	}
+        $ssl = Configuration::get('PS_SSL_ENABLED');
+        $this->smarty->assign(
+                array(
+                        'ssl'				=>	$ssl,
+                        'params'			=>	array(),
+                        'this_path'			=>	$this->_path,
+                        'this_path_bw'		=>	$this->_path,
+                        'this_path_ssl'		=>	Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+                        'hideCards'			=>	$hideCards,
+                        'cards'				=>	$cards
+                        )
+        );
+
+        $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+        if (isset($nimble_credentials) && $nimble_credentials == 1) {
+                return $this->display(__FILE__, 'payment.tpl');
+        }
+    }
 
     public function hookPaymentReturn($params)
     {
@@ -580,34 +582,34 @@ class NimblePayment extends PaymentModule
         return $this->display(__FILE__, 'payment_return.tpl');
     }
 
-	public function checkStoredCard()
-	{
-		$cart_id_delivery = $this->context->cart->id_address_delivery;
-		$userId = $this->context->customer->id;
-		$orderByCustomer = Order::getCustomerOrders($userId,true);
-		$found_module = false;
-		$found_delivery = false;
-		$removeCards = false;
+    public function checkStoredCard()
+    {
+        $cart_id_delivery = $this->context->cart->id_address_delivery;
+        $userId = $this->context->customer->id;
+        $orderByCustomer = Order::getCustomerOrders($userId,true);
+        $found_module = false;
+        $found_delivery = false;
+        $removeCards = false;
 
-		$i = 0;
-		while(!$found_module && count($orderByCustomer[$i])>0){
-			if($orderByCustomer[$i]['module'] == 'nimblepayment'){
-				$found_module = true;
-				if($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery){
-					$found_delivery = true;
-				}
-			}
-			$i++;
-		}
+        $i = 0;
+        while(!$found_module && count($orderByCustomer[$i])>0){
+                if($orderByCustomer[$i]['module'] == 'nimblepayment'){
+                        $found_module = true;
+                        if($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery){
+                                $found_delivery = true;
+                        }
+                }
+                $i++;
+        }
 
-		if($found_module && !$found_delivery){
-			$removeCards = true;
-		}
+        if($found_module && !$found_delivery){
+                $removeCards = true;
+        }
 
-		return $removeCards;
-	}
+        return $removeCards;
+    }
 
-	public function checkCurrency($cart)
+    public function checkCurrency($cart)
     {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
@@ -622,21 +624,6 @@ class NimblePayment extends PaymentModule
         return false;
     }
     
-    public function checkCurrencyNimble($cart)
-    {
-        $currency_order = new Currency($cart->id_currency);
-        $currencies_module = $this->getCurrency($cart->id_currency);
-
-        if (is_array($currencies_module)) {
-            foreach ($currencies_module as $currency_module) {
-                if ($currency_order->id == $currency_module['id_currency']) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public function getConfigFieldsValues()
     {
         return array(

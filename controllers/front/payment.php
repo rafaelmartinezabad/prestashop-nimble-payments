@@ -70,7 +70,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 			//Tools::redirect('index.php?controller=order');
 			$this->result['redirect'] = 'index.php?controller=order';
 		}
-		if (!$this->module->checkCurrencyNimble($cart)) {
+		if (!$this->module->checkCurrency($cart)) {
 			//Tools::redirect('index.php?controller=order');
 			$this->result['redirect'] = 'index.php?controller=order';
 		}
