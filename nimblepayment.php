@@ -440,7 +440,7 @@ class NimblePayment extends PaymentModule
     public function hookPayment($params)
     {
         
-        $hideCards = false;
+        $hideCards = true;
         if (!$this->active) {
                 return;
         }
@@ -449,7 +449,6 @@ class NimblePayment extends PaymentModule
         }
 
         $cards = $this->getListStoredCards();
-        error_log(print_r($cards, true));
         if($cards){
             $hideCards = $this->checkStoredCard();
         }
