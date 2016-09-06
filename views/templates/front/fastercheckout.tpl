@@ -66,5 +66,5 @@
 	{include file="$tpl_dir./errors.tpl"}
 	<p class="alert alert-warning">{l s='The gateway Nimble Payments is not active'}</p>
 {/if}
-{addJsDef orderOpcUrl=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|escape:'htmlall':'UTF-8'}
+{addJsDef orderOpcUrl=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|escape:'quotes':'UTF-8'}
 {addJsDef orderProcess='order-opc'}
