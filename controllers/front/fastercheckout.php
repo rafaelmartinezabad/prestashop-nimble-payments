@@ -38,6 +38,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 	public $nimblepayment_client_id = '';
 	public $type_error = 0;
 	public $nimbleapi;
+    protected $ajax_refresh = false;
 
 	public function __construct()
 	{
@@ -84,7 +85,85 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 								exit;
 							}
 							break;
+                        
+                        case 'updateAddressesSelected':
+                            if ($this->context->customer->isLogged(true)) {
+                                $address_delivery = new Address((int)Tools::getValue('id_address_delivery'));
+                                $this->context->smarty->assign('isVirtualCart', $this->context->cart->isVirtualCart());
+                                $address_invoice = ((int)Tools::getValue('id_address_delivery') == (int)Tools::getValue('id_address_invoice') ? $address_delivery : new Address((int)Tools::getValue('id_address_invoice')));
+                                if ($address_delivery->id_customer != $this->context->customer->id || $address_invoice->id_customer != $this->context->customer->id) {
+                                    $this->errors[] = Tools::displayError('This address is not yours.');
+                                } elseif (!Address::isCountryActiveById((int)Tools::getValue('id_address_delivery'))) {
+                                    $this->errors[] = Tools::displayError('This address is not in a valid area.');
+                                } elseif (!Validate::isLoadedObject($address_delivery) || !Validate::isLoadedObject($address_invoice) || $address_invoice->deleted || $address_delivery->deleted) {
+                                    $this->errors[] = Tools::displayError('This address is invalid.');
+                                } else {
+                                    $this->context->cart->id_address_delivery = (int)Tools::getValue('id_address_delivery');
+                                    $this->context->cart->id_address_invoice = Tools::isSubmit('same') ? $this->context->cart->id_address_delivery : (int)Tools::getValue('id_address_invoice');
+                                    if (!$this->context->cart->update()) {
+                                        $this->errors[] = Tools::displayError('An error occurred while updating your cart.');
+                                    }
 
+                                    $infos = Address::getCountryAndState((int)$this->context->cart->id_address_delivery);
+                                    if (isset($infos['id_country']) && $infos['id_country']) {
+                                        $country = new Country((int)$infos['id_country']);
+                                        $this->context->country = $country;
+                                    }
+
+                                    // Address has changed, so we check if the cart rules still apply
+                                    $cart_rules = $this->context->cart->getCartRules();
+                                    CartRule::autoRemoveFromCart($this->context);
+                                    CartRule::autoAddToCart($this->context);
+                                    if ((int)Tools::getValue('allow_refresh')) {
+                                        // If the cart rules has changed, we need to refresh the whole cart
+                                        $cart_rules2 = $this->context->cart->getCartRules();
+                                        if (count($cart_rules2) != count($cart_rules)) {
+                                            $this->ajax_refresh = true;
+                                        } else {
+                                            $rule_list = array();
+                                            foreach ($cart_rules2 as $rule) {
+                                                $rule_list[] = $rule['id_cart_rule'];
+                                            }
+                                            foreach ($cart_rules as $rule) {
+                                                if (!in_array($rule['id_cart_rule'], $rule_list)) {
+                                                    $this->ajax_refresh = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (!$this->context->cart->isMultiAddressDelivery()) {
+                                        $this->context->cart->setNoMultishipping();
+                                    } // As the cart is no multishipping, set each delivery address lines with the main delivery address
+
+                                    if (!count($this->errors)) {
+                                        $result = $this->_getCarrierList();
+                                        // Wrapping fees
+                                        $wrapping_fees = $this->context->cart->getGiftWrappingPrice(false);
+                                        $wrapping_fees_tax_inc = $this->context->cart->getGiftWrappingPrice();
+                                        $result = array_merge($result, array(
+                                            'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
+                                            'HOOK_PAYMENT' => $this->_getPaymentMethods(),
+                                            'gift_price' => Tools::displayPrice(Tools::convertPrice(Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc, new Currency((int)$this->context->cookie->id_currency))),
+                                            'carrier_data' => $this->_getCarrierList(),
+                                            'refresh' => (bool)$this->ajax_refresh),
+                                            $this->getFormatedSummaryDetail()
+                                        );
+                                        $this->ajaxDie(Tools::jsonEncode($result));
+                                    }
+                                }
+                                if (count($this->errors)) {
+                                    $this->ajaxDie(Tools::jsonEncode(array(
+                                        'hasError' => true,
+                                        'errors' => $this->errors
+                                    )));
+                                }
+                            }
+                            die(Tools::displayError());
+                            break;
+                            
+                            
 						default:
 							throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
 					}
