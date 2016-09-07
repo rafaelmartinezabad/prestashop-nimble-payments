@@ -59,7 +59,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 	public function initContent()
 	{
 		parent::initContent();
-                
+
 		$this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
 		$this->context->cart->checkedTOS = 1; //terms of service
 

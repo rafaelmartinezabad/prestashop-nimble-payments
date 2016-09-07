@@ -314,8 +314,7 @@ class NimblePayment extends PaymentModule
 			$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
 			if($faster_checkout_enabled){
 				$this->product = $params['product'];
-
-				$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
+				$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckoutCart');
 				$this->context->smarty->assign(
 					array(
 						'url_faster_checkout'	=>	$url_faster_checkout,
@@ -336,7 +335,7 @@ class NimblePayment extends PaymentModule
             return $this->display(__FILE__, 'display_top.tpl');
         }
     }
-
+    
     public function installTab()
     {
          // Mapping Nimble Tabs
