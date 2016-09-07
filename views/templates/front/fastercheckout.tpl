@@ -67,4 +67,6 @@
 	<p class="alert alert-warning">{l s='The gateway Nimble Payments is not active'}</p>
 {/if}
 {addJsDef orderOpcUrl=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|escape:'quotes':'UTF-8'}
+{addJsDef historyUrl=$link->getPageLink("history", true)|escape:'quotes':'UTF-8'}
+{addJsDef guestTrackingUrl=$link->getPageLink("guest-tracking", true)|escape:'quotes':'UTF-8'}
 {addJsDef orderProcess='order-opc'}

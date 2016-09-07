@@ -24,6 +24,16 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+/**
+ * Class FreeOrder to use PaymentModule (abstract class, cannot be instancied)
+ */
+class NimbleFreeOrder extends PaymentModule
+{
+    public $active = 1;
+    public $name = 'free_order';
+    public $displayName = 'free_order';
+}
+
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
@@ -109,6 +119,19 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                             
                         case 'getCarrierList':
                             $this->ajaxDie(Tools::jsonEncode($this->_getCarrierList()));
+                            break;
+                        
+                        case 'makeFreeOrder':
+                            /* Bypass payment step if total is 0 */
+                            if (($id_order = $this->_checkFreeOrder()) && $id_order) {
+                                $order = new Order((int)$id_order);
+                                $email = $this->context->customer->email;
+                                if ($this->context->customer->is_guest) {
+                                    $this->context->customer->logout();
+                                } // If guest we clear the cookie for security reason
+                                $this->ajaxDie('freeorder:'.$order->reference.':'.$email);
+                            }
+                            exit;
                             break;
                         
                         case 'updateAddressesSelected':
@@ -760,6 +783,21 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             }
         }
         return true;
+    }
+    
+    /**
+     * Check if order is free
+     * @return bool
+     */
+    protected function _checkFreeOrder()
+    {
+        if ($this->context->cart->getOrderTotal() <= 0) {
+            $order = new NimbleFreeOrder();
+            $order->free_order_class = true;
+            $order->validateOrder($this->context->cart->id, Configuration::get('PS_OS_PAYMENT'), 0, Tools::displayError('Free order', false), null, array(), null, false, $this->context->cart->secure_key);
+            return (int)Order::getOrderByCartId($this->context->cart->id);
+        }
+        return false;
     }
 
 }
