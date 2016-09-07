@@ -26,41 +26,48 @@
 
 <div{if (!$allow_oosp && $product->quantity <= 0) || !$product->available_for_order || (isset($restricted_country_mode) && $restricted_country_mode) || $PS_CATALOG_MODE} class="unvisible"{/if}>
     <p id="faster_checkout" class="buttons_bottom_block no-print">
-        <a href="{$url_faster_checkout|escape:'htmlall':'UTF-8'}" title="{l s='Faster checkout' mod='nimblepayment'}">
+        <button data-href="{$url_faster_checkout|escape:'htmlall':'UTF-8'}">
                 <span>{l s='Faster checkout' mod='nimblepayment'}</span>
-        </a>
+        </button>
     </p>
 </div>
 <script type="text/javascript">
     $(window).bind('hashchange', function(){
-            updateFasterCheckoutDisplay();
+		updateFasterCheckoutDisplay();
     });
     
     $(document).ready(function()
     {
         updateFasterCheckoutDisplay();
+		
+		$('#faster_checkout>button').on('click', function(e){
+			e.preventDefault();
+			var new_action_url = $('#faster_checkout>button').data('href');
+			$('#buy_block').attr('action', new_action_url);
+			$('#buy_block').submit();
+		});
     });
     
     //SHOW AND HIDE FASTERCHECKOUT BUTTON
     function updateFasterCheckoutDisplay()
     {
-	if (!selectedCombination['unavailable'] && quantityAvailable > 0 && productAvailableForOrder == 1)
-	{
-		//show the "faster_checkout" button ONLY if it was hidden
-		$('#faster_checkout:hidden').fadeIn(600);
-	}
-	else
-	{
-		//show the 'faster_checkout' button ONLY IF it's possible to buy when out of stock AND if it was previously invisible
-		if (allowBuyWhenOutOfStock && !selectedCombination['unavailable'] && productAvailableForOrder)
+		if (!selectedCombination['unavailable'] && quantityAvailable > 0 && productAvailableForOrder == 1)
 		{
+			//show the "faster_checkout" button ONLY if it was hidden
 			$('#faster_checkout:hidden').fadeIn(600);
-
 		}
 		else
 		{
-			$('#faster_checkout:visible').fadeOut(600);
+			//show the 'faster_checkout' button ONLY IF it's possible to buy when out of stock AND if it was previously invisible
+			if (allowBuyWhenOutOfStock && !selectedCombination['unavailable'] && productAvailableForOrder)
+			{
+				$('#faster_checkout:hidden').fadeIn(600);
+
+			}
+			else
+			{
+				$('#faster_checkout:visible').fadeOut(600);
+			}
 		}
-	}
     }
 </script>

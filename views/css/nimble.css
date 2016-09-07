@@ -501,7 +501,7 @@ p#block_top_title{
 }
 
 /* FASTER CHECKOUT BUTTONS */
-.box-info-product #faster_checkout a {
+.box-info-product #faster_checkout button {
     background-color: #65be00;
     background-size: 100% auto;
     border-color: #65be00;
@@ -514,7 +514,7 @@ p#block_top_title{
     text-align: center;
 }
 
-.box-info-product #faster_checkout a::before {
+.box-info-product #faster_checkout button::before {
     bottom: 0;
     color: #fff;
     content: "";
@@ -530,7 +530,7 @@ p#block_top_title{
     z-index: 2;
 }
 
-.box-info-product #faster_checkout a:focus, .box-info-product #faster_checkout a:active {
+.box-info-product #faster_checkout button:focus, .box-info-product #faster_checkout button:active {
     text-decoration: none;
 }
 
