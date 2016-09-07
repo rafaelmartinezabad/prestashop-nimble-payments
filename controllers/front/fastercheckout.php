@@ -24,6 +24,16 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+/**
+ * Class FreeOrder to use PaymentModule (abstract class, cannot be instancied)
+ */
+class NimbleFreeOrder extends PaymentModule
+{
+    public $active = 1;
+    public $name = 'free_order';
+    public $displayName = 'free_order';
+}
+
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
 require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPIAuthorization.php';
@@ -61,6 +71,17 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 			if (Tools::isSubmit('ajax')) {
 				if (Tools::isSubmit('method')) {
 					switch (Tools::getValue('method')) {
+                        case 'updateMessage':
+                            if (Tools::isSubmit('message')) {
+                                $txt_message = urldecode(Tools::getValue('message'));
+                                $this->_updateMessage($txt_message);
+                                if (count($this->errors)) {
+                                    $this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
+                                }
+                                $this->ajaxDie(true);
+                            }
+                            break;
+                            
 						case 'updateCarrierAndGetPayments':
 							if ((Tools::isSubmit('delivery_option') || Tools::isSubmit('id_carrier')) && Tools::isSubmit('recyclable') && Tools::isSubmit('gift') && Tools::isSubmit('gift_message')) {
 								//$this->_assignWrappingAndTOS();
@@ -85,6 +106,33 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 								exit;
 							}
 							break;
+                            
+                        case 'updateTOSStatusAndGetPayments':
+                            if (Tools::isSubmit('checked')) {
+                                $this->context->cookie->checkedTOS = (int)Tools::getValue('checked');
+                                $this->ajaxDie(Tools::jsonEncode(array(
+                                    'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
+                                    'HOOK_PAYMENT' => $this->_getPaymentMethods()
+                                )));
+                            }
+                            break;
+                            
+                        case 'getCarrierList':
+                            $this->ajaxDie(Tools::jsonEncode($this->_getCarrierList()));
+                            break;
+                        
+                        case 'makeFreeOrder':
+                            /* Bypass payment step if total is 0 */
+                            if (($id_order = $this->_checkFreeOrder()) && $id_order) {
+                                $order = new Order((int)$id_order);
+                                $email = $this->context->customer->email;
+                                if ($this->context->customer->is_guest) {
+                                    $this->context->customer->logout();
+                                } // If guest we clear the cookie for security reason
+                                $this->ajaxDie('freeorder:'.$order->reference.':'.$email);
+                            }
+                            exit;
+                            break;
                         
                         case 'updateAddressesSelected':
                             if ($this->context->customer->isLogged(true)) {
@@ -402,18 +450,16 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 
         // Adding JS files
         $this->addJS(_THEME_JS_DIR_.'tools.js');  // retro compat themes 1.5
-        if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 0) {
-            $this->addJS(_THEME_JS_DIR_.'order-address.js');
-        }
+
+        $this->addJS(_THEME_JS_DIR_.'order-address.js');
+
         // Adding JS files
         $this->addJS(_THEME_JS_DIR_.'order-opc.js');
         $this->addJqueryPlugin('fancybox');
         $this->addJS(_THEME_JS_DIR_.'order-carrier.js');
 
-        if (in_array((int)Tools::getValue('step'), array(0, 2, 3)) || Configuration::get('PS_ORDER_PROCESS_TYPE')) {
-            $this->addJqueryPlugin('typewatch');
-            $this->addJS(_THEME_JS_DIR_.'cart-summary.js');
-        }
+        $this->addJqueryPlugin('typewatch');
+        $this->addJS(_THEME_JS_DIR_.'cart-summary.js');
     }
 
     protected function _assignCarrier()
@@ -712,6 +758,46 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             Product::addCustomizationPrice($result['summary']['products'], $result['customizedDatas']);
         }
         return $result;
+    }
+    
+    protected function _updateMessage($messageContent)
+    {
+        if ($messageContent) {
+            if (!Validate::isMessage($messageContent)) {
+                $this->errors[] = Tools::displayError('Invalid message');
+            } elseif ($oldMessage = Message::getMessageByCartId((int)$this->context->cart->id)) {
+                $message = new Message((int)$oldMessage['id_message']);
+                $message->message = $messageContent;
+                $message->update();
+            } else {
+                $message = new Message();
+                $message->message = $messageContent;
+                $message->id_cart = (int)$this->context->cart->id;
+                $message->id_customer = (int)$this->context->cart->id_customer;
+                $message->add();
+            }
+        } else {
+            if ($oldMessage = Message::getMessageByCartId($this->context->cart->id)) {
+                $message = new Message($oldMessage['id_message']);
+                $message->delete();
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Check if order is free
+     * @return bool
+     */
+    protected function _checkFreeOrder()
+    {
+        if ($this->context->cart->getOrderTotal() <= 0) {
+            $order = new NimbleFreeOrder();
+            $order->free_order_class = true;
+            $order->validateOrder($this->context->cart->id, Configuration::get('PS_OS_PAYMENT'), 0, Tools::displayError('Free order', false), null, array(), null, false, $this->context->cart->secure_key);
+            return (int)Order::getOrderByCartId($this->context->cart->id);
+        }
+        return false;
     }
 
 }
