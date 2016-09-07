@@ -449,17 +449,17 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
 
         // Adding JS files
-        $this->addJS(_THEME_JS_DIR_.'tools.js');  // retro compat themes 1.5
+        $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools.js');  // retro compat themes 1.5
 
-        $this->addJS(_THEME_JS_DIR_.'order-address.js');
+        $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/order-address.js');
 
         // Adding JS files
-        $this->addJS(_THEME_JS_DIR_.'order-opc.js');
+        $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/order-opc.js');
         $this->addJqueryPlugin('fancybox');
-        $this->addJS(_THEME_JS_DIR_.'order-carrier.js');
+        $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/order-carrier.js');
 
         $this->addJqueryPlugin('typewatch');
-        $this->addJS(_THEME_JS_DIR_.'cart-summary.js');
+        $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/cart-summary.js');
     }
 
     protected function _assignCarrier()
