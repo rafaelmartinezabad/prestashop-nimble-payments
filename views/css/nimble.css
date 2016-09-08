@@ -503,6 +503,7 @@ p#block_top_title{
 /* FASTER CHECKOUT BUTTONS */
 .box-info-product #faster_checkout button::before {
     content: "\f135";
+    font-family: "FontAwesome";
 }
 
 #nimblepayments-overlay {
