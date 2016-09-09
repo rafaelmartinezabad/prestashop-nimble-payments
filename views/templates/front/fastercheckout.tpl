@@ -22,6 +22,13 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
+
+{if $opc}
+	{assign var="back_order_page" value="order-opc.php"}
+	{else}
+	{assign var="back_order_page" value="order.php"}
+{/if}
+
 {if $nimble_credentials}
 		{if $faster_checkout_enabled}
 			{if $productNumber}
@@ -71,6 +78,7 @@
 {addJsDef authenticationUrl=$link->getPageLink("authentication", true)|escape:'quotes':'UTF-8'}
 {addJsDef historyUrl=$link->getPageLink("history", true)|escape:'quotes':'UTF-8'}
 {addJsDef guestTrackingUrl=$link->getPageLink("guest-tracking", true)|escape:'quotes':'UTF-8'}
+{addJsDef addressUrl=$link->getPageLink("address", true, NULL, "back={$back_order_page}")|escape:'quotes':'UTF-8'}
 {addJsDef orderProcess='order-opc'}
 {addJsDef guestCheckoutEnabled=$PS_GUEST_CHECKOUT_ENABLED|intval}
 {addJsDef displayPrice=$priceDisplay}
@@ -99,4 +107,20 @@
 {addJsDefL name=txtInstantCheckout}{l s='Instant checkout' js=1}{/addJsDefL}
 {addJsDefL name=txtSelectAnAddressFirst}{l s='Please start by selecting an address.' js=1}{/addJsDefL}
 {addJsDefL name=txtFree}{l s='Free' js=1}{/addJsDefL}
+
+{capture}{if $back}&mod={$back|urlencode}{/if}{/capture}
+{capture name=addressUrl}{$link->getPageLink('address', true, NULL, 'back='|cat:$back_order_page|cat:'?step=1'|cat:$smarty.capture.default)|escape:'quotes':'UTF-8'}{/capture}
+{addJsDef addressUrl=$smarty.capture.addressUrl}
+{capture}{'&multi-shipping=1'|urlencode}{/capture}
+{addJsDef addressMultishippingUrl=$smarty.capture.addressUrl|cat:$smarty.capture.default}
+{capture name=addressUrlAdd}{$smarty.capture.addressUrl|cat:'&id_address='}{/capture}
+{addJsDef addressUrlAdd=$smarty.capture.addressUrlAdd}
+{addJsDef opc=$opc|boolval}
+{capture}<h3 class="page-subheading">{l s='Your billing address' js=1}</h3>{/capture}
+{addJsDefL name=titleInvoice}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
+{capture}<h3 class="page-subheading">{l s='Your delivery address' js=1}</h3>{/capture}
+{addJsDefL name=titleDelivery}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
+{capture}<a class="button button-small btn btn-default" href="{$smarty.capture.addressUrlAdd}" title="{l s='Update' js=1}"><span>{l s='Update' js=1}<i class="icon-chevron-right right"></i></span></a>{/capture}
+{addJsDefL name=liUpdate}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
+{/strip}
 {strip}
