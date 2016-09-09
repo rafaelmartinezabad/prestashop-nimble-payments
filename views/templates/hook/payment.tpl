@@ -54,12 +54,13 @@
 		</ul>
 	</div>
 </div>
-<div id="nimblepayments-overlay"><h2>PROCESANDO PEDIDO</h2></div>
+<div class="nimblepayments-overlay"><div class="overlay"></div></div>
+<div class="nimblepayments-overlay"><div class="box-info"><img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/loading.gif"/><h2>PROCESANDO PEDIDO</h2></div></div>
 
 <script type="text/javascript">
     $(document).ready(function () {
         $("#nimblepayment_gateway").one( "click", function(event) {
-            $("#nimblepayments-overlay").show();
+            $(".nimblepayments-overlay").show();
             event.preventDefault();
             $.ajax({
                 type: 'POST',
