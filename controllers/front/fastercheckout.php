@@ -594,9 +594,11 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 			'advanced_payment_api' => $advanced_payment_api
 
 		));
-		$this->context->smarty->assign(array(
-			'HOOK_SHOPPING_CART' => ''
-		));
+        
+        $this->context->smarty->assign(array(
+            'HOOK_SHOPPING_CART' => Hook::exec('displayShoppingCartFooter', $summary),
+            'HOOK_SHOPPING_CART_EXTRA' => Hook::exec('displayShoppingCart', $summary)
+        ));
 	}
 
 	protected function _assignAddress()
