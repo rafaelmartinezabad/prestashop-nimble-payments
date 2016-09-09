@@ -107,8 +107,8 @@ $(document).ready(function(){
 						ajaxCart.updateCart(jsonData);
 					updateHookShoppingCart(jsonData.HOOK_SHOPPING_CART);
 					updateHookShoppingCartExtra(jsonData.HOOK_SHOPPING_CART_EXTRA);
-					if (typeof(getCarrierListAndUpdate) !== 'undefined')
-						getCarrierListAndUpdate();
+					if (typeof(updateCarrierSelectionAndGift) !== 'undefined')
+						updateCarrierSelectionAndGift();
 					if (typeof(updatePaymentMethodsDisplay) !== 'undefined')
 						updatePaymentMethodsDisplay();
 				}
