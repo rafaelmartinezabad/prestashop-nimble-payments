@@ -54,41 +54,36 @@
 		</ul>
 	</div>
 </div>
+<div id="nimblepayments-overlay"><h2>PROCESANDO PEDIDO</h2></div>
 
 <script type="text/javascript">
-	$(document).ready(function () {
-		$("#nimblepayment_gateway").one( "click", function(event) {
-			event.preventDefault();
-			$.ajax({
-				type: 'POST',
-				url: $(this).data('href'),
-				data: {
-					'action': 'payment',
-					'nimblepayment_storedcard': $('input[name="nimblepayment_storedcard"]:checked').val()
-				},
-				dataType: 'json',
-				success: function(response) {
-					if ('redirect' in response){
-						$('#nimblepayment_gateway').attr('href', response['redirect']);
-						//if ($('#cgv:checked').length != 0) {
-							$(location).attr('href', response['redirect'])
-						//}
-					} else if ('error' in response){
-						$('#HOOK_PAYMENT .alert').remove();
-						$('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">' + response['error']['message'] + '</p>');
-					}
-					$('#nimblepayment_gateway').data('clicked', true);
-				}
-			});
-		}).click(function(){
-			//if ($('#cgv:checked').length == 0) {
-			//	$('#HOOK_PAYMENT .alert').remove();
-			//	$('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">RAFIKI</p>');
-			//	event.preventDefault();
-			//} else
-			if ( ! $(this).data('clicked') ){
-				event.preventDefault();
-			}
-		});
-	});
+    $(document).ready(function () {
+        $("#nimblepayment_gateway").one( "click", function(event) {
+            $("#nimblepayments-overlay").show();
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: $(this).data('href'),
+                data: {
+                    'action': 'payment',
+                    'nimblepayment_storedcard': $('input[name="nimblepayment_storedcard"]:checked').val()
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if ('redirect' in response){
+                        $('#nimblepayment_gateway').attr('href', response['redirect']);
+                        $(location).attr('href', response['redirect']);
+                    } else if ('error' in response){
+                        $('#HOOK_PAYMENT .alert').remove();
+                        $('#HOOK_PAYMENT').prepend('<p class="alert alert-danger">' + response['error']['message'] + '</p>');
+                    }
+                    $('#nimblepayment_gateway').data('clicked', true);
+                }
+            });
+        }).click(function(){
+            if ( ! $(this).data('clicked') ){
+                event.preventDefault();
+            }
+        });
+    });
 </script>

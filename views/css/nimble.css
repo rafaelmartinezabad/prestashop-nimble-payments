@@ -501,53 +501,26 @@ p#block_top_title{
 }
 
 /* FASTER CHECKOUT BUTTONS */
-.box-info-product #faster_checkout button {
-    background-color: #65be00;
-    background-size: 100% auto;
-    border-color: #65be00;
-    border-radius: 5px;
-    border-style: solid;
-    border-width: 1px;
-    display: block;
-    padding: 0;
-    position: relative;
-    text-align: center;
-}
-
 .box-info-product #faster_checkout button::before {
-    bottom: 0;
-    color: #fff;
-    content: "";
+    content: "\f135";
     font-family: "FontAwesome";
-    font-size: 25px;
-    right: 5px;
-    line-height: 47px;
-    position: absolute;
-    text-align: center;
-    text-shadow: 0 1px #419813;
-    top: 10px;
-    width: 51px;
-    z-index: 2;
 }
 
-.box-info-product #faster_checkout button:focus, .box-info-product #faster_checkout button:active {
-    text-decoration: none;
-}
-
-.box-info-product #faster_checkout span {
-    border-color: #80f050;
-    border-radius: 5px;
-    border-style: solid;
-    border-width: 1px;
+#nimblepayments-overlay {
+    display: none;
     color: #fff;
-    display: block !important;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 22px;
-    padding: 12px 60px 14px 36px;
-    text-shadow: 0 1px #419813;
-    transition: all 0.3s ease 0s;
+    text-align: center;
+    background-color: #000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: progress;
+    opacity: 0.4;
+    z-index: 250000;
 }
+
 #HOOK_SHOPPING_CART #faster_checkout {
     float: right;
     margin-left: 10px;

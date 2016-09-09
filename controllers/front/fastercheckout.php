@@ -61,7 +61,9 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 		parent::initContent();
 
 		$this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
-		$this->context->cart->checkedTOS = 1; //terms of service
+        if (! Tools::isSubmit('ajax')) {
+            $this->context->cart->checkedTOS = 1; //terms of service
+        }
 
 		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
 		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
@@ -84,7 +86,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                             
 						case 'updateCarrierAndGetPayments':
 							if ((Tools::isSubmit('delivery_option') || Tools::isSubmit('id_carrier')) && Tools::isSubmit('recyclable') && Tools::isSubmit('gift') && Tools::isSubmit('gift_message')) {
-								//$this->_assignWrappingAndTOS();
+								$this->_assignWrappingAndTOS();
 								if ($this->_processCarrier()) {
 									$carriers = $this->context->cart->simulateCarriersOutput();
 									$return = array_merge(array(
@@ -311,6 +313,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 			$this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
 		}
                 
+                
 		$this->context->smarty->assign(
 			array(
 				'checkedTOS'					=>	$this->context->cart->checkedTOS,
@@ -321,7 +324,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 				'faster_checkout_enabled'		=>	$faster_checkout_enabled,
 				'nimble_credentials'			=>	$nimble_credentials,
 				'ssl'							=>	$ssl,
-				'params'						=>	array(),
+				'params'						=>	array()
 				)
 		);
 
@@ -707,8 +710,9 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             // Adding CSS style sheet
             $this->addCSS(_THEME_CSS_DIR_.'addresses.css');
         }
-        $this->addCSS(_PS_ROOT_DIR_ . '/modules/nimblepayment/views/css/nimble.css');
-
+        
+        $this->addCSS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/css/nimble.css');
+        
         // Adding JS files
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools.js');  // retro compat themes 1.5
 
@@ -789,7 +793,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
 
         $this->context->smarty->assign('isVirtualCart', $this->context->cart->isVirtualCart());
-        $this->context->cart->checkedTOS = 1;
+        
         $vars = array(
             'advanced_payment_api' => (bool)Configuration::get('PS_ADVANCED_PAYMENT_API'),
             'free_shipping' => $free_shipping,
@@ -876,7 +880,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         if (!$this->context->cart->id_currency) {
             return '<p class="warning">'.Tools::displayError('Error: No currency has been selected.').'</p>';
         }
-        if (!$this->context->cart->checkedTOS && Configuration::get('PS_CONDITIONS')) {
+        if (!$this->context->cookie->checkedTOS && Configuration::get('PS_CONDITIONS')) {
             return '<p class="warning">'.Tools::displayError('Please accept the Terms of Service.').'</p>';
         }
 
@@ -1059,6 +1063,48 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             return (int)Order::getOrderByCartId($this->context->cart->id);
         }
         return false;
+    }
+    
+    protected function _assignWrappingAndTOS()
+    {
+        // Wrapping fees
+        $wrapping_fees = $this->context->cart->getGiftWrappingPrice(false);
+        $wrapping_fees_tax_inc = $this->context->cart->getGiftWrappingPrice();
+
+        // TOS
+        $cms = new CMS(Configuration::get('PS_CONDITIONS_CMS_ID'), $this->context->language->id);
+        $this->link_conditions = $this->context->link->getCMSLink($cms, $cms->link_rewrite, (bool)Configuration::get('PS_SSL_ENABLED'));
+        if (!strpos($this->link_conditions, '?')) {
+            $this->link_conditions .= '?content_only=1';
+        } else {
+            $this->link_conditions .= '&content_only=1';
+        }
+
+        $free_shipping = false;
+        foreach ($this->context->cart->getCartRules() as $rule) {
+            if ($rule['free_shipping'] && !$rule['carrier_restriction']) {
+                $free_shipping = true;
+                break;
+            }
+        }
+        $this->context->smarty->assign(array(
+            'free_shipping' => $free_shipping,
+            'checkedTOS' => (int)$this->context->cookie->checkedTOS,
+            'recyclablePackAllowed' => (int)Configuration::get('PS_RECYCLABLE_PACK'),
+            'giftAllowed' => (int)Configuration::get('PS_GIFT_WRAPPING'),
+            'cms_id' => (int)Configuration::get('PS_CONDITIONS_CMS_ID'),
+            'conditions' => (int)Configuration::get('PS_CONDITIONS'),
+            'link_conditions' => $this->link_conditions,
+            'recyclable' => (int)$this->context->cart->recyclable,
+            'delivery_option_list' => $this->context->cart->getDeliveryOptionList(),
+            'carriers' => $this->context->cart->simulateCarriersOutput(),
+            'checked' => $this->context->cart->simulateCarrierSelectedOutput(),
+            'address_collection' => $this->context->cart->getAddressCollection(),
+            'delivery_option' => $this->context->cart->getDeliveryOption(null, false),
+            'gift_wrapping_price' => (float)$wrapping_fees,
+            'total_wrapping_cost' => Tools::convertPrice($wrapping_fees_tax_inc, $this->context->currency),
+            'override_tos_display' => Hook::exec('overrideTOSDisplay'),
+            'total_wrapping_tax_exc_cost' => Tools::convertPrice($wrapping_fees, $this->context->currency)));
     }
 
 }
