@@ -23,7 +23,6 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 {if $nimble_credentials}
-	{if $isLogged}
 		{if $faster_checkout_enabled}
 			{if $productNumber}
 				<div class="nimble-left">
@@ -38,8 +37,14 @@
 				</div>
 				<div class="nimble-right">	
 					<div class="nimble-block" id="nimble-order-address">
-						{include file="./order-address.tpl"}
-					</div>
+						{if $is_logged AND !$is_guest}
+							{include file="./order-address.tpl"}
+						{else}
+							<!-- Create account / Guest account / Login block -->
+							{include file="./order-opc-new-account.tpl"}
+							<!-- END Create account / Guest account / Login block -->
+						{/if}	
+					</div>					
 					<div class="nimble-block" id="nimble-order-payment">
 						<!-- Payment -->
 						{include file="./order-payment.tpl"}
@@ -56,17 +61,42 @@
 			{include file="$tpl_dir./errors.tpl"}
 			<p class="alert alert-warning">{l s='Faster Checkout is disable' mod='nimblepayment'}</p>
 		{/if}
-	{else}
-		<h2 class="page-heading">{l s='User is not logged'}</h2>
-		{include file="$tpl_dir./errors.tpl"}
-		<p class="alert alert-warning">{l s='User is not logged '}</p>
-	{/if}
 {else}
 	<h2 class="page-heading">{l s='The gateway Nimble Payments is not active'}</h2>
 	{include file="$tpl_dir./errors.tpl"}
 	<p class="alert alert-warning">{l s='The gateway Nimble Payments is not active'}</p>
 {/if}
+{strip}
 {addJsDef orderOpcUrl=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|escape:'quotes':'UTF-8'}
+{addJsDef authenticationUrl=$link->getPageLink("authentication", true)|escape:'quotes':'UTF-8'}
 {addJsDef historyUrl=$link->getPageLink("history", true)|escape:'quotes':'UTF-8'}
 {addJsDef guestTrackingUrl=$link->getPageLink("guest-tracking", true)|escape:'quotes':'UTF-8'}
 {addJsDef orderProcess='order-opc'}
+{addJsDef guestCheckoutEnabled=$PS_GUEST_CHECKOUT_ENABLED|intval}
+{addJsDef displayPrice=$priceDisplay}
+{addJsDef taxEnabled=$use_taxes}
+{addJsDef conditionEnabled=$conditions|intval}
+{addJsDef vat_management=$vat_management|intval}
+{addJsDef errorCarrier=$errorCarrier|@addcslashes:'\''}
+{addJsDef errorTOS=$errorTOS|@addcslashes:'\''}
+{addJsDef checkedCarrier=$checked|intval}
+{addJsDef addresses=array()}
+{addJsDef isVirtualCart=$isVirtualCart|intval}
+{addJsDef isPaymentStep=$isPaymentStep|intval}
+{addJsDefL name=txtWithTax}{l s='(tax incl.)' js=1}{/addJsDefL}
+{addJsDefL name=txtWithoutTax}{l s='(tax excl.)' js=1}{/addJsDefL}
+{addJsDefL name=txtHasBeenSelected}{l s='has been selected' js=1}{/addJsDefL}
+{addJsDefL name=txtNoCarrierIsSelected}{l s='No carrier has been selected' js=1}{/addJsDefL}
+{addJsDefL name=txtNoCarrierIsNeeded}{l s='No carrier is needed for this order' js=1}{/addJsDefL}
+{addJsDefL name=txtConditionsIsNotNeeded}{l s='You do not need to accept the Terms of Service for this order.' js=1}{/addJsDefL}
+{addJsDefL name=txtTOSIsAccepted}{l s='The service terms have been accepted' js=1}{/addJsDefL}
+{addJsDefL name=txtTOSIsNotAccepted}{l s='The service terms have not been accepted' js=1}{/addJsDefL}
+{addJsDefL name=txtThereis}{l s='There is' js=1}{/addJsDefL}
+{addJsDefL name=txtErrors}{l s='Error(s)' js=1}{/addJsDefL}
+{addJsDefL name=txtDeliveryAddress}{l s='Delivery address' js=1}{/addJsDefL}
+{addJsDefL name=txtInvoiceAddress}{l s='Invoice address' js=1}{/addJsDefL}
+{addJsDefL name=txtModifyMyAddress}{l s='Modify my address' js=1}{/addJsDefL}
+{addJsDefL name=txtInstantCheckout}{l s='Instant checkout' js=1}{/addJsDefL}
+{addJsDefL name=txtSelectAnAddressFirst}{l s='Please start by selecting an address.' js=1}{/addJsDefL}
+{addJsDefL name=txtFree}{l s='Free' js=1}{/addJsDefL}
+{strip}

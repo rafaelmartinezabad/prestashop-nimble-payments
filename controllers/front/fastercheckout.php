@@ -123,6 +123,93 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                             $this->ajaxDie(Tools::jsonEncode($this->_getCarrierList()));
                             break;
                         
+                        case 'editCustomer':
+                            if (!$this->isLogged || !$this->context->customer->is_guest) {
+                                exit;
+                            }
+
+                            if (Validate::isEmail($email = Tools::getValue('email')) && !empty($email)) {
+                                if (Customer::customerExists($email)) {
+                                    $this->errors[] = Tools::displayError('An account using this email address has already been registered.', false);
+                                }
+                            }
+
+                            if (Tools::getValue('years')) {
+                                $this->context->customer->birthday = (int)Tools::getValue('years').'-'.(int)Tools::getValue('months').'-'.(int)Tools::getValue('days');
+                            }
+
+                            $_POST['lastname'] = $_POST['customer_lastname'];
+                            $_POST['firstname'] = $_POST['customer_firstname'];
+                            $this->errors = array_merge($this->errors, $this->context->customer->validateController());
+                            $this->context->customer->newsletter = (int)Tools::isSubmit('newsletter');
+                            $this->context->customer->optin = (int)Tools::isSubmit('optin');
+                            $this->context->customer->is_guest = (Tools::isSubmit('is_new_customer') ? !Tools::getValue('is_new_customer', 1) : 0);
+                            $return = array(
+                                'hasError' => !empty($this->errors),
+                                'errors' => $this->errors,
+                                'id_customer' => (int)$this->context->customer->id,
+                                'token' => Tools::getToken(false)
+                            );
+                            if (!count($this->errors)) {
+                                $return['isSaved'] = (bool)$this->context->customer->update();
+                            } else {
+                                $return['isSaved'] = false;
+                            }
+                            $this->ajaxDie(Tools::jsonEncode($return));
+                            break;
+
+                        case 'getAddressBlockAndCarriersAndPayments':
+                            if ($this->context->customer->isLogged() || $this->context->customer->isGuest()) {
+                                // check if customer have addresses
+                                if (!Customer::getAddressesTotalById($this->context->customer->id)) {
+                                    $this->ajaxDie(Tools::jsonEncode(array('no_address' => 1)));
+                                }
+                                if (file_exists(_PS_MODULE_DIR_.'blockuserinfo/blockuserinfo.php')) {
+                                    include_once(_PS_MODULE_DIR_.'blockuserinfo/blockuserinfo.php');
+                                    $block_user_info = new BlockUserInfo();
+                                }
+                                $this->context->smarty->assign('isVirtualCart', $this->context->cart->isVirtualCart());
+                                $this->_processAddressFormat();
+                                $this->_assignAddress();
+
+                                if (!($formated_address_fields_values_list = $this->context->smarty->getTemplateVars('formatedAddressFieldsValuesList'))) {
+                                    $formated_address_fields_values_list = array();
+                                }
+
+                                // Wrapping fees
+                                $wrapping_fees = $this->context->cart->getGiftWrappingPrice(false);
+                                $wrapping_fees_tax_inc = $this->context->cart->getGiftWrappingPrice();
+                                $is_adv_api = Tools::getValue('isAdvApi');
+
+                                if ($is_adv_api) {
+                                    $tpl = 'order-address-advanced.tpl';
+                                    $this->context->smarty->assign(
+                                        array('products' => $this->context->cart->getProducts())
+                                    );
+                                } else {
+                                    $tpl = 'order-address.tpl';
+                                }
+
+                                $return = array_merge(array(
+                                    'order_opc_adress' => $this->context->smarty->fetch(_PS_THEME_DIR_.$tpl),
+                                    'block_user_info' => (isset($block_user_info) ? $block_user_info->hookDisplayTop(array()) : ''),
+                                    'block_user_info_nav' => (isset($block_user_info) ? $block_user_info->hookDisplayNav(array()) : ''),
+                                    'formatedAddressFieldsValuesList' => $formated_address_fields_values_list,
+                                    'carrier_data' => ($is_adv_api ? '' : $this->_getCarrierList()),
+                                    'HOOK_TOP_PAYMENT' => ($is_adv_api ? '' : Hook::exec('displayPaymentTop')),
+                                    'HOOK_PAYMENT' => ($is_adv_api ? '' : $this->_getPaymentMethods()),
+                                    'no_address' => 0,
+                                    'gift_price' => Tools::displayPrice(Tools::convertPrice(
+                                        Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc,
+                                        new Currency((int)$this->context->cookie->id_currency)))
+                                    ),
+                                    $this->getFormatedSummaryDetail()
+                                );
+                                $this->ajaxDie(Tools::jsonEncode($return));
+                            }
+                            die(Tools::displayError());
+                            break;
+
                         case 'makeFreeOrder':
                             /* Bypass payment step if total is 0 */
                             if (($id_order = $this->_checkFreeOrder()) && $id_order) {
@@ -242,12 +329,186 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 		);
 
 		$this->_assignSummaryInformations();
-		$this->_assignAddress();
+        
+        if (Configuration::get('PS_RESTRICT_DELIVERED_COUNTRIES')) {
+            $countries = Carrier::getDeliveredCountries($this->context->language->id, true, true);
+        } else {
+            $countries = Country::getCountries($this->context->language->id, true);
+        }
+        
+        // If a rule offer free-shipping, force hidding shipping prices
+        $free_shipping = false;
+        foreach ($this->context->cart->getCartRules() as $rule) {
+            if ($rule['free_shipping'] && !$rule['carrier_restriction']) {
+                $free_shipping = true;
+                break;
+            }
+        }
+
+        $this->context->smarty->assign(array(
+            'free_shipping' => $free_shipping,
+            'isGuest' => isset($this->context->cookie->is_guest) ? $this->context->cookie->is_guest : 0,
+            'countries' => $countries,
+            'sl_country' => (int)Tools::getCountry(),
+            'PS_GUEST_CHECKOUT_ENABLED' => Configuration::get('PS_GUEST_CHECKOUT_ENABLED'),
+            'errorCarrier' => Tools::displayError('You must choose a carrier.', false),
+            'errorTOS' => Tools::displayError('You must accept the Terms of Service.', false),
+            'isPaymentStep' => isset($_GET['isPaymentStep']) && $_GET['isPaymentStep'],
+            'genders' => Gender::getGenders(),
+            'one_phone_at_least' => (int)Configuration::get('PS_ONE_PHONE_AT_LEAST'),
+            'HOOK_CREATE_ACCOUNT_FORM' => Hook::exec('displayCustomerAccountForm'),
+            'HOOK_CREATE_ACCOUNT_TOP' => Hook::exec('displayCustomerAccountFormTop')
+        ));
+        $years = Tools::dateYears();
+        $months = Tools::dateMonths();
+        $days = Tools::dateDays();
+        $this->context->smarty->assign(array(
+            'years' => $years,
+            'months' => $months,
+            'days' => $days,
+        ));
+
+        /* Load guest informations */
+        if ($this->isLogged && $this->context->cookie->is_guest) {
+            $this->context->smarty->assign('guestInformations', $this->_getGuestInformations());
+        }
+        
+		// ADDRESS
+        if ($this->isLogged) {
+            $this->_assignAddress();
+        }
+        // CARRIER
 		$this->_getCarrierList();
+        // PAYMENT
 		$this->_assignPayment();
+        Tools::safePostVars();
+        
+        $newsletter = Configuration::get('PS_CUSTOMER_NWSL') || (Module::isInstalled('blocknewsletter') && Module::getInstanceByName('blocknewsletter')->active);
+        $this->context->smarty->assign('newsletter', $newsletter);
+        $this->context->smarty->assign('optin', (bool)Configuration::get('PS_CUSTOMER_OPTIN'));
+        $this->context->smarty->assign('field_required', $this->context->customer->validateFieldsRequiredDatabase());
+
+        if ((bool)Configuration::get('PS_ADVANCED_PAYMENT_API')) {
+            $this->addJS(_THEME_JS_DIR_ . 'advanced-payment-api.js');
+        }
+        
+        $this->_processAddressFormat();
+        
 		$this->setTemplate('fastercheckout.tpl');
 	}
 
+    protected function _processAddressFormat()
+    {
+        $address_delivery = new Address((int)$this->context->cart->id_address_delivery);
+        $address_invoice = new Address((int)$this->context->cart->id_address_invoice);
+
+        $inv_adr_fields = AddressFormat::getOrderedAddressFields((int)$address_delivery->id_country, false, true);
+        $dlv_adr_fields = AddressFormat::getOrderedAddressFields((int)$address_invoice->id_country, false, true);
+        $require_form_fields_list = AddressFormat::getFieldsRequired();
+
+        // Add missing require fields for a new user susbscription form
+        foreach ($require_form_fields_list as $field_name) {
+            if (!in_array($field_name, $dlv_adr_fields)) {
+                $dlv_adr_fields[] = trim($field_name);
+            }
+        }
+
+        foreach ($require_form_fields_list as $field_name) {
+            if (!in_array($field_name, $inv_adr_fields)) {
+                $inv_adr_fields[] = trim($field_name);
+            }
+        }
+
+        $inv_all_fields = array();
+        $dlv_all_fields = array();
+
+        foreach (array('inv', 'dlv') as $adr_type) {
+            foreach (${$adr_type.'_adr_fields'} as $fields_line) {
+                foreach (explode(' ', $fields_line) as $field_item) {
+                    ${$adr_type.'_all_fields'}[] = trim($field_item);
+                }
+            }
+
+            ${$adr_type.'_adr_fields'} = array_unique(${$adr_type.'_adr_fields'});
+            ${$adr_type.'_all_fields'} = array_unique(${$adr_type.'_all_fields'});
+
+            $this->context->smarty->assign(array(
+                $adr_type.'_adr_fields' => ${$adr_type.'_adr_fields'},
+                $adr_type.'_all_fields' => ${$adr_type.'_all_fields'},
+                'required_fields' => $require_form_fields_list
+            ));
+        }
+    }
+    
+    protected function _getGuestInformations()
+    {
+        $customer = $this->context->customer;
+        $address_delivery = new Address($this->context->cart->id_address_delivery);
+
+        $id_address_invoice = $this->context->cart->id_address_invoice != $this->context->cart->id_address_delivery ? (int)$this->context->cart->id_address_invoice : 0;
+        $address_invoice = new Address($id_address_invoice);
+
+        if ($customer->birthday) {
+            $birthday = explode('-', $customer->birthday);
+        } else {
+            $birthday = array('0', '0', '0');
+        }
+
+        return array(
+            'id_customer' => (int)$customer->id,
+            'email' => Tools::htmlentitiesUTF8($customer->email),
+            'customer_lastname' => Tools::htmlentitiesUTF8($customer->lastname),
+            'customer_firstname' => Tools::htmlentitiesUTF8($customer->firstname),
+            'newsletter' => (int)$customer->newsletter,
+            'optin' => (int)$customer->optin,
+            'id_address_delivery' => (int)$this->context->cart->id_address_delivery,
+            'company' => Tools::htmlentitiesUTF8($address_delivery->company),
+            'lastname' => Tools::htmlentitiesUTF8($address_delivery->lastname),
+            'firstname' => Tools::htmlentitiesUTF8($address_delivery->firstname),
+            'vat_number' => Tools::htmlentitiesUTF8($address_delivery->vat_number),
+            'dni' => Tools::htmlentitiesUTF8($address_delivery->dni),
+            'address1' => Tools::htmlentitiesUTF8($address_delivery->address1),
+            'postcode' => Tools::htmlentitiesUTF8($address_delivery->postcode),
+            'city' => Tools::htmlentitiesUTF8($address_delivery->city),
+            'phone' => Tools::htmlentitiesUTF8($address_delivery->phone),
+            'phone_mobile' => Tools::htmlentitiesUTF8($address_delivery->phone_mobile),
+            'id_country' => (int)$address_delivery->id_country,
+            'id_state' => (int)$address_delivery->id_state,
+            'id_gender' => (int)$customer->id_gender,
+            'sl_year' => $birthday[0],
+            'sl_month' => $birthday[1],
+            'sl_day' => $birthday[2],
+            'company_invoice' => Tools::htmlentitiesUTF8($address_invoice->company),
+            'lastname_invoice' => Tools::htmlentitiesUTF8($address_invoice->lastname),
+            'firstname_invoice' => Tools::htmlentitiesUTF8($address_invoice->firstname),
+            'vat_number_invoice' => Tools::htmlentitiesUTF8($address_invoice->vat_number),
+            'dni_invoice' => Tools::htmlentitiesUTF8($address_invoice->dni),
+            'address1_invoice' => Tools::htmlentitiesUTF8($address_invoice->address1),
+            'address2_invoice' => Tools::htmlentitiesUTF8($address_invoice->address2),
+            'postcode_invoice' => Tools::htmlentitiesUTF8($address_invoice->postcode),
+            'city_invoice' => Tools::htmlentitiesUTF8($address_invoice->city),
+            'phone_invoice' => Tools::htmlentitiesUTF8($address_invoice->phone),
+            'phone_mobile_invoice' => Tools::htmlentitiesUTF8($address_invoice->phone_mobile),
+            'id_country_invoice' => (int)$address_invoice->id_country,
+            'id_state_invoice' => (int)$address_invoice->id_state,
+            'id_address_invoice' => $id_address_invoice,
+            'invoice_company' => Tools::htmlentitiesUTF8($address_invoice->company),
+            'invoice_lastname' => Tools::htmlentitiesUTF8($address_invoice->lastname),
+            'invoice_firstname' => Tools::htmlentitiesUTF8($address_invoice->firstname),
+            'invoice_vat_number' => Tools::htmlentitiesUTF8($address_invoice->vat_number),
+            'invoice_dni' => Tools::htmlentitiesUTF8($address_invoice->dni),
+            'invoice_address' => $this->context->cart->id_address_invoice !== $this->context->cart->id_address_delivery,
+            'invoice_address1' => Tools::htmlentitiesUTF8($address_invoice->address1),
+            'invoice_address2' => Tools::htmlentitiesUTF8($address_invoice->address2),
+            'invoice_postcode' => Tools::htmlentitiesUTF8($address_invoice->postcode),
+            'invoice_city' => Tools::htmlentitiesUTF8($address_invoice->city),
+            'invoice_phone' => Tools::htmlentitiesUTF8($address_invoice->phone),
+            'invoice_phone_mobile' => Tools::htmlentitiesUTF8($address_invoice->phone_mobile),
+            'invoice_id_country' => (int)$address_invoice->id_country,
+            'invoice_id_state' => (int)$address_invoice->id_state,
+        );
+    }
+    
 	protected function _assignSummaryInformations()
 	{
 		$summary = $this->context->cart->getSummaryDetails();
