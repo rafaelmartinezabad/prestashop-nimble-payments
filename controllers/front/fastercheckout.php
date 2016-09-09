@@ -62,7 +62,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 
 		$this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
         if (! Tools::isSubmit('ajax')) {
-            $this->context->cart->checkedTOS = 1; //terms of service
+            $this->context->cookie->checkedTOS = 1; //terms of service
         }
 
 		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
@@ -316,7 +316,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 
 		$this->context->smarty->assign(
 			array(
-				'checkedTOS'					=>	$this->context->cart->checkedTOS,
+				'checkedTOS'					=>	(int)$this->context->cookie->checkedTOS,
 				'isVirtualCart'					=>	$this->context->cart->isVirtualCart(),
 				'productNumber'					=>	$this->context->cart->nbProducts(),
 				'back'							=>	Tools::safeOutput(Tools::getValue('back')),
@@ -797,7 +797,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         $vars = array(
             'advanced_payment_api' => (bool)Configuration::get('PS_ADVANCED_PAYMENT_API'),
             'free_shipping' => $free_shipping,
-            'checkedTOS' => $this->context->cart->checkedTOS,
+            'checkedTOS' => (int)$this->context->cookie->checkedTOS,
             'recyclablePackAllowed' => (int)Configuration::get('PS_RECYCLABLE_PACK'),
             'giftAllowed' => (int)Configuration::get('PS_GIFT_WRAPPING'),
             'cms_id' => (int)Configuration::get('PS_CONDITIONS_CMS_ID'),
