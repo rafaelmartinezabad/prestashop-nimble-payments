@@ -549,3 +549,8 @@ p#block_top_title{
 	border-left-width: 5px;
 	padding-left: 25px;
 }
+
+.nimble-guest {
+	display: table;
+    padding-bottom: 25px;
+}

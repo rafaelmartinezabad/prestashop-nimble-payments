@@ -30,7 +30,7 @@
 			<div class="box">
 				<h3 id="new_account_title" class="page-subheading">{l s='New Customer'}</h3>
 				<div id="opc_account_choice" class="row">
-					<div class="col-xs-12 col-md-6">
+					<div class="col-xs-12 col-md-6 nimble-guest">
 						<p class="title_block">{l s='Instant Checkout'}</p>
 						<p class="opc-button">
 							<button type="submit" class="btn btn-default button button-medium exclusive" id="opc_guestCheckout"><span>{l s='Guest checkout'}</span></button>
