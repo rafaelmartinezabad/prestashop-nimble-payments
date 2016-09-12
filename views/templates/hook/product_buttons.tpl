@@ -26,7 +26,7 @@
 
 <div{if (!$allow_oosp && $product->quantity <= 0) || !$product->available_for_order || (isset($restricted_country_mode) && $restricted_country_mode) || $PS_CATALOG_MODE} class="unvisible"{/if}>
     <p id="faster_checkout" class="buttons_bottom_block no-print">
-        <button type="submit" name="{l s='Faster checkout' mod='nimblepayment'}" class="exclusive btn btn-outline-inverse" data-href="{$url_faster_checkout|escape:'htmlall':'UTF-8'}">
+        <button type="submit" name="{l s='Faster checkout' mod='nimblepayment'}" class="exclusive btn-outline-inverse" data-href="{$url_faster_checkout|escape:'htmlall':'UTF-8'}">
                 <span>{l s='Faster checkout' mod='nimblepayment'}</span>
         </button>
     </p>
