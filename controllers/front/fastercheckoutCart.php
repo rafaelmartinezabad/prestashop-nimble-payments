@@ -31,8 +31,10 @@ class NimblePaymentFasterCheckoutCartModuleFrontController extends CartControlle
         // Update the cart ONLY if $this->cookies are available, in order to avoid ghost carts created by bots
         if ($this->context->cookie->exists() && !$this->errors && !($this->context->customer->isLogged() && !$this->isTokenValid())) {
             if (Tools::getIsset('add') || Tools::getIsset('update')) {
-                $this->processChangeProductInCart();            
-                $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
+                $this->processChangeProductInCart(); 
+                $ssl    = Configuration::get('PS_SSL_ENABLED');
+                $params	=	array();
+                $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl);
                 Tools::redirect($url_faster_checkout);
             }
         } elseif (!$this->isTokenValid()) {

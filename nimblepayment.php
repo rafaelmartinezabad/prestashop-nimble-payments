@@ -294,7 +294,9 @@ class NimblePayment extends PaymentModule
 			$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
 			if($faster_checkout_enabled){
 				$order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
-				$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout');
+                $ssl    = Configuration::get('PS_SSL_ENABLED');
+                $params	=	array();
+                $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl);
 				$this->context->smarty->assign(
 					array(
 							'url_faster_checkout'	=>	$url_faster_checkout,
@@ -314,7 +316,9 @@ class NimblePayment extends PaymentModule
 			$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
 			if($faster_checkout_enabled){
 				$this->product = $params['product'];
-				$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckoutCart');
+                $ssl    = Configuration::get('PS_SSL_ENABLED');
+                $params	=	array();
+				$url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckoutCart', $params, $ssl);
 				$this->context->smarty->assign(
 					array(
 						'url_faster_checkout'	=>	$url_faster_checkout,

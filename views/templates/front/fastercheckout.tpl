@@ -23,9 +23,11 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
+{assign var="orderOpcUrl" value=$orderOpcUrl}
+
 {if $opc}
 	{assign var="back_order_page" value="order-opc.php"}
-	{else}
+{else}
 	{assign var="back_order_page" value="order.php"}
 {/if}
 
@@ -74,7 +76,7 @@
 	<p class="alert alert-warning">{l s='The gateway Nimble Payments is not active'}</p>
 {/if}
 {strip}
-{addJsDef orderOpcUrl=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|escape:'quotes':'UTF-8'}
+{addJsDef orderOpcUrl=$orderOpcUrl}
 {addJsDef authenticationUrl=$link->getPageLink("authentication", true)|escape:'quotes':'UTF-8'}
 {addJsDef historyUrl=$link->getPageLink("history", true)|escape:'quotes':'UTF-8'}
 {addJsDef guestTrackingUrl=$link->getPageLink("guest-tracking", true)|escape:'quotes':'UTF-8'}

@@ -345,6 +345,12 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             }
         }
 
+        $base =_PS_BASE_URL_.__PS_BASE_URI__;
+        $fc = 'index.php?fc=module';
+        $module = 'module=nimblepayment';
+        $controller = 'controller=fastercheckout';
+        $orderOpcUrl = $base . $fc . '&' . $module . '&' . $controller;
+        
         $this->context->smarty->assign(array(
             'free_shipping' => $free_shipping,
             'isGuest' => isset($this->context->cookie->is_guest) ? $this->context->cookie->is_guest : 0,
@@ -357,7 +363,9 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'genders' => Gender::getGenders(),
             'one_phone_at_least' => (int)Configuration::get('PS_ONE_PHONE_AT_LEAST'),
             'HOOK_CREATE_ACCOUNT_FORM' => Hook::exec('displayCustomerAccountForm'),
-            'HOOK_CREATE_ACCOUNT_TOP' => Hook::exec('displayCustomerAccountFormTop')
+            'HOOK_CREATE_ACCOUNT_TOP' => Hook::exec('displayCustomerAccountFormTop'),
+            'orderOpcUrl' => $orderOpcUrl
+
         ));
         $years = Tools::dateYears();
         $months = Tools::dateMonths();
