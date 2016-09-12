@@ -1,6 +1,6 @@
 <div id="opc_new_account" class="opc-main-block">
 	<div id="opc_new_account-overlay" class="opc-overlay" style="display: none;"></div>
-	<h1 class="page-heading step-num"><span>1</span> {l s='Account'}</h1>
+	<h1 class="page-heading step-num">{l s='Account' mod='nimblepayment'}</h1>
 	<form action="{$link->getPageLink('authentication', true, NULL, "back=order-opc")|escape:'html':'UTF-8'}" method="post" id="login_form" class="box">
 		<fieldset>
 			<h3 class="page-subheading">{l s='Already registered?'}</h3>
@@ -31,7 +31,7 @@
 				<h3 id="new_account_title" class="page-subheading">{l s='New Customer'}</h3>
 				<div id="opc_account_choice" class="row">
 					<div class="col-xs-12 col-md-6 nimble-guest">
-						<p class="title_block">{l s='Instant Checkout'}</p>
+						<p class="title_block">{l s='Instant Checkout' mod='nimblepayment'}</p>
 						<p class="opc-button">
 							<button type="submit" class="btn btn-default button button-medium exclusive" id="opc_guestCheckout"><span>{l s='Guest checkout'}</span></button>
 						</p>

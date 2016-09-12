@@ -25,7 +25,7 @@
 
 {capture name=path}{l s='Your shopping cart'}{/capture}
 
-<h1 class="page-heading step-num"><span>1</span> {l s='Shopping-cart summary'}</h1>
+<h1 class="page-heading step-num">{l s='Shopping-cart summary'}</h1>
 
 {include file="$tpl_dir./errors.tpl"}
 

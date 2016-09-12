@@ -22,7 +22,7 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<h1 class="page-heading step-num"><span>4</span> {l s='Please choose your payment method'}</h1>
+<h1 class="page-heading step-num">{l s='Payment method' mod='nimblepayment'}</h1>
 
 	<div id="opc_payment_methods" class="opc-main-block">
 		<div id="opc_payment_methods-overlay" class="opc-overlay" style="display: none;"></div>

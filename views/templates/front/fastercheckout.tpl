@@ -36,7 +36,13 @@
 			{if $productNumber}
 				<div class="nimble-left">
 					<div class="nimble-block" id="nimble-shopping-cart">
-						{include file="./shopping-cart.tpl"}
+						{if $is_logged AND !$is_guest}
+							{include file="./order-address.tpl"}
+						{else}
+							<!-- Create account / Guest account / Login block -->
+							{include file="./order-opc-new-account.tpl"}
+							<!-- END Create account / Guest account / Login block -->
+						{/if}
 					</div>	
 					<div class="nimble-block" id="nimble-order-carrier">
 						<!-- Carrier -->
@@ -46,13 +52,7 @@
 				</div>
 				<div class="nimble-right">	
 					<div class="nimble-block" id="nimble-order-address">
-						{if $is_logged AND !$is_guest}
-							{include file="./order-address.tpl"}
-						{else}
-							<!-- Create account / Guest account / Login block -->
-							{include file="./order-opc-new-account.tpl"}
-							<!-- END Create account / Guest account / Login block -->
-						{/if}	
+						{include file="./shopping-cart.tpl"}
 					</div>					
 					<div class="nimble-block" id="nimble-order-payment">
 						<!-- Payment -->

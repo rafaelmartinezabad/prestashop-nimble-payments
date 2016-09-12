@@ -23,7 +23,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 <div id="carrier_area" class="opc-main-block">
-        <h1 class="page-heading step-num"><span>2</span> {l s='Delivery methods'}</h1>
+        <h1 class="page-heading step-num">{l s='Shipping' mod='nimblepayment'}</h1>
                 <div id="opc_delivery_methods" class="opc-main-block">
                         <div id="opc_delivery_methods-overlay" class="opc-overlay" style="display: none;"></div>
 <div class="order_carrier_content box">
