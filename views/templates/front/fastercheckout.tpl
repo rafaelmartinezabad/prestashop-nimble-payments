@@ -24,12 +24,7 @@
 *}
 
 {assign var="orderOpcUrl" value=$orderOpcUrl}
-
-{if $opc}
-	{assign var="back_order_page" value="order-opc.php"}
-{else}
-	{assign var="back_order_page" value="order.php"}
-{/if}
+{assign var="back_order_page" value=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|urlencode|escape:'htmlall':'UTF-8'}
 
 {if $nimble_credentials}
 		{if $faster_checkout_enabled}
