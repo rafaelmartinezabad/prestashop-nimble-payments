@@ -64,7 +64,7 @@
 				   {/if}
 				</ul>
 				<p class="payment_module cart_navigation clearfix">
-					<a 
+					<a id="nimblepayment_gateway"
 						href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
 						class="nimblepayment button btn btn-default standard-checkout button-medium" 
 						title="{l s='Pay' mod='nimblepayment'}" >
