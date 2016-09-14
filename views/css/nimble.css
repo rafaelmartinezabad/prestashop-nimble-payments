@@ -607,11 +607,14 @@ li.list-card-nimble {
 span#title-nimble-pay {
     color: white;
 	border: none;
-    border-color: none;
+	text-align: center;
 	
 }
 
 a.nimblepayment.button.btn.btn-default.standard-checkout.button-medium {
-    background-image: linear-gradient(to bottom, #435CB7 0%, #4259AC 100%);
-	margin-right: 310px;
+    background-image: linear-gradient(to bottom, #566FB7 0%, #566FB7 100%);
+	margin-right: 210px;
+	border: 1px solid;
+    border-color: #566FB7 #566FB7 #566FB7 #566FB7;
+	width: 8em;
 }
