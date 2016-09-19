@@ -37,7 +37,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 	public $nimblepayment_client_id = '';
 	public $type_error = 0;
 	public $nimbleapi;
-
+    public $iterator_confirm_payment = 10;
 	/**
 	* @see FrontController::initContent()
 	*/
@@ -123,19 +123,54 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 			if ( isset($preorder["data"]) && isset($preorder["data"]["id"])){
 				//Save transaction_id to this order
 				$this->context->cookie->__set('nimble_transaction_id', $preorder['data']['id']);
-				$response = NimbleAPIStoredCards::confirmPayment($nimbleApi, $preorder["data"]);
-				//error_log(print_r($response,true));
-				$this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl));
-                //TODO CHECK TIMEOUT poner 5s en el sdk y preguntar 2 veces por el status y es pending asumimos que es ko
+				$response = NimbleAPIStoredCards::confirmPayment($nimbleApi, $preorder["data"]);                
+                //Check confirmPayment
+                $this->checkConfirmPayment($nimbleApi, $preorder['data']['id'], $paramurl);
 			} else {
 				$this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
 			}
 		}
 		catch (Exception $e) {
-			//Error
+            $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
 		}
 	}
+    
+    public function checkConfirmPayment($nimbleApi, $transaction_id, $paramurl)
+    {
+        $state = 'PENDING';
+        $i=0;
+        while( ($state == 'PENDING') && ($i<$this->iterator_confirm_payment) ) {
+            $getPaymentStatus = NimbleAPIPayments::getPaymentStatus($nimbleApi, $transaction_id);
+            if ( isset($getPaymentStatus['data']) && isset($getPaymentStatus['data']['details']) && count($getPaymentStatus['data']['details']) ){
+                $state = $getPaymentStatus['data']['details'][0]['state'];
+            } elseif ( isset($getPaymentStatus['result']) && isset($getPaymentStatus['result']['code']) && 404 == $getPaymentStatus['result']['code'] ) {
+                $state = 'NOT_FOUND';
+            }
+        $i++;
+        sleep(1);
+        }
 
+        error_log("i: " .$i );
+        error_log("state: " .$state );
+        
+        switch ($state){
+            case 'SETTLED':
+            case 'ON_HOLD':
+                //PAYMENT COMPLETE
+                $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl));
+                break;
+            case 'ABANDONED':
+            case 'DENIED':
+            case 'ERROR':
+            case 'NOT_FOUND':
+            case 'PENDING':
+                $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
+                break;
+            default:
+                break;
+        }   
+    }
+    
 	public function sendPayment($total, $paramurl)
 	{
 		$cart = $this->context->cart;
