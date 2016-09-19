@@ -104,7 +104,8 @@ $(document).ready(function(){
 					{
 						// update token
 						static_token = jsonData.token;
-						updateNewAccountToAddressBlock(that.attr('data-adv-api'));
+                                                location.reload();
+						//updateNewAccountToAddressBlock(that.attr('data-adv-api'));
 					}
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
