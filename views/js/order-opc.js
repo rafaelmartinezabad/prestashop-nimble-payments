@@ -83,7 +83,7 @@ $(document).ready(function(){
 			$.ajax({
 				type: 'POST',
 				headers: { "cache-control": "no-cache" },
-				url: authenticationUrl + '?rand=' + new Date().getTime(),
+				url: authenticationUrl + ajaxRandQueryParam + new Date().getTime(),
 				async: false,
 				cache: false,
 				dataType : "json",
@@ -182,7 +182,7 @@ $(document).ready(function(){
 			$.ajax({
 				type: 'POST',
 				headers: { "cache-control": "no-cache" },
-				url: callingFile + '?rand=' + new Date().getTime() + advApiParam,
+				url: callingFile + ajaxRandQueryParam + new Date().getTime() + advApiParam,
 				async: false,
 				cache: false,
 				dataType : "json",
@@ -329,7 +329,7 @@ function updatePaymentMethodsDisplay()
 		$.ajax({
 			type: 'POST',
 			headers: { "cache-control": "no-cache" },
-			url: orderOpcUrl + '?rand=' + new Date().getTime(),
+			url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 			async: true,
 			cache: false,
 			dataType : "json",
@@ -357,7 +357,7 @@ function updateAddressSelection(is_adv_api)
 	$.ajax({
 		type: 'POST',
 		headers: { "cache-control": "no-cache" },
-		url: orderOpcUrl + '?rand=' + new Date().getTime(),
+		url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 		async: true,
 		cache: false,
 		dataType : "json",
@@ -485,7 +485,7 @@ function getCarrierListAndUpdate()
 	$.ajax({
 		type: 'POST',
 		headers: { "cache-control": "no-cache" },
-		url: orderOpcUrl + '?rand=' + new Date().getTime(),
+		url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 		async: true,
 		cache: false,
 		dataType : "json",
@@ -563,7 +563,7 @@ function updateCarrierSelectionAndGift()
 	$.ajax({
 		type: 'POST',
 		headers: { "cache-control": "no-cache" },
-		url: orderOpcUrl + '?rand=' + new Date().getTime(),
+		url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 		async: true,
 		cache: false,
 		dataType : "json",
@@ -623,7 +623,7 @@ function confirmFreeOrder()
 	$.ajax({
 		type: 'POST',
 		headers: { "cache-control": "no-cache" },
-		url: orderOpcUrl + '?rand=' + new Date().getTime(),
+		url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 		async: true,
 		cache: false,
 		dataType : "html",
@@ -706,7 +706,7 @@ function saveAddress(type)
 	$.ajax({
 		type: 'POST',
 		headers: { "cache-control": "no-cache" },
-		url: addressUrl + '?rand=' + new Date().getTime(),
+		url: addressUrl + ajaxRandQueryParam + new Date().getTime(),
 		async: false,
 		cache: false,
 		dataType : "json",
@@ -774,7 +774,7 @@ function updateNewAccountToAddressBlock(is_adv_api)
 	$.ajax({
 		type: 'POST',
 		headers: { "cache-control": "no-cache" },
-		url: orderOpcUrl + '?rand=' + new Date().getTime(),
+		url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 		async: true,
 		cache: false,
 		dataType : "json",
@@ -856,7 +856,7 @@ function bindInputs()
 		$.ajax({
 			type: 'POST',
 			headers: { "cache-control": "no-cache" },
-			url: orderOpcUrl + '?rand=' + new Date().getTime(),
+			url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 			async: false,
 			cache: false,
 			dataType : "json",
@@ -941,7 +941,7 @@ function multishippingMode(it)
 						$.ajax({
 							type: 'POST',
 							headers: { "cache-control": "no-cache" },
-							url: orderOpcUrl + '?rand=' + new Date().getTime(),
+							url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 							data: 'ajax=true&method=cartReload',
 							dataType : 'html',
 							cache: false,
@@ -1000,7 +1000,7 @@ function multishippingMode(it)
 		$.ajax({
 			type: 'POST',
 			headers: { "cache-control": "no-cache" },
-			url: orderOpcUrl + '?rand=' + new Date().getTime(),
+			url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 			async: true,
 			cache: false,
 			data: 'ajax=true&method=noMultiAddressDelivery'
@@ -1010,7 +1010,7 @@ function multishippingMode(it)
 		$.ajax({
 			type: 'POST',
 			headers: { "cache-control": "no-cache" },
-			url: orderOpcUrl + '?rand=' + new Date().getTime(),
+			url: orderOpcUrl + ajaxRandQueryParam + new Date().getTime(),
 			async: true,
 			cache: false,
 			data: 'ajax=true&method=cartReload',

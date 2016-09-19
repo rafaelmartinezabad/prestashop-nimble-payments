@@ -72,6 +72,7 @@
 {/if}
 {strip}
 {addJsDef orderOpcUrl=$orderOpcUrl}
+{addJsDef ajaxRandQueryParam=$ajaxRandQueryParam}
 {addJsDef authenticationUrl=$link->getPageLink("authentication", true)|escape:'quotes':'UTF-8'}
 {addJsDef historyUrl=$link->getPageLink("history", true)|escape:'quotes':'UTF-8'}
 {addJsDef guestTrackingUrl=$link->getPageLink("guest-tracking", true)|escape:'quotes':'UTF-8'}
