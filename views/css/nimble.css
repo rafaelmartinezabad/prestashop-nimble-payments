@@ -588,7 +588,7 @@ p#block_top_title{
 h4#nimble-credit-card {
 	font-weight:bold;
 	border-bottom: 1px solid #d6d4d4;
-	padding: 0px 0px 17px 0px;
+	padding: 0px 0px 35px 0px;
     margin-bottom: 30px;
 }
 
@@ -625,4 +625,15 @@ a.nimblepayment.button.btn.btn-default.standard-checkout.button-medium {
 	border: 1px solid;
     border-color: #1070BE;
 	width: 8em;
+	float: left;
+    margin-left: 2%;
+}
+
+p.nimble-credit-card-title {
+	float: left;
+}
+
+img.nimble-credit-card-img {
+	float:right;
+	margin-top: -20px;
 }

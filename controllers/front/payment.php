@@ -126,6 +126,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 				$response = NimbleAPIStoredCards::confirmPayment($nimbleApi, $preorder["data"]);
 				//error_log(print_r($response,true));
 				$this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentok', array('paymentcode' => $paramurl));
+                //TODO CHECK TIMEOUT poner 5s en el sdk y preguntar 2 veces por el status y es pending asumimos que es ko
 			} else {
 				$this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
 			}
