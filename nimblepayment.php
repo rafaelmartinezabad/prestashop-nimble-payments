@@ -64,7 +64,8 @@ class NimblePayment extends PaymentModule
             'dashboardZoneOne',
             'displayAdminHomeInfos',
             'displayShoppingCartFooter',
-            'displayProductButtons'
+            'displayProductButtons',
+            'advancedPaymentOptions'
             );
     }
 
@@ -440,6 +441,22 @@ class NimblePayment extends PaymentModule
         return $output;
     }
 
+    public function hookAdvancedPaymentOptions($params)
+    {
+        $ssl = Configuration::get('PS_SSL_ENABLED');
+        $params	= array();
+        $payment_action = $this->context->link->getModuleLink('nimblepayment', 'payment', $params, $ssl);
+        $newOptions = array();
+        $newOption = new Core_Business_Payment_PaymentOption();
+        $newOption->setCallToActionText($this->l('Pay by Credit card'))
+                  ->setAction($payment_action)
+                  ->setInputs(array())
+                  ->setLogo($this->context->link->getMediaLink('/modules/nimblepayment/views/img/img-boton.png'));
+
+        $newOptions[] = $newOption;
+        return $newOptions;
+    }
+    
     public function hookPayment($params)
     {
         

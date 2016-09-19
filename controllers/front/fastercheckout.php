@@ -395,10 +395,6 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         $this->context->smarty->assign('optin', (bool)Configuration::get('PS_CUSTOMER_OPTIN'));
         $this->context->smarty->assign('field_required', $this->context->customer->validateFieldsRequiredDatabase());
 
-        if ((bool)Configuration::get('PS_ADVANCED_PAYMENT_API')) {
-            $this->addJS(_THEME_JS_DIR_ . 'advanced-payment-api.js');
-        }
-        
         $this->_processAddressFormat();
         
 		$this->setTemplate('fastercheckout.tpl');
@@ -580,7 +576,6 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 		}
 
 		$show_option_allow_separate_package = (!$this->context->cart->isAllProductsInStock(true) && Configuration::get('PS_SHIP_WHEN_AVAILABLE'));
-		$advanced_payment_api = (bool)Configuration::get('PS_ADVANCED_PAYMENT_API');
 
 		$this->context->smarty->assign($summary);
 		$this->context->smarty->assign(array(
@@ -597,9 +592,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 			'lastProductAdded' => $this->context->cart->getLastProduct(),
 			'displayVouchers' => $available_cart_rules,
 			'show_option_allow_separate_package' => $show_option_allow_separate_package,
-			'smallSize' => Image::getSize(ImageType::getFormatedName('small')),
-			'advanced_payment_api' => $advanced_payment_api
-
+			'smallSize' => Image::getSize(ImageType::getFormatedName('small'))
 		));
         
         $this->context->smarty->assign(array(
@@ -762,19 +755,11 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 
     protected function _assignPayment()
     {
-        if ((bool)Configuration::get('PS_ADVANCED_PAYMENT_API')) {
-            $this->context->smarty->assign(array(
-                'HOOK_TOP_PAYMENT' => ($this->isLogged ? Hook::exec('displayPaymentTop') : ''),
-                'HOOK_PAYMENT' => $this->_getPaymentMethods(),
-                'HOOK_ADVANCED_PAYMENT' => Hook::exec('advancedPaymentOptions', array(), null, true),
-                'link_conditions' => $this->link_conditions
-            ));
-        } else {
-            $this->context->smarty->assign(array(
-                'HOOK_TOP_PAYMENT' => ($this->isLogged ? Hook::exec('displayPaymentTop') : ''),
-                'HOOK_PAYMENT' => $this->_getPaymentMethods()
-            ));
-        }
+        $this->context->smarty->assign(array(
+            'HOOK_TOP_PAYMENT' => ($this->isLogged ? Hook::exec('displayPaymentTop') : ''),
+            'HOOK_PAYMENT' => $this->_getPaymentMethods()
+        ));
+        
     }
 
     protected function _getCarrierList()
@@ -807,7 +792,6 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         $this->context->smarty->assign('isVirtualCart', $this->context->cart->isVirtualCart());
         
         $vars = array(
-            'advanced_payment_api' => (bool)Configuration::get('PS_ADVANCED_PAYMENT_API'),
             'free_shipping' => $free_shipping,
             'checkedTOS' => (int)$this->context->cookie->checkedTOS,
             'recyclablePackAllowed' => (int)Configuration::get('PS_RECYCLABLE_PACK'),

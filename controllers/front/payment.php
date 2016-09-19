@@ -59,7 +59,6 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 				);
 				$nimbleApi = new NimbleAPI($params);
 				NimbleAPIStoredCards::deleteAllCards($nimbleApi, $userId);
-				error_log("borro las tarjetas");
 			} catch (Exception $ex) {
 				//to do
 			}
