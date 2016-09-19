@@ -22,7 +22,6 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-{assign var="back_order_page" value=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|urlencode|escape:'htmlall':'UTF-8'}
 <h1 class="page-heading step-num">{l s='Addresses' mod='nimblepayment'}</h1>
 <div id="opc_account" class="opc-main-block">
     <div id="opc_account-overlay" class="opc-overlay" style="display: none;"></div>
