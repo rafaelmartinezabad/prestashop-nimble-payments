@@ -559,6 +559,14 @@ p#block_top_title{
     margin-left: 15px;
 }
 
+.module-nimble-payment-order {
+    border: 1px solid #c0c0c0;
+	border-radius: 5px;
+    padding: 14px;
+    background-color: #f9f9f9;
+    margin-left: 15px;
+}
+
 .img-logo-nimble {
     text-align: right;
 }
@@ -580,7 +588,7 @@ p#block_top_title{
 h4#nimble-credit-card {
 	font-weight:bold;
 	border-bottom: 1px solid #d6d4d4;
-	padding: 0px 0px 17px 0px;
+	padding: 0px 0px 35px 0px;
     margin-bottom: 30px;
 }
 
@@ -612,9 +620,20 @@ span#title-nimble-pay {
 }
 
 a.nimblepayment.button.btn.btn-default.standard-checkout.button-medium {
-    background-image: linear-gradient(to bottom, #566FB7 0%, #566FB7 100%);
+    background-image: linear-gradient(to bottom, #1070BE 0%, #1070BE 100%);
 	margin-right: 210px;
 	border: 1px solid;
-    border-color: #566FB7 #566FB7 #566FB7 #566FB7;
+    border-color: #1070BE;
 	width: 8em;
+	float: left;
+    margin-left: 2%;
+}
+
+p.nimble-credit-card-title {
+	float: left;
+}
+
+img.nimble-credit-card-img {
+	float:right;
+	margin-top: -20px;
 }

@@ -456,6 +456,12 @@ class NimblePayment extends PaymentModule
             $hideCards = $this->checkStoredCard();
         }
 
+        $controllerFastecheckout = Tools::getValue('controller');
+        if ($controllerFastecheckout == 'fastercheckout') {
+            $fastercheckout = true;
+        } else {
+            $fastercheckout = false;
+        }
         $ssl = Configuration::get('PS_SSL_ENABLED');
         $this->smarty->assign(
                 array(
@@ -465,7 +471,8 @@ class NimblePayment extends PaymentModule
                         'this_path_bw'		=>	$this->_path,
                         'this_path_ssl'		=>	Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
                         'hideCards'			=>	$hideCards,
-                        'cards'				=>	$cards
+                        'cards'				=>	$cards,
+                        'fastercheckout'    =>  $fastercheckout
                         )
         );
 
