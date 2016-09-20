@@ -68,7 +68,7 @@
 						href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
 						class="nimblepayment button btn btn-default standard-checkout button-medium" 
 						title="{l s='PAY' mod='nimblepayment'}" >
-						<span id="title-nimble-pay">{l s='Pay' mod='nimblepayment'}</span>
+						<span id="title-nimble-pay">{l s='PAY' mod='nimblepayment'}</span>
 					</a>
 				</p>
 			</div>		   
@@ -109,7 +109,7 @@
 						href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
 						class="nimblepayment button btn btn-default standard-checkout button-medium" 
 						title="{l s='PAY' mod='nimblepayment'}" >
-						<span id="title-nimble-pay">{l s='Pay' mod='nimblepayment'}</span>
+						<span id="title-nimble-pay">{l s='PAY' mod='nimblepayment'}</span>
 					</a>
 				</p>
 			</div>

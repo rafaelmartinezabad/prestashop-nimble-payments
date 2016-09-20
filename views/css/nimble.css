@@ -637,3 +637,15 @@ img.nimble-credit-card-img {
 	float:right;
 	margin-top: -20px;
 }
+
+label.stored_card.visa {
+    width: 45%;
+    background: no-repeat scroll center right;
+    background-image: url("/modules/nimblepayment/views/img/visa.jpg");
+}
+
+label.stored_card.mastercard {
+    width: 45%;
+    background: no-repeat scroll center right;
+    background-image: url("/modules/nimblepayment/views/img/mastercard.jpg");
+}
