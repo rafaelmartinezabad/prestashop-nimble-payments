@@ -60,14 +60,14 @@
 					   {else}
 						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" checked value=""/>
 					   {/if}
-					   <label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
+					   <label for="nimblepayment_storedcard_2" class="stored_card">{l s='Pay with another card' mod='nimblepayment'}</label>
 				   {/if}
 				</ul>
 				<p class="payment_module cart_navigation clearfix">
 					<a id="nimblepayment_gateway"
 						href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
 						class="nimblepayment button btn btn-default standard-checkout button-medium" 
-						title="{l s='Pay' mod='nimblepayment'}" >
+						title="{l s='PAY' mod='nimblepayment'}" >
 						<span id="title-nimble-pay">{l s='Pay' mod='nimblepayment'}</span>
 					</a>
 				</p>
@@ -101,14 +101,14 @@
 					   {else}
 						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" checked value=""/>
 					   {/if}
-					   <label for="nimblepayment_storedcard_2" class="stored_card">{l s='New card' mod='nimblepayment'}</label>
+					   <label for="nimblepayment_storedcard_2" class="stored_card">{l s='Pay with another card' mod='nimblepayment'}</label>
 				   {/if}
 				</ul>
 				<p class="payment_module cart_navigation clearfix">
 					<a id="nimblepayment_gateway"
 						href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
 						class="nimblepayment button btn btn-default standard-checkout button-medium" 
-						title="{l s='Pay' mod='nimblepayment'}" >
+						title="{l s='PAY' mod='nimblepayment'}" >
 						<span id="title-nimble-pay">{l s='Pay' mod='nimblepayment'}</span>
 					</a>
 				</p>

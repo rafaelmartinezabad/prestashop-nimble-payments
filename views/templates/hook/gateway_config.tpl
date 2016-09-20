@@ -100,7 +100,7 @@
         </div>
     </div>
 	<div class="nimbleStepBox">
-		<h3>{l s='Faster Checkout Nimble Payments' mod='nimblepayment'}</h3>
+		<h3>{l s='Nimble Payments faster checkout' mod='nimblepayment'}</h3>
 		<div class="contentStep">
 			<input type="hidden" value="1" name="saveFaster">
 			<form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
