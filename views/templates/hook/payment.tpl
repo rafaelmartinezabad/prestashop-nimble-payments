@@ -34,14 +34,14 @@
 				href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}" data-href="{$link->getModuleLink('nimblepayment', 'payment', $params, $ssl)|escape:'htmlall':'UTF-8'}"
 				title="{l s='Pay by Credit card' mod='nimblepayment'}">
 						{l s='Pay by Credit card' mod='nimblepayment'} 
-						<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
+						<img class="img-nimble" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay by Credit card' mod='nimblepayment'}"/>
 				</a>
 			</p>
 	    </div>
 	</div>	
 {elseif ((!$hideCards || !empty($cards)) && $fastercheckout)}
 	<div class="row">
-		<div class="col-xs-12 col-md-12 module-nimble-payment">
+		<div class="col-md-12 module-nimble-payment">
 			<div class="title-nimble-payment">
 				<h4 id="nimble-credit-card">{l s='Pay by Credit card' mod='nimblepayment'}</h4>
 			</div>
@@ -50,17 +50,18 @@
 				   {if !$hideCards}
 					   {if !empty($cards)}
 						   {l s='Select a saved card:' mod='nimblepayment'}
-						   {foreach from=$cards item=card}
+						   {foreach from=$cards item=card key=key}
 							   <li class="list-card-nimble">
-								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
-								   <label for="nimblepayment_storedcard_1" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
+								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
+								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
+								   	<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
 							   </li>	
 						   {/foreach}
-						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" value=""/>
+						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_new-card" name="nimblepayment_storedcard" value=""/>
 					   {else}
-						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" checked value=""/>
+						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_new-card" name="nimblepayment_storedcard" checked value=""/>
 					   {/if}
-					   <label for="nimblepayment_storedcard_2" class="stored_card">{l s='Pay with another card' mod='nimblepayment'}</label>
+					   <label for="nimblepayment_storedcard_new-card" class="stored_card">{l s='Pay with another card' mod='nimblepayment'}</label>
 				   {/if}
 				</ul>
 				<p class="payment_module cart_navigation clearfix">
@@ -73,13 +74,13 @@
 				</p>
 			</div>		   
 			<div class="img-logo-nimble">	   
-				<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay' mod='nimblepayment'}"/>
+				<img class="img-nimble" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay' mod='nimblepayment'}"/>
 			</div>
 		</div>
 	</div>
 {elseif ((!$hideCards || !empty($cards)) && !$fastercheckout)}
 	<div class="row">
-		<div class="col-xs-12 col-md-12 module-nimble-payment-order">
+		<div class="col-md-12 module-nimble-payment-order">
 			<div class="title-nimble-payment">
 				<h4 id="nimble-credit-card">
 					<p class="nimble-credit-card-title">{l s='Pay by Credit card' mod='nimblepayment'}</p>
@@ -91,17 +92,18 @@
 				   {if !$hideCards}
 					   {if !empty($cards)}
 						   {l s='Select a saved card:' mod='nimblepayment'}
-						   {foreach from=$cards item=card}
+						   {foreach from=$cards item=card key=key}
 							   <li class="list-card-nimble">
-								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_1" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
-								   <label for="nimblepayment_storedcard_1" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
+								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
+								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
+								   <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
 							   </li>	
 						   {/foreach}
-						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" value=""/>
+						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_new-card" name="nimblepayment_storedcard" value=""/>
 					   {else}
-						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_2" name="nimblepayment_storedcard" checked value=""/>
+						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_new-card" name="nimblepayment_storedcard" checked value=""/>
 					   {/if}
-					   <label for="nimblepayment_storedcard_2" class="stored_card">{l s='Pay with another card' mod='nimblepayment'}</label>
+					   <label for="nimblepayment_storedcard_new-card" class="stored_card">{l s='Pay with another card' mod='nimblepayment'}</label>
 				   {/if}
 				</ul>
 				<p class="payment_module cart_navigation clearfix">

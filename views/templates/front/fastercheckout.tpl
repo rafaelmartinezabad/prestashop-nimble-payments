@@ -29,7 +29,7 @@
 {if $nimble_credentials}
 		{if $faster_checkout_enabled}
 			{if $productNumber}
-				<div class="nimble-left">
+				<div class="col-md-6">
 					<div class="nimble-block" id="nimble-shopping-cart">
 						{if $is_logged AND !$is_guest}
 							{include file="./order-address.tpl"}
@@ -45,7 +45,7 @@
 						<!-- END Carrier -->
 					</div>
 				</div>
-				<div class="nimble-right">	
+				<div class="col-md-6">	
 					<div class="nimble-block" id="nimble-order-address">
 						{include file="./shopping-cart.tpl"}
 					</div>					
