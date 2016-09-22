@@ -29,99 +29,75 @@
     <h1 class="title"><strong>Nimble Payments:</strong> {l s='WELCOME TO THE CHANGE' mod='nimblepayment'}</h1>
     <h2 class="subtitle">{$subtitle|escape:'htmlall':'UTF-8'}</h2>
 </div >
-{if !$gateway_enabled}
-    <div class="nimbleStepBox step1">
-        <h3>{l s='Step 1: sign up in Nimble Payments' mod='nimblepayment'}</h3>
-        <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_redondo.png"/>
-        <div class="contentStep">
-            <p class="subtitle">{l s='Need an Nimble Payments account? It is completely free and 100% online.' mod='nimblepayment'}</p>
-            <p>{l s='Sign up now and start selling online.' mod='nimblepayment'}
-                <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png"/>
-                <a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Sign up here' mod='nimblepayment'}</a>
-            </p>
-        </div>
-    </div>
-    <div class="nimbleStepBox step2">
-        <h3>{l s='Step 2: set up your module' mod='nimblepayment'}</h3>
-        <img class="logo" alt="logo-config" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_configura.png"/>
-        <div class="contentStep">
-            <p class="subtitle">{l s='To be able to accept payments you only need to use the credentials you get in Nimble Payments.' mod='nimblepayment'}</p>
-            <p>{l s='If you don\'t have them available, check there here.' mod='nimblepayment'}
-                <img class="link" alt="logo-gateway-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_consultalos.png"/>
-                <a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Check them here' mod='nimblepayment'}</a>
-            </p>
-            {if $error_message}
-            <div class="module_error alert alert-danger">
-                    <button data-dismiss="alert" class="close" type="button">×</button>{l s='Payment gateway data not valid to accept payments.' mod='nimblepayment'}
-            </div>
-            {/if}
-            <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
-                <input type="hidden" value="1" name="saveCredentials">
-                <div class="form-group">
-                    <label>{l s='API client id' mod='nimblepayment'}</label>
-                    <div>
-                        <input type="text" class="" value="{$clientId|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_ID" name="NIMBLEPAYMENT_CLIENT_ID">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>{l s='Client secret' mod='nimblepayment'}</label>
-                    <div>
-                        <input type="text" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
-                    </div>
-                </div>
-                <div class="form-footer">
-                    <button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'  mod='nimblepayment'}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-{else}
-    <div class="nimbleStepBox">
-        <h3>{l s='Nimble Payments gateway data' mod='nimblepayment'}</h3>
-        <div class="contentStep">
-            <form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
-                <input type="hidden" value="1" name="saveCredentials">
-                <div class="form-group">
-                    <label>{l s='API client id' mod='nimblepayment'}</label>
-                    <div>
-                        <input type="text" class="" value="{$clientId|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_ID" name="NIMBLEPAYMENT_CLIENT_ID">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>{l s='Client secret' mod='nimblepayment'}</label>
-                    <div>
-                        <input type="text" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
-                    </div>
-                </div>
-                <div class="form-footer">
-                    <button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save' mod='nimblepayment'}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-	<div class="nimbleStepBox">
-		<h3>{l s='Nimble Payments faster checkout' mod='nimblepayment'}</h3>
-		<div class="contentStep">
-			<input type="hidden" value="1" name="saveFaster">
-			<form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
-				<div class="form-group">
-					<label>{l s='Enabled/Disable' mod='nimblepayment'}</label>
-				</div>
-				<div class="col-lg-9">
-					<span class="switch prestashop-switch fixed-width-lg">
-						<input type="radio" name="fasterCheckout" id="fasterCheckout_on" value="1" {if $faster_checkout} checked="checked" {/if}>
-						<label for="fasterCheckout_on" class="radioCheck">Sí</label>
-						<input type="radio" name="fasterCheckout" id="fasterCheckout_off" value="0" {if !$faster_checkout} checked="checked" {/if}>
-						<label for="fasterCheckout_off" class="radioCheck">No</label>
-						<a class="slide-button btn"></a>
-					</span>
-				</div>
-				<div class="form-footer">
-					<button name="saveFaster" id="module_form_submit_btn" value="1" type="submit">{l s='Save' mod='nimblepayment'}</button>
-				</div>
-			</form>
-		</div>
+<div class="nimbleStepBox step1">
+	<h3>{l s='Step 1: sign up in Nimble Payments' mod='nimblepayment'}</h3>
+	<img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_redondo.png"/>
+	<div class="contentStep">
+		<p class="subtitle">{l s='Need an Nimble Payments account? It is completely free and 100% online.' mod='nimblepayment'}</p>
+		<p>{l s='Sign up now and start selling online.' mod='nimblepayment'}
+			<img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png"/>
+			<a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Sign up here' mod='nimblepayment'}</a>
+		</p>
 	</div>
+</div>
+<div class="nimbleStepBox step2">
+	<h3>{l s='Step 2: set up your module' mod='nimblepayment'}</h3>
+	<img class="logo" alt="logo-config" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_configura.png"/>
+	<div class="contentStep">
+		<p class="subtitle">{l s='To be able to accept payments you only need to use the credentials you get in Nimble Payments.' mod='nimblepayment'}</p>
+		<p>{l s='If you don\'t have them available, check there here.' mod='nimblepayment'}
+			<img class="link" alt="logo-gateway-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_consultalos.png"/>
+			<a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Check them here' mod='nimblepayment'}</a>
+		</p>
+		{if $error_message}
+			<div class="module_error alert alert-danger">
+				<button data-dismiss="alert" class="close" type="button">×</button>{l s='Payment gateway data not valid to accept payments.' mod='nimblepayment'}
+			</div>
+		{/if}
+		<form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
+			<input type="hidden" value="1" name="saveCredentials">
+			<div class="form-group">
+				<label>{l s='API client id' mod='nimblepayment'}</label>
+				<div>
+					<input type="text" class="" value="{$clientId|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_ID" name="NIMBLEPAYMENT_CLIENT_ID">
+				</div>
+			</div>
+			<div class="form-group">
+				<label>{l s='Client secret' mod='nimblepayment'}</label>
+				<div>
+					<input type="text" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
+				</div>
+			</div>
+			<div class="form-footer">
+				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'  mod='nimblepayment'}</button>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="nimbleStepBox">
+	<h3>{l s='Nimble Payments faster checkout' mod='nimblepayment'}</h3>
+	<div class="contentStep">
+		<input type="hidden" value="1" name="saveFaster">
+		<form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
+			<div class="form-group">
+				<label>{l s='Enabled/Disable' mod='nimblepayment'}</label>
+			</div>
+			<div class="col-lg-9">
+				<span class="switch prestashop-switch fixed-width-lg">
+					<input type="radio" name="fasterCheckout" id="fasterCheckout_on" value="1" {if $faster_checkout} checked="checked" {/if}>
+					<label for="fasterCheckout_on" class="radioCheck">Sí</label>
+					<input type="radio" name="fasterCheckout" id="fasterCheckout_off" value="0" {if !$faster_checkout} checked="checked" {/if}>
+					<label for="fasterCheckout_off" class="radioCheck">No</label>
+					<a class="slide-button btn"></a>
+				</span>
+			</div>
+			<div class="form-footer">
+				<button name="saveFaster" id="module_form_submit_btn" value="1" type="submit">{l s='Save' mod='nimblepayment'}</button>
+			</div>
+		</form>
+	</div>
+</div>
+{if $gateway_enabled}				
     {if !$authorized}
         <div class="nimbleAuthorize">
             <div class="title">
