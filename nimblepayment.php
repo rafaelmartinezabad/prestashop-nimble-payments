@@ -33,7 +33,7 @@ if (!defined('_PS_VERSION_')) {
 
 require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/base/NimbleAPI.php';
 require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIPayments.php';
-require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPICredentials.php';
+require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIEnvironment.php';
 require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIAccount.php';
 require_once _PS_MODULE_DIR_ . 'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPIStoredCards.php';
 
@@ -674,7 +674,7 @@ class NimblePayment extends PaymentModule
             );
 
             $nimbleApi = new NimbleAPI($params);
-            $response = NimbleAPICredentials::check($nimbleApi);
+            $response = NimbleAPIEnvironment::verification($nimbleApi);
             if (isset($response) && isset($response['result']) && isset($response['result']['code']) && 200 == $response['result']['code']) {
                 $validator = true;
                 Configuration::updateValue('PS_NIMBLE_CREDENTIALS', 1);

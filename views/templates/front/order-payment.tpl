@@ -27,8 +27,4 @@
 	<div id="opc_payment_methods" class="opc-main-block">
 		<div id="opc_payment_methods-overlay" class="opc-overlay" style="display: none;"></div>
 
-{if $advanced_payment_api}
-    {include file="$tpl_dir./order-payment-advanced.tpl"}
-{else}
-    {include file = "$tpl_dir./order-payment-classic.tpl"}
-{/if}
+{include file = "$tpl_dir./order-payment-classic.tpl"}

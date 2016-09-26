@@ -338,21 +338,14 @@
 				{/if}
 				{/if}
 			{/if}
-			{if $conditions && $cms_id && (! isset($advanced_payment_api) || !$advanced_payment_api)}
-				{if $opc}
-					<hr style="" />
-				{/if}
-                {if isset($override_tos_display) && $override_tos_display}
-                    {$override_tos_display}
-                {else}
-                    <div class="box">
-                        <p class="checkbox">
-                            <input type="checkbox" name="cgv" id="cgv" value="1" {if $checkedTOS}checked="checked"{/if} />
-                            <label for="cgv">{l s='I agree to the terms of service and will adhere to them unconditionally.'}</label>
-                            <a href="{$link_conditions|escape:'html':'UTF-8'}" class="iframe" rel="nofollow">{l s='(Read the Terms of Service)'}</a>
-                        </p>
-                    </div>
-                {/if}
+			{if $conditions && $cms_id}
+				<div class="box">
+					<p class="checkbox">
+						<input type="checkbox" name="cgv" id="cgv" value="1" {if $checkedTOS}checked="checked"{/if} />
+						<label for="cgv">{l s='I agree to the terms of service and will adhere to them unconditionally.'}</label>
+						<a href="{$link_conditions|escape:'html':'UTF-8'}" class="iframe" rel="nofollow">{l s='(Read the Terms of Service)'}</a>
+					</p>
+				</div>
 			{/if}
 		</div> <!-- end delivery_options_address -->
 		
