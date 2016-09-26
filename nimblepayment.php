@@ -54,6 +54,7 @@ class NimblePayment extends PaymentModule
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
         $this->post_errors = array();
+        $this->confirmations = array();
         $this->hooks = array(
             'adminOrder',
             'payment',
@@ -377,13 +378,19 @@ class NimblePayment extends PaymentModule
 
     private function postValidation()
     {
-        if (Tools::isSubmit('saveCredentials')) {
-            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
-            Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
-            if ($this->checkCredentials() == false) {
-                $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
-            }
+        Configuration::updateValue('NIMBLEPAYMENT_CLIENT_ID', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_ID')));
+        Configuration::updateValue('NIMBLEPAYMENT_CLIENT_SECRET', trim(Tools::getValue('NIMBLEPAYMENT_CLIENT_SECRET')));
+        if ($this->checkCredentials() == false) {
+            $this->post_errors[] = $this->l('Data invalid gateway to accept payments.');
+        } else if ($this->checkCredentials()) {
+            $this->confirmations[] = $this->l('Settings saved successfully!');
         }
+        if (Tools::getValue("fasterCheckout") == 0){
+            Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 0);
+        } else {
+            Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
+        }
+ 
     }
 
     private function displaynimblepayment()
@@ -393,6 +400,7 @@ class NimblePayment extends PaymentModule
         $post_url = $this->getConfigUrl();
 
         $error_message = (count($this->post_errors)) ? 1 : 0;
+        $success_message = (count($this->confirmations)) ? 1 : 0;
         $authorized = ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ) ? 1 : 0;
 		$faster_checkout = Configuration::get('FASTER_CHECKOUT_NIMBLE');
         $this->smarty->assign(
@@ -406,7 +414,8 @@ class NimblePayment extends PaymentModule
                 'error_message' => $error_message,
                 'authorized' => $authorized,
                 'Oauth3Url' => $this->getAurhotizeUrl(),
-				'faster_checkout' => $faster_checkout
+				'faster_checkout' => $faster_checkout,
+                'success_message' => $success_message
             )
         );
         return $this->display(__FILE__, 'gateway_config.tpl');
@@ -427,13 +436,6 @@ class NimblePayment extends PaymentModule
         if (Tools::isSubmit('saveCredentials')) {
             $this->postValidation();
         }
-		if (Tools::isSubmit('saveFaster')) {
-			if (Tools::getValue("fasterCheckout") == 0){
-				Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 0);
-			} else {
-				Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
-			}
-		}
 
         $this->enabled = Configuration::get('PS_NIMBLE_CREDENTIALS');
         $output .= $this->displaynimblepayment();
@@ -443,18 +445,20 @@ class NimblePayment extends PaymentModule
 
     public function hookAdvancedPaymentOptions($params)
     {
-        $ssl = Configuration::get('PS_SSL_ENABLED');
-        $params	= array();
-        $payment_action = $this->context->link->getModuleLink('nimblepayment', 'payment', $params, $ssl);
-        $newOptions = array();
-        $newOption = new Core_Business_Payment_PaymentOption();
-        $newOption->setCallToActionText($this->l('Pay by Credit card'))
-                  ->setAction($payment_action)
-                  ->setInputs(array())
-                  ->setLogo($this->context->link->getMediaLink('/modules/nimblepayment/views/img/img-boton.png'));
+        if ($this->checkCredentials()) {
+            $ssl = Configuration::get('PS_SSL_ENABLED');
+            $params	= array();
+            $payment_action = $this->context->link->getModuleLink('nimblepayment', 'payment', $params, $ssl);
+            $newOptions = array();
+            $newOption = new Core_Business_Payment_PaymentOption();
+            $newOption->setCallToActionText($this->l('Pay by Credit card'))
+                      ->setAction($payment_action)
+                      ->setInputs(array())
+                      ->setLogo($this->context->link->getMediaLink('/modules/nimblepayment/views/img/logo-credit-card.jpg'));
 
-        $newOptions[] = $newOption;
-        return $newOptions;
+            $newOptions[] = $newOption;
+            return $newOptions;
+        }
     }
     
     public function hookPayment($params)

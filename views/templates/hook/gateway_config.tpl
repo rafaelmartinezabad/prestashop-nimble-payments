@@ -25,6 +25,15 @@
 
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/gateway_config.css" rel="stylesheet" type="text/css" media="all">
 
+{if $success_message}
+<div class="bootstrap">
+	<div class="module_confirmation conf confirm alert alert-success">
+		<button data-dismiss="alert" class="close" type="button">×</button>
+		{l s='Settings saved successfully!' mod='nimblepayment'}
+	</div>
+</div>
+{/if}
+
 <div class="nimbleHeader">
     <h1 class="title"><strong>Nimble Payments:</strong> {l s='WELCOME TO THE CHANGE' mod='nimblepayment'}</h1>
     <h2 class="subtitle">{$subtitle|escape:'htmlall':'UTF-8'}</h2>
@@ -68,35 +77,33 @@
 					<input type="text" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
 				</div>
 			</div>
+				
+			<div class="nimbleStepBox">
+				<h3>{l s='Nimble Payments faster checkout' mod='nimblepayment'}</h3>
+				<div class="contentStep">
+					<input type="hidden" value="1" name="saveFaster">
+						<div class="form-group">
+							<label>{l s='Enabled/Disable' mod='nimblepayment'}</label>
+						</div>
+						<div class="col-lg-9">
+							<span class="switch prestashop-switch fixed-width-lg">
+								<input type="radio" name="fasterCheckout" id="fasterCheckout_on" value="1" {if $faster_checkout} checked="checked" {/if}>
+								<label for="fasterCheckout_on" class="radioCheck">Sí</label>
+								<input type="radio" name="fasterCheckout" id="fasterCheckout_off" value="0" {if !$faster_checkout} checked="checked" {/if}>
+								<label for="fasterCheckout_off" class="radioCheck">No</label>
+								<a class="slide-button btn"></a>
+							</span>
+						</div>
+				</div>
+			</div>
+						
 			<div class="form-footer">
 				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'  mod='nimblepayment'}</button>
 			</div>
 		</form>
 	</div>
 </div>
-<div class="nimbleStepBox">
-	<h3>{l s='Nimble Payments faster checkout' mod='nimblepayment'}</h3>
-	<div class="contentStep">
-		<input type="hidden" value="1" name="saveFaster">
-		<form method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
-			<div class="form-group">
-				<label>{l s='Enabled/Disable' mod='nimblepayment'}</label>
-			</div>
-			<div class="col-lg-9">
-				<span class="switch prestashop-switch fixed-width-lg">
-					<input type="radio" name="fasterCheckout" id="fasterCheckout_on" value="1" {if $faster_checkout} checked="checked" {/if}>
-					<label for="fasterCheckout_on" class="radioCheck">Sí</label>
-					<input type="radio" name="fasterCheckout" id="fasterCheckout_off" value="0" {if !$faster_checkout} checked="checked" {/if}>
-					<label for="fasterCheckout_off" class="radioCheck">No</label>
-					<a class="slide-button btn"></a>
-				</span>
-			</div>
-			<div class="form-footer">
-				<button name="saveFaster" id="module_form_submit_btn" value="1" type="submit">{l s='Save' mod='nimblepayment'}</button>
-			</div>
-		</form>
-	</div>
-</div>
+
 {if $gateway_enabled}				
     {if !$authorized}
         <div class="nimbleAuthorize">
