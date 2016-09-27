@@ -148,9 +148,6 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $i++;
         sleep(1);
         }
-
-        error_log("i: " .$i );
-        error_log("state: " .$state );
         
         switch ($state){
             case 'SETTLED':

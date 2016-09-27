@@ -572,6 +572,8 @@ p#block_top_title{
 
 .img-logo-nimble {
     text-align: right;
+	text-align: -moz-right;
+	text-align: -webkit-right;
 }
 
 .title-nimble-payment {
@@ -692,36 +694,25 @@ img.nimble-credit-card-img {
 	margin-top: -20px;
 }
 
-/*@media (max-width: 700px) {
-	img.nimble-credit-card-img {
-		width: 70%;
-	}
-}
-
-@media (max-width: 650px) {
-	img.nimble-credit-card-img {
-		width: 65%;
-		margin-top: -20px;
-	}
-}*/
-
 .list-card-nimble img {
     margin-left: 2%;
 }
 
-/*label.stored_card.visa {
-    width: 45%;
-    background: no-repeat scroll center right;
-    background-image: url("/modules/nimblepayment/views/img/visa.jpg");
-	margin-right: 0px;
-}
-
-label.stored_card.mastercard {
-    width: 45%;
-    background: no-repeat scroll center right;
-    background-image: url("/modules/nimblepayment/views/img/mastercard.jpg");
-}*/
-
 .img-nimble {
 	width: 70%;
 }
+
+#img-logo-footer{
+	display:none;
+}
+
+@media (max-width: 750px) {
+	#img-logo-header{
+		display:none;
+	}
+	#img-logo-footer{
+		display:block;
+		width: 70%;
+	}	
+}
+

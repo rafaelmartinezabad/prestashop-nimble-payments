@@ -84,7 +84,7 @@
 			<div class="title-nimble-payment">
 				<h4 id="nimble-credit-card">
 					<p class="nimble-credit-card-title">{l s='Pay by Credit card' mod='nimblepayment'}</p>
-					<img class="nimble-credit-card-img" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay' mod='nimblepayment'}"/>
+					<img id="img-logo-header" class="nimble-credit-card-img" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay' mod='nimblepayment'}"/>
 				</h4>
 			</div>
 			<div class="nimble-cards">
@@ -115,6 +115,9 @@
 					</a>
 				</p>
 			</div>
+				<div class="img-logo-nimble">	   
+					<img id="img-logo-footer" class="img-nimble" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay' mod='nimblepayment'}"/>
+				</div>
 		</div>
 	</div>
 {/if}
