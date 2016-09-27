@@ -144,9 +144,10 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
                 $state = $getPaymentStatus['data']['details'][0]['state'];
             } elseif ( isset($getPaymentStatus['result']) && isset($getPaymentStatus['result']['code']) && 404 == $getPaymentStatus['result']['code'] ) {
                 $state = 'NOT_FOUND';
+            } else if($state == 'PENDING'){
+                sleep(1);
             }
-        $i++;
-        sleep(1);
+             $i++;
         }
         
         switch ($state){
