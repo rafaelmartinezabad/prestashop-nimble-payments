@@ -53,8 +53,9 @@
 						   {foreach from=$cards item=card key=key}
 							   <li class="list-card-nimble">
 								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
-								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
-								   	<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
+								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}
+										<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
+								   </label>
 							   </li>	
 						   {/foreach}
 						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_new-card" name="nimblepayment_storedcard" value=""/>
@@ -95,8 +96,9 @@
 						   {foreach from=$cards item=card key=key}
 							   <li class="list-card-nimble">
 								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
-								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}</label>
-								   <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
+								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}
+										<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
+								   </label>	
 							   </li>	
 						   {/foreach}
 						   <input class="input-radio" type="radio" id="nimblepayment_storedcard_new-card" name="nimblepayment_storedcard" value=""/>

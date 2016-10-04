@@ -647,6 +647,7 @@ h4#nimble-credit-card {
 
 label.stored_card {
 	font-weight: normal;
+    width: 165px;
 }
 
 li.list-card-nimble {
