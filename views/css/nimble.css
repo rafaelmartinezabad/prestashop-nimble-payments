@@ -502,9 +502,31 @@ p#block_top_title{
 
 /* FASTER CHECKOUT BUTTONS */
 .box-info-product #faster_checkout button::before {
-    content: "\f135";
+	content: "\f135";
     font-family: "FontAwesome";
 }
+
+body.content_only .box-info-product #faster_checkout button::before {
+	display: block;
+}
+
+body.content_only .box-info-product #faster_checkout button::after {
+    display:block;
+}
+
+@media (max-width: 991px) {
+	body.content_only .box-info-product .exclusive span{
+		padding: 12px 22px 14px 55px;
+		text-align: center;
+	}
+}	
+
+@media (max-width: 11199px) {
+	body.content_only .box-info-product .exclusive span{
+		padding: 12px 22px 14px 70px;
+		text-align: center;
+	}
+}	
 
 .nimblepayments-overlay {
     display: none;
@@ -715,4 +737,10 @@ img.nimble-credit-card-img {
 		width: 70%;
 	}	
 }
+body.content_only #faster_checkout button.exclusive.btn-outline-inverse {
+    width: 100%;
+}
 
+body.content_only #faster_checkout button.exclusive.btn-outline-inverse span {
+    font-size: 20px;
+}

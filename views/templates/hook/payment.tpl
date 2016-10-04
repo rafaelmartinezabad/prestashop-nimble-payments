@@ -80,7 +80,7 @@
 	</div>
 {elseif ((!$hideCards || !empty($cards)) && !$fastercheckout)}
 	<div class="row">
-		<div class="col-md-12 module-nimble-payment-order">
+		<div class="module-nimble-payment-order">
 			<div class="title-nimble-payment">
 				<h4 id="nimble-credit-card">
 					<p class="nimble-credit-card-title">{l s='Pay by Credit card' mod='nimblepayment'}</p>
