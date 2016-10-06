@@ -43,6 +43,9 @@
 	<div class="row">
 		<div class="col-md-12 module-nimble-payment">
 			<div class="title-nimble-payment">
+				<div class="img-card-pay">
+					<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/nimblepayment-card.png"/>
+				</div>
 				<h4 id="nimble-credit-card">{l s='Pay by Credit card' mod='nimblepayment'}</h4>
 			</div>
 			<div class="nimble-cards">
@@ -83,6 +86,9 @@
 	<div class="row">
 		<div class="module-nimble-payment-order">
 			<div class="title-nimble-payment">
+				<div class="img-card-pay">
+					<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/nimblepayment-card.png"/>
+				</div>
 				<h4 id="nimble-credit-card">
 					<p class="nimble-credit-card-title">{l s='Pay by Credit card' mod='nimblepayment'}</p>
 					<img id="img-logo-header" class="nimble-credit-card-img" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/img-boton.png" alt="{l s='Pay' mod='nimblepayment'}"/>
