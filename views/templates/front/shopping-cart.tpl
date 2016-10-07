@@ -269,7 +269,7 @@
 					<td colspan="{$col_span_subtotal}" class="total_price_container text-right">
 						<span>{l s='Total'}</span>
                         <div class="hookDisplayProductPriceBlock-price">
-                            {l s="Tax included" mod="nimblepayment"}
+                            {l s='Tax included' mod='nimblepayment'}
                         </div>
 					</td>
 					{if $use_taxes}
