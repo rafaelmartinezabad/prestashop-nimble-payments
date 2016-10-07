@@ -599,7 +599,7 @@ body.content_only .box-info-product #faster_checkout button::after {
 }
 
 .title-nimble-payment {
-    background: url(/modules/nimblepayment/views/img/nimblepayment-card.png) 13px 13px no-repeat #fbfbfb;
+    /*background: url(/modules/nimblepayment/views/img/nimblepayment-card.png) 13px 13px no-repeat #fbfbfb;*/
     height: 80px;
 	border-radius: 4px;
     font-size: 17px;
@@ -610,6 +610,12 @@ body.content_only .box-info-product #faster_checkout button::after {
     letter-spacing: -1px;
     position: relative;
 	background-color: #f9f9f9;
+}
+
+.img-card-pay {
+    margin-bottom: -55px;
+    margin-left: -90px;
+    margin-top: -5px;
 }
 
 h4#nimble-credit-card {
@@ -717,9 +723,9 @@ img.nimble-credit-card-img {
 	margin-top: -20px;
 }
 
-.list-card-nimble img {
-    margin-left: 2%;
-}
+/*.list-card-nimble img {
+    margin-left: 0%;
+}*/
 
 .img-nimble {
 	width: 70%;
