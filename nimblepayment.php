@@ -132,7 +132,8 @@ class NimblePayment extends PaymentModule
     public function hookDisplayBackOfficeHeader()
     {
         //Add as scoped CSS in back office header
-        $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css?version=20160712', 'all', null, false);
+        $this->context->controller->addCSS($this->_path . 'views/css/nimblebackend.css?version=20161006', 'all', null, false);
+        $this->context->controller->addJS($this->_path . 'views/js/nimblebackend.js?version=20161006');
     }
     
     public function hookDisplayAdminHomeInfos(){
@@ -413,7 +414,12 @@ class NimblePayment extends PaymentModule
                 'success_message' => $success_message
             )
         );
-        return $this->display(__FILE__, 'gateway_config.tpl');
+        if (!$this->enabled) {
+            $template = $this->display(__FILE__, 'gateway_config.tpl');
+        } else {
+            $template = $this->display(__FILE__, 'gateway_enabled.tpl');
+        }
+        return $template;
     }
 
     public function getContent()

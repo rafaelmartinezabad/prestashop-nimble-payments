@@ -62,6 +62,13 @@
 
 #content.bootstrap .nimbleStepBox .contentStep .form-footer {
     text-align: right;
+    margin-top: 49px
+}
+
+#content.bootstrap .nimbleStepBox .contentStep .form-footer-2 {
+  text-align: right;
+  margin-top: 15px;
+  margin-right: 56px;
 }
 
 #content.bootstrap .nimbleStepBox .contentStep #module_form_submit_btn, #content.bootstrap .nimbleAuthorize #authorize_btn, #content.bootstrap .nimbleAuthorize #unauthorize_btn {
@@ -83,6 +90,28 @@
   -webkit-border-radius: 25px;
   width: auto;
   box-shadow: none;
+}
+
+#module_form_cancel_btn {
+  color: #65be00;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 16px 25px;
+  line-height: 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  -webkit-transition: background-color .5s ease;
+  transition: background-color .5s ease;
+  background-color: #fff;
+  border: 1px solid #65be00;
+  border-radius: 25px;
+  height: auto;
+  -moz-border-radius: 25px;
+  -webkit-border-radius: 25px;
+  width: auto;
+  box-shadow: none;
+  cursor: pointer;
 }
 
 .nimbleAuthorize {
@@ -113,4 +142,159 @@
 
 .nimbleAuthorize .box .logo {
     margin-bottom: 20px;
+}
+
+#nimble-step-2-form {
+  padding: 3%;
+  margin-left: 6%;
+  margin-right: 6%;
+  background-color: #EFF1F2;
+}
+
+div#nimble-content-form, div#nimble-content-form-2 {
+  margin-left: 6%;
+  margin-right: 6%;
+  background-color: #EFF1F2;
+}
+
+div#nimble-content-form-2 {
+  height: 60px;
+}
+
+div#nimble-content-form-2 #faster-div {
+  padding: 5px;
+  padding-left: 25px;
+}
+
+div#nimble-content-form label {
+  font-weight: normal;
+}
+
+div#nimble-content-form table td.label-nimble-table {
+  padding-top: 5px;
+  padding-left: 26px;
+  width: 132px;
+}
+
+div#nimble-content-form table td.input-nimble-table {
+  font-weight: bold;
+  width: 84%;
+}
+
+.form-group-enabled .input-nimble-table input {
+  padding-left: 20px;
+}
+
+div#nimble-content-form table tr {
+  height: 36px;
+}
+
+div#nimble-content-form table tr:last-child {
+  margin-bottom: 22px;
+}
+
+.form .radio input[type="radio"] {
+    margin-left: -35px;
+    display: none;
+}
+
+.form .radio label {
+    color: #383839;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 0;
+    position: relative;
+    padding-left: 8px;
+    font-weight: bold;
+}
+
+.form .radio input[type="radio"]:checked + label::before {
+    background-color: #fff;
+    border: 5px solid #515155;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+}
+
+.form .radio label::before {
+    background-color: #fff;
+    border: 1px solid #515155;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    height: 1rem;
+    width: 1rem;
+    content: "";
+    display: inline-block;
+    position: absolute;
+}
+
+.form .radio .label-text span {
+    margin: 0 0 0 1.5rem;
+    display: inline-block;
+}
+
+#faster-div > div {
+  float: left;
+  font-weight: bold;
+}
+
+#faster-div > div:first-child {
+  text-transform: uppercase;
+}
+
+#faster-div > div:last-child {
+  padding-left: 10px;
+  font-weight: normal;
+  font-style: italic;
+  float: right;
+}
+
+#faster-div .radio {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+green {
+  font-weight: bold;
+  color: #6cc023;
+}
+
+.nimbleHeader ul {
+  list-style-image: lower-alpha;
+}
+
+.nimbleHeader ul {
+  margin: 0;
+}
+
+.nimbleHeader ul.nimble-ul {
+  list-style-type: none;
+}
+
+.nimbleHeader ul.nimble-ul > li {
+  height: 25px;
+}
+
+.nimbleHeader ul.nimble-ul > li:before {
+  color: #6cc023;
+  margin-right: 3px;
+  content: "►";
+}
+
+span#question-icon {
+  background-color: #fff;
+  border: 2px solid #6cc023;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+}
+
+span#question-icon::before {
+  margin: 0px 7px 0px 5px;
+  content: "?";
+  font-weight: bold;
+  color: #6cc023;
+}
+
+.fastercheckout-enable-page span {
+    padding-left: 20px;
 }
