@@ -37,6 +37,7 @@ $_MODULE['<{nimblepayment}prestashop>order-address_da9d6ec2998a07c31ec9eb93c9f25
 $_MODULE['<{nimblepayment}prestashop>order-address_8a8c9edb5531fa2f822295d1830d090f'] = 'Su dirección de facturación';
 $_MODULE['<{nimblepayment}prestashop>order-address_06933067aafd48425d67bcb01bba5cb6'] = 'Actualizar';
 $_MODULE['<{nimblepayment}prestashop>order-carrier_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Envío';
+$_MODULE['<{nimblepayment}prestashop>order-carrier_ad88a6c9e8c880f23639321d78ec859d'] = ' Estoy de acuerdo con los términos del servicio y a adherirme a ellos incondicionalmente.';
 $_MODULE['<{nimblepayment}prestashop>order-opc-new-account_08bd40c7543007ad06e4fce31618f6ec'] = 'Cuenta';
 $_MODULE['<{nimblepayment}prestashop>order-opc-new-account_766d4aaf3e045538be23f9a9e17a1593'] = 'Pedido Instantáneo';
 $_MODULE['<{nimblepayment}prestashop>order-payment_f0aaaae189e9c7711931a65ffcd22543'] = 'Método de pago';
@@ -61,15 +62,7 @@ $_MODULE['<{nimblepayment}prestashop>gateway_config_d81e9ec12af383e44e42d9012955
 $_MODULE['<{nimblepayment}prestashop>gateway_config_ad679e800cf9d24e1c73d818f32b1736'] = 'Datos de pasarela no validos para aceptar pagos.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_0188a3da554dbdcff7b2bfe3f78fe093'] = 'API client id';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_1b4739e491387ef5d8a546854308e5fe'] = 'Client secret';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_a9df5e3fa2dd3949e568f10116e5d5d4'] = 'COMPRA INMEDIATA NIMBLE PAYMENTS';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_d27c6a429fa7db147d5619a10017c065'] = 'habilitado/Deshabiltado';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_88918335f0a17747e255f8875b3d86f3'] = 'Desde prestashop podrás gestionar todas tus ventas,';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_0fe98aba6b1672bfdc486515c85bbefc'] = 'hacer devoluciones, etc.';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_3748a0e40e1da54099248183c18aa402'] = 'Para acceder a toda la potencia de Nimble Payments desde Prestashop, es necesario que te identifiques y des permiso a Prestashop a acceder a estos datos.';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_9665cb37065d3ccb50b57e5b3cd5b9db'] = 'Autorizar a Prestashop';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_ea95c17d2fc5faba9c95c331e45e7038'] = 'Tienda vinculada a Nimble Payments';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_9d4d7d9342553769bfba0a1210a61cd9'] = 'Desvincular';
 $_MODULE['<{nimblepayment}prestashop>order_detail_5621124a70a63db7be2fbc882910fdc4'] = 'Detalle de movimientos';
 $_MODULE['<{nimblepayment}prestashop>order_detail_623990b71104bea810bac8c9ebc08471'] = 'Tarjeta:';
 $_MODULE['<{nimblepayment}prestashop>order_detail_d3968fe61a2b33f02e9cd8606b029a57'] = 'Importes';
