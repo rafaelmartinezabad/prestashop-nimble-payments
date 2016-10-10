@@ -36,7 +36,7 @@
 
 <div class="nimbleHeader">
     <h1 class="title"><strong>Nimble Payments:</strong> {l s='WELCOME TO THE CHANGE' mod='nimblepayment'}</h1>
-    <p><strong>{l s='Nimble Payments es una pasarela de pagos online de BBVA que te permite aceptar pagos en tu tienda con total seguridad.' mod='nimblepayment'}</strong></p>
+    <p class="subtitle">{l s='Your payment module is ready to work!' mod='nimblepayment'}</p>
 </div >
 <div class="nimbleStepBox step2">
 	<div class="contentStep">
@@ -47,7 +47,7 @@
 		{/if}
 		<form id="nimble-step-2-form-enable" class="form" style="display: none;" method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
             <div id="nimble-content-form">
-                <h3>TITULO</h3>
+                <h3>{l s='Your nimble payments credentials' mod='nimblepayment'}</h3>
                 <input type="hidden" value="1" name="saveCredentials">
                 <div class="form-group form-group-enabled">
                     <table>
@@ -72,30 +72,30 @@
                 <input type="hidden" value="1" name="saveFaster">
             </div>
             <div id="nimble-content-form-2">
-                <h3>TITULO</h3>
+                <h3>{l s='Payment options' mod='nimblepayment'}</h3>
                 <div id="faster-div" class="form-group">
-                    <div>{l s='Opción compra rápida' mod='nimblepayment'}</div>
+                    <div>{l s='Quick pay option' mod='nimblepayment'}</div>
                     <div class="radio col">
                         <input name="fasterCheckout" value="1" {if $faster_checkout} checked="checked" {/if} id="fasterCheckout_on" type="radio">
                         <label for="fasterCheckout_on" class="label-text">
-                            <span>SI</span>
+                            <span>{l s='Yes'}</span>
                         </label>
                         <input name="fasterCheckout" value="0" {if !$faster_checkout} checked="checked" {/if} id="fasterCheckout_off" type="radio">
                         <label for="fasterCheckout_off" class="label-text">
-                            <span>NO</span>
+                            <span>{l s='No'}</span>
                         </label>
                     </div>
-                    <div><span id="question-icon"></span> {l s='Activando esta opción tus clientes podrán comprar en un click tus productos' mod='nimblepayment'}</div>
+                    <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
                 </div>
             </div>
 			<div class="form-footer-2">
-                <button name="cancelCredentials" id="module_form_cancel_btn" value="1" type="cancel">{l s='Cancel'  mod='nimblepayment'}</button>
-				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'  mod='nimblepayment'}</button>
+                <button name="cancelCredentials" id="module_form_cancel_btn" value="1" type="cancel">{l s='Cancel'}</button>
+				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'}</button>
 			</div>
 		</form>
         <div id="nimble-step-2-div-enable" class="form">
             <div id="nimble-content-form">
-                <h3>TITULO</h3>
+                <h3>{l s='Your nimble payments credentials' mod='nimblepayment'}</h3>
                 <div class="form-group form-group-enabled">
                     <table>
                         <tr>
@@ -119,40 +119,40 @@
                 <input type="hidden" value="1" name="saveFaster">
             </div>
             <div id="nimble-content-form-2">
-                <h3>TITULO</h3>
+                <h3>{l s='Payment options' mod='nimblepayment'}</h3>
                 <div id="faster-div" class="form-group">
-                    <div>{l s='Opción compra rápida' mod='nimblepayment'}</div>
+                    <div>{l s='Quick pay option' mod='nimblepayment'}</div>
                     <div class="radio col fastercheckout-enable-page">
                         {if $faster_checkout}
-                            <span>SI</span>
+                            <span>{l s='Yes'}</span>
                         {else}
-                            <span>NO</span>
+                            <span>{l s='No'}</span>
                         {/if}
                     </div>
-                    <div><span id="question-icon"></span> {l s='Activando esta opción tus clientes podrán comprar en un click tus productos' mod='nimblepayment'}</div>
+                    <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
                 </div>
             </div>
             <div class="form-footer-2">
                 <img class="link" alt="logo-alta-link" src="/modules/nimblepayment/views/img/icono_registrate_cuadrado.png">
-                <a id="modifyGateway-js" class="btn" href="#" target="_blank">Modificar datos pasarela</a>
+                <a id="modifyGateway-js" class="btn" href="#" target="_blank">{l s='Update your gateway credetials' mod='nimblepayment'}</a>
             </div>
         </div>
 	</div>
 </div>
 
-{if $gateway_enabled}				
+{if $gateway_enabled}
     {if !$authorized}
         <div class="nimbleAuthorize">
             <div class="title">
-                <p>{l s='From Prestashop you will be able to manage all your sales,' mod='nimblepayment'}<br/>
-                {l s='make refunds, etc' mod='nimblepayment'}</p>
+                <p>{l s='You can do everything in Prestashop site' mod='nimblepayment'}:<br/>
+                {l s='manage your purchases, check your account transactions, request a refund...' mod='nimblepayment'}</p>
             </div>
             <div class="separator"></div>
             <div class="box">
-                <p>{l s='To access to all the Nimble Payments features from Prestashop, you have to be identified in Nimble Payments and allow Prestashop to access to this information.' mod='nimblepayment'}</p>
+                <p>{l s='log in and allow us to access your information.' mod='nimblepayment'}</p>
             </div>
             <div class="box">
-                <a id="authorize_btn" href="{$Oauth3Url|escape:'htmlall':'UTF-8'}" class="link">{l s='Authorize Prestashop' mod='nimblepayment'}</a>
+                <a id="authorize_btn" href="{$Oauth3Url|escape:'htmlall':'UTF-8'}" class="link">{l s='Allow Prestashop' mod='nimblepayment'}</a>
             </div>
         </div>
     {else}

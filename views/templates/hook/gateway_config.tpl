@@ -25,44 +25,35 @@
 
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/gateway_config.css" rel="stylesheet" type="text/css" media="all">
 
-{if $success_message}
-<div class="bootstrap">
-	<div class="module_confirmation conf confirm alert alert-success">
-		<button data-dismiss="alert" class="close" type="button">×</button>
-		{l s='Settings saved successfully!' mod='nimblepayment'}
-	</div>
-</div>
-{/if}
-
 <div class="nimbleHeader">
     <h1 class="title"><strong>Nimble Payments:</strong> {l s='WELCOME TO THE CHANGE' mod='nimblepayment'}</h1>
-    <p><strong>{l s='Nimble Payments es una pasarela de pagos online de BBVA que te permite aceptar pagos en tu tienda con total seguridad.' mod='nimblepayment'}</strong></p>
+    <p><strong>{l s='Nimble Payments is a secure online gateway developed by BBVA that allows your payments and transactions be done in a reliable way.' mod='nimblepayment'}</strong></p>
     <ul class="nimble-ul">
-        <li><green>Métodos de pago:</green> {l s='tarjeta de crédito, débito, prepago o virtual.' mod='nimblepayment'} <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/visa.jpg"/> <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/mastercard.jpg"/></li>
-        <li><green>{l s='Diseño responsive'}:</green> {l s='pago adaptado a móvil, web y tablet.' mod='nimblepayment'}</li>
-        <li><green>{l s='Panel de control personal'}:</green> {l s='consulta y gestiona tus ventas.' mod='nimblepayment'}</li>
-        <li><green>{l s='Cuenta sin comisiones'}:</green> {l s='donde recibirás el dinero de tus ventas.' mod='nimblepayment'}</li>
+        <li><green>{l s='Payment methods' mod='nimblepayment'}:</green> {l s='credit/debit card, pre and virtual payment.' mod='nimblepayment'} <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/visa.jpg"/> <img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/mastercard.jpg"/></li>
+        <li><green>{l s='Responsive design' mod='nimblepayment'}:</green> {l s='payment available for all devices: mobile, web and tablet.' mod='nimblepayment'}</li>
+        <li><green>{l s='Personal Control Pannel' mod='nimblepayment'}:</green> {l s='check and manage all your transaction.' mod='nimblepayment'}</li>
+        <li><green>{l s='Account without fees' mod='nimblepayment'}:</green> {l s='you will get your money here.' mod='nimblepayment'}</li>
     </ul>
 </div >
 <div class="nimbleStepBox step1">
-	<h3>{l s='Step 1: sign up in Nimble Payments' mod='nimblepayment'}</h3>
+	<h3>{l s='Step 1: Register in Nimble Payments' mod='nimblepayment'}</h3>
 	<img class="logo" alt="logo-alta" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_redondo.png"/>
 	<div class="contentStep">
-		<p class="subtitle">{l s='Need an Nimble Payments account? It is completely free and 100% online.' mod='nimblepayment'}</p>
-		<p>{l s='Sign up now and start selling online.' mod='nimblepayment'}
+		<p class="subtitle">{l s='You need to be registered to start working with the payment gateway.' mod='nimblepayment'}</p>
+		<p>{l s='Only one email and password are needed to start testing it.' mod='nimblepayment'}
 			<img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png"/>
-			<a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Sign up here' mod='nimblepayment'}</a>
+			<a class="btn" href="https://www.nimblepayments.com/private/registration?utm_source=Prestashop_BackOffice&utm_medium=Referral%20Partners&utm_campaign=Creacion-Cuenta&partner=prestashop" target="_blank" class="link">{l s='Register here' mod='nimblepayment'}</a>
 		</p>
 	</div>
 </div>
 <div class="nimbleStepBox step2">
-	<h3>{l s='Step 2: set up your module' mod='nimblepayment'}</h3>
+	<h3>{l s='Step 2: Configure your plugin' mod='nimblepayment'}</h3>
 	<img class="logo" alt="logo-config" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_configura.png"/>
 	<div class="contentStep">
-		<p class="subtitle">{l s='To be able to accept payments you only need to use the credentials you get in Nimble Payments.' mod='nimblepayment'}</p>
-		<p>{l s='If you don\'t have them available, check there here.' mod='nimblepayment'}
+		<p class="subtitle">{l s='Your Nimble Payment credentials are needed.' mod='nimblepayment'}</p>
+		<p>{l s='Forgot your credentials?' mod='nimblepayment'}
 			<img class="link" alt="logo-gateway-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_consultalos.png"/>
-			<a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Check them here' mod='nimblepayment'}</a>
+			<a class="btn" onclick="window.open('{$url_nimble|escape:'htmlall':'UTF-8'}', '', 'width=800, height=578')">{l s='Questions' mod='nimblepayment'}</a>
 		</p>
 		{if $error_message}
 			<div class="module_error alert alert-danger">
@@ -72,7 +63,7 @@
 		<form id="nimble-step-2-form" class="form" method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
 			<input type="hidden" value="1" name="saveCredentials">
 			<div class="form-group">
-				<label>{l s='API client id' mod='nimblepayment'}</label>
+				<label>{l s='Client id' mod='nimblepayment'}</label>
 				<div>
 					<input type="text" class="" value="{$clientId|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_ID" name="NIMBLEPAYMENT_CLIENT_ID">
 				</div>
@@ -84,23 +75,23 @@
 				</div>
 			</div>
             <div id="faster-div" class="form-group">
-                <div>{l s='Opción compra rápida' mod='nimblepayment'}</div>
+                <div>{l s='Quick pay option' mod='nimblepayment'}</div>
                 <div class="radio col">
                     <input name="fasterCheckout" value="1" {if $faster_checkout} checked="checked" {/if} id="fasterCheckout_on" type="radio">
                     <label for="fasterCheckout_on" class="label-text">
-                        <span>SI</span>
+                        <span>{l s='Yes'}</span>
                     </label>
                     <input name="fasterCheckout" value="0" {if !$faster_checkout} checked="checked" {/if} id="fasterCheckout_off" type="radio">
                     <label for="fasterCheckout_off" class="label-text">
-                        <span>NO</span>
+                        <span>{l s='No'}</span>
                     </label>
                 </div>
-                <div><span id="question-icon"></span> {l s='Activando esta opción tus clientes podrán comprar en un click tus productos' mod='nimblepayment'}</div>
+                <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
             </div>
             <input type="hidden" value="1" name="saveFaster">
 						
 			<div class="form-footer">
-				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'  mod='nimblepayment'}</button>
+				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'}</button>
 			</div>
 		</form>
 	</div>
