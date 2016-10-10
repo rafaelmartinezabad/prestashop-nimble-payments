@@ -53,9 +53,8 @@ $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_9665cb37065d3ccb50b57e5b
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_5a5b999aa93eb5bd6fbc3cf485f8b044'] = 'Total en cuenta';
 $_MODULE['<{nimblepayment}prestashop>dashboard_zone_one_7d058d4cdbc3a0f480bd472b62a0bf53'] = 'Total disponible';
 $_MODULE['<{nimblepayment}prestashop>display_top_073be6dae74ede674ff3c0d768fcbe79'] = 'Se ha rechazado el pago. Por favor, inténtalo de nuevo.';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_fc724a540ce30b0b634163c922d60bed'] = 'La configuración se guardó correctamente!';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_0b1c75928d34b395330fab1450a19fc0'] = 'BIENVENIDO AL CAMBIO';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_d2ac324314b1ec9f619b1cd63e6deff0'] = 'Nimble payments es una pasarela de pagos online de BBA que te permite aceptar pagos en tu tienda con total seguridad.';
+$_MODULE['<{nimblepayment}prestashop>gateway_config_d2ac324314b1ec9f619b1cd63e6deff0'] = 'Nimble payments es una pasarela de pagos online de BBVA que te permite aceptar pagos en tu tienda con total seguridad.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_0da8d9a75492046bea7f314521e07cae'] = 'Métodos de pago';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_150523d3dd6e844c59437ed662e06361'] = 'tarjeta de crédito, débito, prepago o virtual.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_1ca59b86cbef98a8be3dbcecdbbfeda5'] = 'Diseño responsive';
@@ -68,7 +67,7 @@ $_MODULE['<{nimblepayment}prestashop>gateway_config_df7d0fc85ce3f264a8beabd72160
 $_MODULE['<{nimblepayment}prestashop>gateway_config_046707cddf91e3f3d0ef951902245bb0'] = 'Regístrate y date de alta, es necesario para poder crear pasarelas de pago.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_5b78f3f34ab935fe3ed622f036639a75'] = 'Solo necesitas un email y una contraseña para empezar a probar.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_4c0c1142e65c10e79d44afb65db8298f'] = 'Regístrate aquí';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_c331b94209e2db62668770f7ed926187'] = 'Paso 2: Configurra tu módulo';
+$_MODULE['<{nimblepayment}prestashop>gateway_config_c331b94209e2db62668770f7ed926187'] = 'Paso 2: Configura tu módulo';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_3a79b3d41640119f1b55cc4ca728b489'] = 'Necesitamos las credenciales de tu pasarela de pago en Nimble Payments.';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_4cbde260ed776693252fd12c83065eab'] = '¿No las tienes a mano?';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_6ce3bdc39e544725038e0e87b771db1e'] = 'Consúltanos aquí';
@@ -77,7 +76,7 @@ $_MODULE['<{nimblepayment}prestashop>gateway_config_eae4c6c8dce6a00ff9af3ac60e98
 $_MODULE['<{nimblepayment}prestashop>gateway_config_1b4739e491387ef5d8a546854308e5fe'] = 'Client secret';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_be8d90fbf953b0ae6b0434775020aff1'] = 'Opción compra rápida';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_ba313777b83d179a8315602cf40be10e'] = 'Activando esta opción tus clientes podrán comprar en un click tus productos';
-$_MODULE['<{nimblepayment}prestashop>gateway_enabled_fc724a540ce30b0b634163c922d60bed'] = 'Datos guardados correctamente!';
+$_MODULE['<{nimblepayment}prestashop>gateway_enabled_fc724a540ce30b0b634163c922d60bed'] = 'La configuración se guardó correctamente!';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_0b1c75928d34b395330fab1450a19fc0'] = 'Bienvenido al cambio';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_6b4dab8417811fcfb4d8c66fa5f95c21'] = '¡Tu módule de pago nimble payments está listo para vender!';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_ad679e800cf9d24e1c73d818f32b1736'] = 'Datos de pasarela no validos para aceptar pagos.';

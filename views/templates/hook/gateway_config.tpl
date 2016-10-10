@@ -75,7 +75,7 @@
 				</div>
 			</div>
             <div id="faster-div" class="form-group">
-                <div>{l s='Quick pay option' mod='nimblepayment'}</div>
+                <div>{l s='Quick pay option' mod='nimblepayment'}:</div>
                 <div class="radio col">
                     <input name="fasterCheckout" value="1" {if $faster_checkout} checked="checked" {/if} id="fasterCheckout_on" type="radio">
                     <label for="fasterCheckout_on" class="label-text">
