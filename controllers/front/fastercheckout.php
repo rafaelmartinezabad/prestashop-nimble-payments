@@ -832,7 +832,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                     'delivery_option_list' => $this->context->cart->getDeliveryOptionList(),
                     'delivery_option' => $this->context->cart->getDeliveryOption(null, true)
                 )),
-                'carrier_block' => $this->context->smarty->fetch(_PS_THEME_DIR_.'order-carrier.tpl')
+            'carrier_block' => $this->context->smarty->fetch(_PS_ROOT_DIR_. '/modules/nimblepayment/views/templates/front/order-carrier.tpl')
             );
 
             Cart::addExtraCarriers($result);
@@ -842,7 +842,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             return array(
                 'hasError' => true,
                 'errors' => $this->errors,
-                'carrier_block' => $this->context->smarty->fetch(_PS_THEME_DIR_.'order-carrier.tpl')
+                'carrier_block' => $this->context->smarty->fetch(_PS_ROOT_DIR_. '/modules/nimblepayment/views/templates/front/order-carrier.tpl')
             );
         }
     }
