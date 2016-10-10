@@ -92,10 +92,10 @@
 {addJsDef addressUrlAdd=$smarty.capture.addressUrlAdd}
 {addJsDef formatedAddressFieldsValuesList=$formatedAddressFieldsValuesList}
 {addJsDef opc=$opc|boolval}
-{capture}<h3 class="page-subheading">{l s='Your billing address' js=1}</h3>{/capture}
+{capture}<h3 class="page-subheading">{l s='Your billing address' mod='nimblepayment' js=1}</h3>{/capture}
 {addJsDefL name=titleInvoice}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
-{capture}<h3 class="page-subheading">{l s='Your delivery address' js=1}</h3>{/capture}
+{capture}<h3 class="page-subheading">{l s='Your delivery address' mod='nimblepayment' js=1}</h3>{/capture}
 {addJsDefL name=titleDelivery}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
-{capture}<a class="button button-small btn btn-default" href="{$smarty.capture.addressUrlAdd}" title="{l s='Update' js=1}"><span>{l s='Update' js=1}<i class="icon-chevron-right right"></i></span></a>{/capture}
+{capture}<a class="button button-small btn btn-default" href="{$smarty.capture.addressUrlAdd}" title="{l s='Update' mod='nimblepayment' js=1}"><span>{l s='Update' mod='nimblepayment' js=1}<i class="icon-chevron-right right"></i></span></a>{/capture}
 {addJsDefL name=liUpdate}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
 {/strip}
