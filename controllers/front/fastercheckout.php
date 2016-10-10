@@ -49,6 +49,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 	public $type_error = 0;
 	public $nimbleapi;
     protected $ajax_refresh = false;
+    public $version_css = '?version=20161010';
 
 	public function __construct()
 	{
@@ -714,7 +715,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
         
         // Adding CSS style sheet
-        $this->addCSS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/css/nimble.css');
+        $this->addCSS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/css/nimble.css' . $this->version_css);
  
         // Adding JS files
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools.js');  // retro compat themes 1.5

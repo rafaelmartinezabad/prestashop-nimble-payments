@@ -22,7 +22,7 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css{$version_css}" rel="stylesheet" type="text/css" media="all">
 
 
 <div id="nimble-refund-panel">

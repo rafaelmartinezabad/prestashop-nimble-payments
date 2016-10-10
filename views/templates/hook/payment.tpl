@@ -23,7 +23,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css" rel="stylesheet" type="text/css" media="all">
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css{$version_css}" rel="stylesheet" type="text/css" media="all">
 
 {if ($hideCards || empty($cards))}
 	<div class="row">
