@@ -54,6 +54,7 @@ class NimblePayment extends PaymentModule
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
         $this->version_css = '?version=20161010';
+        $this->cache_tpl = 20161010;
         $this->post_errors = array();
         $this->confirmations = array();
         $this->hooks = array(
@@ -502,7 +503,7 @@ class NimblePayment extends PaymentModule
 
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-                return $this->display(__FILE__, 'payment.tpl');
+                return $this->display(__FILE__, 'payment.tpl', $this->cache_tpl);
         }  
     }
 
