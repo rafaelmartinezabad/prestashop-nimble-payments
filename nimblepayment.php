@@ -53,6 +53,8 @@ class NimblePayment extends PaymentModule
         $this->displayMethod = $this->l('Card Payment');
         $this->description = $this->l('Nimble Payments Gateway');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
+        $this->version_css = '?version=20161010';
+        $this->cache_tpl = 20161010;
         $this->post_errors = array();
         $this->confirmations = array();
         $this->hooks = array(
@@ -272,7 +274,8 @@ class NimblePayment extends PaymentModule
                 'new_refund_message_class' => $new_refund_message_class,
                 'new_refund_message' => $new_refund_message,
                 'Oauth3Url' => $this->getAurhotizeUrl(),
-                'token' => Tools::getAdminTokenLite('NimblePaymentAdminPaymentDetails')
+                'token' => Tools::getAdminTokenLite('NimblePaymentAdminPaymentDetails'),
+                'version_css'   =>  $this->version_css
 
             )
         );
@@ -301,7 +304,8 @@ class NimblePayment extends PaymentModule
             $this->context->smarty->assign(
                 array(
                         'url_faster_checkout'	=>	$url_faster_checkout,
-                        'order_process_type'	=>	$order_process_type
+                        'order_process_type'	=>	$order_process_type,
+                        'version_css'           =>  $this->version_css
                 )
             );
 
@@ -322,6 +326,7 @@ class NimblePayment extends PaymentModule
                     'url_faster_checkout'	=>	$url_faster_checkout,
                     'product' => $this->product,
                     'allow_oosp' => $this->product->isAvailableWhenOutOfStock((int)$this->product->out_of_stock),
+                    'version_css'           =>  $this->version_css
                 )
             );
 
@@ -491,13 +496,14 @@ class NimblePayment extends PaymentModule
                         'this_path_ssl'		=>	Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
                         'hideCards'			=>	$hideCards,
                         'cards'				=>	$cards,
-                        'fastercheckout'    =>  $fastercheckout
+                        'fastercheckout'    =>  $fastercheckout,
+                        'version_css'       =>  $this->version_css
                         )
         );
 
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-                return $this->display(__FILE__, 'payment.tpl');
+                return $this->display(__FILE__, 'payment.tpl', $this->cache_tpl);
         }  
     }
 
