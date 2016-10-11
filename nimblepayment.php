@@ -158,7 +158,7 @@ class NimblePayment extends PaymentModule
                         'admin_url' => $admin_url,
                     )
                 );
-                return $this->fetchTemplate('dashboard_zone_one.tpl');
+                return $this->display(__FILE__, 'dashboard_zone_one.tpl');
             } else {
                 try {
                     $params = array(
@@ -188,7 +188,7 @@ class NimblePayment extends PaymentModule
                                 'admin_url' => $admin_url,
                             )
                         );
-                        return $this->fetchTemplate('dashboard_zone_one.tpl');
+                        return $this->display(__FILE__, 'dashboard_zone_one.tpl');
                     }
                 } catch (Exception $e) {
                     //to do
@@ -304,7 +304,7 @@ class NimblePayment extends PaymentModule
                 )
             );
 
-            return $this->fetchTemplate('shopping_cart.tpl');
+            return $this->display(__FILE__, 'shopping_cart.tpl');
         }
 	}
 
@@ -324,7 +324,7 @@ class NimblePayment extends PaymentModule
                 )
             );
 
-            return $this->fetchTemplate('product_buttons.tpl');
+            return $this->display(__FILE__, 'product_buttons.tpl');
         }
 
 	}
@@ -333,7 +333,7 @@ class NimblePayment extends PaymentModule
     {
         $error = Tools::getValue("error");
         if (Tools::getIsset("error") && !empty($error)) {
-            return $this->fetchTemplate('display_top.tpl');
+            return $this->display(__FILE__, 'display_top.tpl');
         }
     }
     
@@ -414,9 +414,9 @@ class NimblePayment extends PaymentModule
             )
         );
         if (!$this->enabled) {
-            $template = $this->fetchTemplate('gateway_config.tpl');
+            $template = $this->display(__FILE__, 'gateway_config.tpl');
         } else {
-            $template = $this->fetchTemplate('gateway_enabled.tpl');
+            $template = $this->display(__FILE__, 'gateway_enabled.tpl');
         }
         return $template;
     }
@@ -496,7 +496,7 @@ class NimblePayment extends PaymentModule
 
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            return $this->fetchTemplate('payment.tpl');
+            return $this->display(__FILE__, 'payment.tpl');
         }  
     }
 
@@ -606,7 +606,7 @@ class NimblePayment extends PaymentModule
         } else {
             $this->smarty->assign('status', 'failed');
         }
-        return $this->fetchTemplate('payment_return.tpl');
+        return $this->display(__FILE__, 'payment_return.tpl');
     }
 
     public function checkStoredCard()
@@ -1062,15 +1062,7 @@ class NimblePayment extends PaymentModule
         if (version_compare(_PS_VERSION_, '1.4', '<')) {
             $this->context->smarty->currentTemplate = $name;
         } elseif (version_compare(_PS_VERSION_, '1.5', '<')) {
-            $views = 'views/templates/';
-            if (@filemtime(dirname(__FILE__).'/'.$name)) {
-                return $this->display(__FILE__, $name);
-            } elseif (@filemtime(dirname(__FILE__).'/'.$views.'hook/'.$name))
-                return $this->display(__FILE__, $views.'hook/'.$name);
-            elseif (@filemtime(dirname(__FILE__).'/'.$views.'front/'.$name))
-                return $this->display(__FILE__, $views.'front/'.$name);
-            elseif (@filemtime(dirname(__FILE__).'/'.$views.'admin/'.$name))
-                return $this->display(__FILE__, $views.'admin/'.$name);
+            return $this->display(__FILE__, $name);
         }
 
         return $this->display(__FILE__, $name);
