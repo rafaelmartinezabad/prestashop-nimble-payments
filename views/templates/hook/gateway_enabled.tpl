@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div class="form-footer-2">
-                <img class="link" alt="logo-alta-link" src="/modules/nimblepayment/views/img/icono_registrate_cuadrado.png">
+                <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png">
                 <a id="modifyGateway-js" class="btn" href="#" target="_blank">{l s='Update your gateway credetials' mod='nimblepayment'}</a>
             </div>
         </div>
