@@ -73,7 +73,7 @@
 {strip}
 {addJsDef orderOpcUrl=$orderOpcUrl}
 {addJsDef ajaxRandQueryParam=$ajaxRandQueryParam}
-{addJsDef authenticationUrl=$link->getPageLink("authentication", true)|escape:'quotes':'UTF-8'}
+{addJsDef authenticationUrl=$link->getPageLink("authentication", true, NULL, "back={$back_order_page}")|escape:'quotes':'UTF-8'}
 {addJsDef historyUrl=$link->getPageLink("history", true)|escape:'quotes':'UTF-8'}
 {addJsDef guestTrackingUrl=$link->getPageLink("guest-tracking", true)|escape:'quotes':'UTF-8'}
 {addJsDef addressUrl=$link->getPageLink("address", true, NULL, "back={$back_order_page}")|escape:'quotes':'UTF-8'}
@@ -102,7 +102,7 @@
 {addJsDefL name=txtDeliveryAddress}{l s='Delivery address' js=1}{/addJsDefL}
 {addJsDefL name=txtInvoiceAddress}{l s='Invoice address' js=1}{/addJsDefL}
 {addJsDefL name=txtModifyMyAddress}{l s='Modify my address' js=1}{/addJsDefL}
-{addJsDefL name=txtInstantCheckout}{l s='Instant checkout' js=1}{/addJsDefL}
+{addJsDefL name=txtInstantCheckout}{l s='Instant checkout' mod='nimblepayment' js=1}{/addJsDefL}
 {addJsDefL name=txtSelectAnAddressFirst}{l s='Please start by selecting an address.' js=1}{/addJsDefL}
 {addJsDefL name=txtFree}{l s='Free' js=1}{/addJsDefL}
 

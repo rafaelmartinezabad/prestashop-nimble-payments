@@ -32,6 +32,7 @@ $_MODULE['<{nimblepayment}prestashop>refund_665dfe0dbd66a2ad49f695d99dc959ce'] =
 $_MODULE['<{nimblepayment}prestashop>refund_29f57a4ae3c3c63ab886072fb9929e3a'] = 'Concepto';
 $_MODULE['<{nimblepayment}prestashop>error_d16d84c0038bfbf8cbcf29c4a5d92525'] = 'Se ha producido un error. Por favor, contacta con el comerciante.';
 $_MODULE['<{nimblepayment}prestashop>fastercheckout_b4f12be5df794f6c6f39d8b346e1eace'] = 'La compra inmediata esta deshabilitada';
+$_MODULE['<{nimblepayment}prestashop>fastercheckout_d87f73e8ff8d933ed2ba5ddf25040827'] = 'Pedido Instantáneo';
 $_MODULE['<{nimblepayment}prestashop>fastercheckout_da9d6ec2998a07c31ec9eb93c9f254ed'] = 'Su dirección de facturación';
 $_MODULE['<{nimblepayment}prestashop>fastercheckout_8a8c9edb5531fa2f822295d1830d090f'] = 'Su dirección de entrega';
 $_MODULE['<{nimblepayment}prestashop>fastercheckout_06933067aafd48425d67bcb01bba5cb6'] = 'Actualizar';
