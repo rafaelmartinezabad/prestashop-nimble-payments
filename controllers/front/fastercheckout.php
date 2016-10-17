@@ -715,7 +715,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
         
         // Adding CSS style sheet
-        $this->addCSS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/css/nimble.css' . $version_css);
+        $this->addCSS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/css/nimble.css' . $this->version_css, 'all', null, false);
  
         // Adding JS files
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools.js');  // retro compat themes 1.5
