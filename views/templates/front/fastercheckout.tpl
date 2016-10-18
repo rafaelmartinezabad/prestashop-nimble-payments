@@ -123,3 +123,9 @@
 {addJsDefL name=liUpdate}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
 {/strip}
 {strip}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        overrideButtonRemoveCartFasterCheckout();
+    });
+</script>
