@@ -104,7 +104,7 @@ $(document).ready(function(){
 					{
 						// update token
 						static_token = jsonData.token;
-                                                location.reload();
+						location.reload();
 						//updateNewAccountToAddressBlock(that.attr('data-adv-api'));
 					}
 				},
@@ -253,8 +253,10 @@ $(document).ready(function(){
 							$('#submitAccount').hide();
 							updateAddressSelection(advApiParam);
 						}
-						else
-							updateNewAccountToAddressBlock(advApiParam);
+						else{
+							location.reload();
+							//updateNewAccountToAddressBlock(advApiParam);
+						}
 					}
 					$('#opc_new_account-overlay, #opc_delivery_methods-overlay, #opc_payment_methods-overlay').fadeIn('slow');
 				},
