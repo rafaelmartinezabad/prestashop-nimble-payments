@@ -83,7 +83,7 @@ class NimblePaymentAdminPaymentDetailsController extends ModuleAdminController
                     $feecurrency = $response['data']['fee']['currency'];
             }
 
-            for($i=0; $i<count($refunds); $i++) {
+            for ($i=0; $i<count($refunds); $i++) {
                 $refunded[$i]['amount']   = $refunds[$i]['refund']['amount'];
                 $refunded[$i]['currency'] = $refunds[$i]['refund']['currency'];
                 $refunded[$i]['date']     = $refunds[$i]['refundDate'];

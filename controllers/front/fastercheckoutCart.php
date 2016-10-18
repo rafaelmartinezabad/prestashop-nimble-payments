@@ -24,14 +24,14 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class NimblePaymentFasterCheckoutCartModuleFrontController extends CartController {
- 
+class NimblePaymentFasterCheckoutCartModuleFrontController extends CartController
+{
     public function postProcess()
     {
         // Update the cart ONLY if $this->cookies are available, in order to avoid ghost carts created by bots
         if ($this->context->cookie->exists() && !$this->errors && !($this->context->customer->isLogged() && !$this->isTokenValid())) {
             if (Tools::getIsset('add') || Tools::getIsset('update')) {
-                $this->processChangeProductInCart(); 
+                $this->processChangeProductInCart();
                 $ssl    = Configuration::get('PS_SSL_ENABLED');
                 $params	=	array();
                 $url_faster_checkout = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl);
@@ -41,5 +41,4 @@ class NimblePaymentFasterCheckoutCartModuleFrontController extends CartControlle
             Tools::redirect('index.php');
         }
     }
-    
 }
