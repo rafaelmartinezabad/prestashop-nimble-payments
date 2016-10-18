@@ -28,7 +28,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_2_1_4($object)
+function upgrade_module_3_0_0($object)
 {
 	Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
     return $object->registerHook('advancedPaymentOptions');
