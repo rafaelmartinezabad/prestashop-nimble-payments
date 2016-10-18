@@ -8,4 +8,7 @@ nimblepayment/composer.lock
 nimblepayment/sample.gitignore
 nimblepayment/.gitignore
 nimblepayment/README.md
+nimblepayment/Readme.md
+nimblepayment/library/sdk/composer.json
+nimblepayment/library/sdk/README.md
 nimblepayment/nimblepayments-prestashop.zip
