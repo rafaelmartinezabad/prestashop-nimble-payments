@@ -49,7 +49,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 	public $type_error = 0;
 	public $nimbleapi;
     protected $ajax_refresh = false;
-    public $version_css = '?version=20161010';
+    public $version_css = '?version=20161018';
 
 	public function __construct()
 	{
@@ -364,7 +364,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'HOOK_CREATE_ACCOUNT_FORM' => Hook::exec('displayCustomerAccountForm'),
             'HOOK_CREATE_ACCOUNT_TOP' => Hook::exec('displayCustomerAccountFormTop'),
             'orderOpcUrl' => $orderOpcUrl,
-            'ajaxRandQueryParam' => $ajaxRandQueryParam
+            'ajaxRandQueryParam' => $ajaxRandQueryParam,
+            'version_css' => $this->version_css
 
         ));
         $years = Tools::dateYears();
@@ -713,10 +714,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             // Adding CSS style sheet
             $this->addCSS(_THEME_CSS_DIR_.'addresses.css');
         }
-        
-        // Adding CSS style sheet
-        $this->addCSS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/css/nimble.css' . $this->version_css, 'all', null, false);
- 
+         
         // Adding JS files
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools.js');  // retro compat themes 1.5
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/order-address.js');
