@@ -22,7 +22,6 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css{$version_css}" rel="stylesheet" type="text/css" media="all">
 
 {assign var="orderOpcUrl" value=$orderOpcUrl}
 {assign var="back_order_page" value=$link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl)|urlencode|escape:'htmlall':'UTF-8'}
