@@ -71,7 +71,7 @@
 			<div class="form-group">
 				<label>{l s='Client secret' mod='nimblepayment'}</label>
 				<div>
-					<input type="text" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
+					<input type="password" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
 				</div>
 			</div>
             <div id="faster-div" class="form-group">
