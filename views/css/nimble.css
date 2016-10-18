@@ -751,3 +751,8 @@ body.content_only #faster_checkout button.exclusive.btn-outline-inverse {
 body.content_only #faster_checkout button.exclusive.btn-outline-inverse span {
     font-size: 20px;
 }
+
+body#module-nimblepayment-fastercheckout div#address_invoice_form {
+  margin-top: -14px;
+  float: left;
+}
