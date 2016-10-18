@@ -64,7 +64,7 @@
                                 <label>{l s='Client secret' mod='nimblepayment'}</label>
                             </td>
                             <td class="input-nimble-table">
-                                <input type="text" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
+                                <input type="password" class="" value="{$clientSecret|escape:'htmlall':'UTF-8'}" id="NIMBLEPAYMENT_CLIENT_SECRET" name="NIMBLEPAYMENT_CLIENT_SECRET">
                             </td>
                         </tr>
                     </table>
@@ -111,7 +111,7 @@
                                 <label>{l s='Client secret' mod='nimblepayment'}</label>
                             </td>
                             <td class="input-nimble-table">
-                                <strong>{$clientSecret|escape:'htmlall':'UTF-8'}</strong>
+                                <strong>**************************************************</strong>
                             </td>
                         </tr>
                     </table>
