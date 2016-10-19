@@ -47,6 +47,7 @@ class NimblePayment extends PaymentModule
         $this->version = '3.0.0';
         $this->author = 'BBVA';
         $this->bootstrap = true;
+        $this->module_key = 'd291bda88fcbcc4ef4b764f3cb3d4613';
         parent::__construct();
         $this->page = basename(__FILE__, '.php');
         $this->displayName = $this->l('Nimble Payments');
