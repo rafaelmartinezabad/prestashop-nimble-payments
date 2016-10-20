@@ -276,15 +276,15 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                     } // As the cart is no multishipping, set each delivery address lines with the main delivery address
 
                                     if (!count($this->errors)) {
-                                        $result = $this->_getCarrierList();
+                                        $carrierList = $this->_getCarrierList();
                                         // Wrapping fees
                                         $wrapping_fees = $this->context->cart->getGiftWrappingPrice(false);
                                         $wrapping_fees_tax_inc = $this->context->cart->getGiftWrappingPrice();
-                                        $result = array_merge($result, array(
+                                        $result = array_merge($carrierList, array(
                                             'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
                                             'HOOK_PAYMENT' => $this->_getPaymentMethods(),
                                             'gift_price' => Tools::displayPrice(Tools::convertPrice(Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc, new Currency((int)$this->context->cookie->id_currency))),
-                                            'carrier_data' => $this->_getCarrierList(),
+                                            'carrier_data' => $carrierList,
                                             'refresh' => (bool)$this->ajax_refresh),
                                             $this->getFormatedSummaryDetail()
                                         );
@@ -804,7 +804,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'gift_wrapping_price' => (float)$wrapping_fees,
             'total_wrapping_cost' => Tools::convertPrice($wrapping_fees_tax_inc, $this->context->currency),
             'total_wrapping_tax_exc_cost' => Tools::convertPrice($wrapping_fees, $this->context->currency),
-            'delivery_option_list' => $this->context->cart->getDeliveryOptionList(),
+            'delivery_option_list' => $this->context->cart->getDeliveryOptionList(null, true),
             'carriers' => $carriers,
             'checked' => $this->context->cart->simulateCarrierSelectedOutput(),
             'delivery_option' => $delivery_option,
@@ -813,7 +813,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'oldMessage' => isset($old_message['message'])? $old_message['message'] : '',
             'HOOK_BEFORECARRIER' => Hook::exec('displayBeforeCarrier', array(
                 'carriers' => $carriers,
-                'delivery_option_list' => $this->context->cart->getDeliveryOptionList(),
+                'delivery_option_list' => $this->context->cart->getDeliveryOptionList(null, true),
                 'delivery_option' => $delivery_option
             ))
         );
@@ -830,7 +830,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             $result = array(
                 'HOOK_BEFORECARRIER' => Hook::exec('displayBeforeCarrier', array(
                     'carriers' => $carriers,
-                    'delivery_option_list' => $this->context->cart->getDeliveryOptionList(),
+                    'delivery_option_list' => $this->context->cart->getDeliveryOptionList(null, true),
                     'delivery_option' => $this->context->cart->getDeliveryOption(null, true)
                 )),
             'carrier_block' => $this->context->smarty->fetch(_PS_ROOT_DIR_. '/modules/nimblepayment/views/templates/front/order-carrier.tpl')
