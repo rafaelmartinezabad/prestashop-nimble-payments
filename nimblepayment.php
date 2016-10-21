@@ -496,7 +496,7 @@ class NimblePayment extends PaymentModule
                         'hideCards'			=>	$hideCards,
                         'cards'				=>	$cards,
                         'fastercheckout'    =>  $fastercheckout,
-                        'version_css'       => $this->version_css
+                        'version_css'       =>  $this->version_css
                         )
         );
 
