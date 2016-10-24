@@ -33,7 +33,7 @@
 	{else}
 		<div id="HOOK_BEFORECARRIER">
 			{if isset($carriers) && isset($HOOK_BEFORECARRIER)}
-				{$HOOK_BEFORECARRIER}
+				{$HOOK_BEFORECARRIER|escape:'htmlall':'UTF-8'}
 			{/if}
 		</div>
 		{if isset($isVirtualCart) && $isVirtualCart}
@@ -44,7 +44,7 @@
 					{foreach $delivery_option_list as $id_address => $option_list}
 						<p class="carrier_title">
 							{if isset($address_collection[$id_address])}
-								{l s='Choose a shipping option for this address:'} {$address_collection[$id_address]->alias}
+								{l s='Choose a shipping option for this address:'} {$address_collection[$id_address]->alias|escape:'htmlall':'UTF-8'}
 							{else}
 								{l s='Choose a shipping option'}
 							{/if}
@@ -56,7 +56,7 @@
 										<table class="resume table table-bordered{if !$option.unique_carrier} hide{/if}">
 											<tr>
 												<td class="delivery_option_radio">
-													<input id="delivery_option_{$id_address|intval}_{$option@index}" class="delivery_option_radio" type="radio" name="delivery_option[{$id_address|intval}]" data-key="{$key}" data-id_address="{$id_address|intval}" value="{$key}"{if isset($delivery_option[$id_address]) && $delivery_option[$id_address] == $key} checked="checked"{/if} />
+													<input id="delivery_option_{$id_address|intval}_{$option@index|escape:'htmlall':'UTF-8'}" class="delivery_option_radio" type="radio" name="delivery_option[{$id_address|intval}]" data-key="{$key|escape:'htmlall':'UTF-8'}" data-id_address="{$id_address|intval}" value="{$key|escape:'htmlall':'UTF-8'}"{if isset($delivery_option[$id_address]) && $delivery_option[$id_address] == $key} checked="checked"{/if} />
 												</td>
 												<td class="delivery_option_logo">
 													{foreach $option.carrier_list as $carrier}
@@ -113,8 +113,8 @@
 											<table class="delivery_option_carrier{if isset($delivery_option[$id_address]) && $delivery_option[$id_address] == $key} selected{/if} resume table table-bordered{if $option.unique_carrier} hide{/if}">
 												<tr>
 													{if !$option.unique_carrier}
-														<td rowspan="{$option.carrier_list|@count}" class="delivery_option_radio first_item">
-															<input id="delivery_option_{$id_address|intval}_{$option@index}" class="delivery_option_radio" type="radio" name="delivery_option[{$id_address|intval}]" data-key="{$key}" data-id_address="{$id_address|intval}" value="{$key}"{if isset($delivery_option[$id_address]) && $delivery_option[$id_address] == $key} checked="checked"{/if} />
+														<td rowspan="{$option.carrier_list|@count|escape:'htmlall':'UTF-8'}" class="delivery_option_radio first_item">
+															<input id="delivery_option_{$id_address|intval}_{$option@index|escape:'htmlall':'UTF-8'}" class="delivery_option_radio" type="radio" name="delivery_option[{$id_address|intval}]" data-key="{$key|escape:'htmlall':'UTF-8'}" data-id_address="{$id_address|intval}" value="{$key|escape:'htmlall':'UTF-8'}"{if isset($delivery_option[$id_address]) && $delivery_option[$id_address] == $key} checked="checked"{/if} />
 														</td>
 													{/if}
 													{assign var="first" value=current($option.carrier_list)}
@@ -168,7 +168,7 @@
 															{/foreach}
 														{/if}
 													</td>
-													<td rowspan="{$option.carrier_list|@count}" class="delivery_option_price">
+													<td rowspan="{$option.carrier_list|@count|escape:'htmlall':'UTF-8'}" class="delivery_option_price">
 														<div class="delivery_option_price">
 															{if $option.total_price_with_tax && !$option.is_free && (!isset($free_shipping) || (isset($free_shipping) && !$free_shipping))}
 																{if $use_taxes == 1}
@@ -248,8 +248,8 @@
 								</div> <!-- end delivery_option -->
 							{/foreach}
 						</div> <!-- end delivery_options -->
-						<div class="hook_extracarrier" id="HOOK_EXTRACARRIER_{$id_address}">
-							{if isset($HOOK_EXTRACARRIER_ADDR) &&  isset($HOOK_EXTRACARRIER_ADDR.$id_address)}{$HOOK_EXTRACARRIER_ADDR.$id_address}{/if}
+						<div class="hook_extracarrier" id="HOOK_EXTRACARRIER_{$id_address|escape:'htmlall':'UTF-8'}">
+							{if isset($HOOK_EXTRACARRIER_ADDR) &&  isset($HOOK_EXTRACARRIER_ADDR.$id_address)}{$HOOK_EXTRACARRIER_ADDR.$id_address|escape:'htmlall':'UTF-8'}{/if}
 						</div>
 						{foreachelse}
 							{assign var='errors' value=' '|explode:''}
