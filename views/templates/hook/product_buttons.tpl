@@ -22,7 +22,7 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css{$version_css}" rel="stylesheet" type="text/css" media="all">
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css{$version_css|escape:'htmlall':'UTF-8'}" rel="stylesheet" type="text/css" media="all">
 
 <div{if (!$allow_oosp && $product->quantity <= 0) || !$product->available_for_order || (isset($restricted_country_mode) && $restricted_country_mode) || $PS_CATALOG_MODE} class="unvisible"{/if}>
     <p id="faster_checkout" class="buttons_bottom_block no-print">

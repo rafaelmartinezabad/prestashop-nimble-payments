@@ -23,7 +23,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css{$version_css}" rel="stylesheet" type="text/css" media="all">
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/nimble.css{$version_css|escape:'htmlall':'UTF-8'}" rel="stylesheet" type="text/css" media="all">
 
 {if ($hideCards || empty($cards))}
 	<div class="row">
@@ -55,9 +55,9 @@
 						   {l s='Select a saved card:' mod='nimblepayment'}
 						   {foreach from=$cards item=card key=key}
 							   <li class="list-card-nimble">
-								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
-								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}
-										<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
+								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key|escape:'htmlall':'UTF-8'}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
+								   <label for="nimblepayment_storedcard_{$key|escape:'htmlall':'UTF-8'}" class="stored_card {$card['cardBrand']|lower|escape:'htmlall':'UTF-8'}">{$card['maskedPan']|escape:'htmlall':'UTF-8'}
+										<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower|escape:'htmlall':'UTF-8'}.jpg"/>
 								   </label>
 							   </li>	
 						   {/foreach}
@@ -101,9 +101,9 @@
 						   {l s='Select a saved card:' mod='nimblepayment'}
 						   {foreach from=$cards item=card key=key}
 							   <li class="list-card-nimble">
-								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
-								   <label for="nimblepayment_storedcard_{$key}" class="stored_card {$card['cardBrand']|lower}">{$card['maskedPan']}
-										<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower}.jpg"/>
+								   <input class="input-radio" type="radio" id="nimblepayment_storedcard_{$key|escape:'htmlall':'UTF-8'}" name="nimblepayment_storedcard" {if $card['default']} checked {/if} value="{$card|json_encode|base64_encode}"/>
+								   <label for="nimblepayment_storedcard_{$key|escape:'htmlall':'UTF-8'}" class="stored_card {$card['cardBrand']|lower|escape:'htmlall':'UTF-8'}">{$card['maskedPan']|escape:'htmlall':'UTF-8'}
+										<img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$card['cardBrand']|lower|escape:'htmlall':'UTF-8'}.jpg"/>
 								   </label>	
 							   </li>	
 						   {/foreach}
