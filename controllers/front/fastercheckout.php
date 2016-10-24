@@ -531,6 +531,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 		}
 
 		$cart_product_context = Context::getContext()->cloneContext();
+        $null_value = null;
 		foreach ($summary['products'] as $key => &$product) {
 			$product['quantity'] = $product['cart_quantity'];// for compatibility with 1.2 themes
 
@@ -550,7 +551,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 				null,
 				null,
 				null,
-				$null,
+				$null_value,
 				true,
 				true,
 				$cart_product_context);
@@ -905,6 +906,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
 
         //$return = Hook::exec('displayPayment');
+        $params = array();
         $params['cart'] = $this->context->cart;
         $nimble_payment =  new NimblePayment();
         $return = $nimble_payment->hookPayment($params);
