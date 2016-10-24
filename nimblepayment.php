@@ -1079,6 +1079,9 @@ class NimblePayment extends PaymentModule
      */
 	public function getListStoredCards()
 	{
+        if (!$this->context->customer->isLogged())
+			return array();
+        
 		$userId = $this->context->customer->id;
 		$cards = array();
 		try{
