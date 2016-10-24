@@ -83,19 +83,19 @@
     </div> <!-- end addresses -->
 </div> <!--  end opc_account -->
 {strip}
-{capture}{if $back}&mod={$back|urlencode}{/if}{/capture}
+{capture}{if $back}&mod={$back|urlencode|escape:'quotes':'UTF-8'}{/if}{/capture}
 {capture name=addressUrl}{$link->getPageLink('address', true, NULL, 'back='|cat:$back_order_page|cat:$smarty.capture.default)|escape:'quotes':'UTF-8'}{/capture}
 {addJsDef addressUrl=$smarty.capture.addressUrl}
-{capture}{'&multi-shipping=1'|urlencode}{/capture}
+{capture}{'&multi-shipping=1'|urlencode|escape:'quotes':'UTF-8'}{/capture}
 {addJsDef addressMultishippingUrl=$smarty.capture.addressUrl|cat:$smarty.capture.default}
-{capture name=addressUrlAdd}{$smarty.capture.addressUrl|cat:'&id_address='}{/capture}
+{capture name=addressUrlAdd}{$smarty.capture.addressUrl|cat:'&id_address='|escape:'quotes':'UTF-8'}{/capture}
 {addJsDef addressUrlAdd=$smarty.capture.addressUrlAdd}
 {addJsDef formatedAddressFieldsValuesList=$formatedAddressFieldsValuesList}
 {addJsDef opc=$opc|boolval}
 {capture}<h3 class="page-subheading">{l s='Your billing address' mod='nimblepayment' js=1}</h3>{/capture}
-{addJsDefL name=titleInvoice}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
+{addJsDefL name=titleInvoice}{$smarty.capture.default|@addcslashes:'\''|escape:'quotes':'UTF-8'}{/addJsDefL}
 {capture}<h3 class="page-subheading">{l s='Your delivery address' mod='nimblepayment' js=1}</h3>{/capture}
-{addJsDefL name=titleDelivery}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
-{capture}<a class="button button-small btn btn-default" href="{$smarty.capture.addressUrlAdd}" title="{l s='Update' mod='nimblepayment' js=1}"><span>{l s='Update' mod='nimblepayment' js=1}<i class="icon-chevron-right right"></i></span></a>{/capture}
-{addJsDefL name=liUpdate}{$smarty.capture.default|@addcslashes:'\''}{/addJsDefL}
+{addJsDefL name=titleDelivery}{$smarty.capture.default|@addcslashes:'\''|escape:'quotes':'UTF-8'}{/addJsDefL}
+{capture}<a class="button button-small btn btn-default" href="{$smarty.capture.addressUrlAdd|escape:'quotes':'UTF-8'}" title="{l s='Update' mod='nimblepayment' js=1}"><span>{l s='Update' mod='nimblepayment' js=1}<i class="icon-chevron-right right"></i></span></a>{/capture}
+{addJsDefL name=liUpdate}{$smarty.capture.default|@addcslashes:'\''|escape:'quotes':'UTF-8'}{/addJsDefL}
 {/strip}
