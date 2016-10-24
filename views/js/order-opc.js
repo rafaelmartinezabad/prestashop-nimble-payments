@@ -174,6 +174,8 @@ $(document).ready(function(){
 			});
 			params += 'customer_lastname='+encodeURIComponent($('#customer_lastname').val())+'&';
 			params += 'customer_firstname='+encodeURIComponent($('#customer_firstname').val())+'&';
+			params += 'lastname='+encodeURIComponent($('#customer_lastname').val())+'&';
+			params += 'firstname='+encodeURIComponent($('#customer_firstname').val())+'&';
 			params += 'alias='+encodeURIComponent($('#alias').val())+'&';
 			params += 'other='+encodeURIComponent($('#other').val())+'&';
 			params += 'is_new_customer='+encodeURIComponent($('#is_new_customer').val())+'&';

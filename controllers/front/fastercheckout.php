@@ -138,9 +138,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                             if (Tools::getValue('years')) {
                                 $this->context->customer->birthday = (int)Tools::getValue('years').'-'.(int)Tools::getValue('months').'-'.(int)Tools::getValue('days');
                             }
-
-                            $_POST['lastname'] = $_POST['customer_lastname'];
-                            $_POST['firstname'] = $_POST['customer_firstname'];
+                            
                             $this->errors = array_merge($this->errors, $this->context->customer->validateController());
                             $this->context->customer->newsletter = (int)Tools::isSubmit('newsletter');
                             $this->context->customer->optin = (int)Tools::isSubmit('optin');
@@ -358,7 +356,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'PS_GUEST_CHECKOUT_ENABLED' => Configuration::get('PS_GUEST_CHECKOUT_ENABLED'),
             'errorCarrier' => Tools::displayError('You must choose a carrier.', false),
             'errorTOS' => Tools::displayError('You must accept the Terms of Service.', false),
-            'isPaymentStep' => isset($_GET['isPaymentStep']) && $_GET['isPaymentStep'],
+            'isPaymentStep' => Tools::getIsset('isPaymentStep') && Tools::getValue('isPaymentStep'),
             'genders' => Gender::getGenders(),
             'one_phone_at_least' => (int)Configuration::get('PS_ONE_PHONE_AT_LEAST'),
             'HOOK_CREATE_ACCOUNT_FORM' => Hook::exec('displayCustomerAccountForm'),
