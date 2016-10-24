@@ -326,6 +326,7 @@ function updatePaymentMethods(json)
 
 function updatePaymentMethodsDisplay()
 {
+    $('#cgv').attr('disabled', 'true');
 	var checked = '';
 	if ($('#cgv:checked').length !== 0)
 		checked = 1;
@@ -345,6 +346,7 @@ function updatePaymentMethodsDisplay()
 				updatePaymentMethods(json);
 				if (typeof bindUniform !=='undefined')
 					bindUniform();
+                $('#cgv').removeAttr('disabled');
 			}
 		});
 		$(this).fadeOut('slow');
