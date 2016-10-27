@@ -41,39 +41,39 @@ require_once _PS_MODULE_DIR_.'nimblepayment/library/sdk/lib/Nimble/api/NimbleAPI
 
 class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontController
 {
-	public $ssl = true;
-	public $display_column_left = false;
-	public $display_column_right = false;
-	public $nimblepayment_client_secret = '';
-	public $nimblepayment_client_id = '';
-	public $type_error = 0;
-	public $nimbleapi;
+    public $ssl = true;
+    public $display_column_left = false;
+    public $display_column_right = false;
+    public $nimblepayment_client_secret = '';
+    public $nimblepayment_client_id = '';
+    public $type_error = 0;
+    public $nimbleapi;
     protected $ajax_refresh = false;
     public $version_css = '?version=20161010';
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->context = Context::getContext();
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        $this->context = Context::getContext();
+    }
 
-	public function initContent()
-	{
-		parent::initContent();
+    public function initContent()
+    {
+        parent::initContent();
 
-		$this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
+        $this->isLogged = $this->context->customer->id && Customer::customerIdExistsStatic((int)$this->context->cookie->id_customer);
         if (! Tools::isSubmit('ajax')) {
             $this->context->cookie->checkedTOS = 1; //terms of service
         }
 
-		$nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
-		$faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
-		$ssl = Configuration::get('PS_SSL_ENABLED');
+        $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
+        $faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+        $ssl = Configuration::get('PS_SSL_ENABLED');
 
-		if ($this->context->cart->nbProducts()) {
-			if (Tools::isSubmit('ajax')) {
-				if (Tools::isSubmit('method')) {
-					switch (Tools::getValue('method')) {
+        if ($this->context->cart->nbProducts()) {
+            if (Tools::isSubmit('ajax')) {
+                if (Tools::isSubmit('method')) {
+                    switch (Tools::getValue('method')) {
                         case 'updateMessage':
                             if (Tools::isSubmit('message')) {
                                 $txt_message = urldecode(Tools::getValue('message'));
@@ -84,32 +84,32 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                 $this->ajaxDie(true);
                             }
                             break;
-                            
-						case 'updateCarrierAndGetPayments':
-							if ((Tools::isSubmit('delivery_option') || Tools::isSubmit('id_carrier')) && Tools::isSubmit('recyclable') && Tools::isSubmit('gift') && Tools::isSubmit('gift_message')) {
-								$this->_assignWrappingAndTOS();
-								if ($this->_processCarrier()) {
-									$carriers = $this->context->cart->simulateCarriersOutput();
-									$return = array_merge(array(
-										'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
-										'HOOK_PAYMENT' => $this->_getPaymentMethods(),
-										'carrier_data' => $this->_getCarrierList(),
-										'HOOK_BEFORECARRIER' => Hook::exec('displayBeforeCarrier', array('carriers' => $carriers))
-										),
-										$this->getFormatedSummaryDetail()
-									);
-									Cart::addExtraCarriers($return);
-									$this->ajaxDie(Tools::jsonEncode($return));
-								} else {
-									$this->errors[] = Tools::displayError('An error occurred while updating the cart.');
-								}
-								if (count($this->errors)) {
-									$this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
-								}
-								exit;
-							}
-							break;
-                            
+
+                        case 'updateCarrierAndGetPayments':
+                            if ((Tools::isSubmit('delivery_option') || Tools::isSubmit('id_carrier')) && Tools::isSubmit('recyclable') && Tools::isSubmit('gift') && Tools::isSubmit('gift_message')) {
+                                $this->_assignWrappingAndTOS();
+                                if ($this->_processCarrier()) {
+                                    $carriers = $this->context->cart->simulateCarriersOutput();
+                                    $return = array_merge(array(
+                                        'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
+                                        'HOOK_PAYMENT' => $this->_getPaymentMethods(),
+                                        'carrier_data' => $this->_getCarrierList(),
+                                        'HOOK_BEFORECARRIER' => Hook::exec('displayBeforeCarrier', array('carriers' => $carriers))
+                                        ),
+                                        $this->getFormatedSummaryDetail()
+                                    );
+                                    Cart::addExtraCarriers($return);
+                                    $this->ajaxDie(Tools::jsonEncode($return));
+                                } else {
+                                    $this->errors[] = Tools::displayError('An error occurred while updating the cart.');
+                                }
+                                if (count($this->errors)) {
+                                    $this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
+                                }
+                                exit;
+                            }
+                            break;
+
                         case 'updateTOSStatusAndGetPayments':
                             if (Tools::isSubmit('checked')) {
                                 $this->context->cookie->checkedTOS = (int)Tools::getValue('checked');
@@ -307,34 +307,34 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 					throw new PrestaShopException('Method is not defined');
 				}
 			}
-		} elseif (Tools::isSubmit('ajax')) {
-			$this->errors[] = Tools::displayError('There is no product in your cart.');
-			$this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
-		}
-                
-                
-		$this->context->smarty->assign(
-			array(
-				'checkedTOS'					=>	(int)$this->context->cookie->checkedTOS,
-				'isVirtualCart'					=>	$this->context->cart->isVirtualCart(),
-				'productNumber'					=>	$this->context->cart->nbProducts(),
-				'back'							=>	Tools::safeOutput(Tools::getValue('back')),
-				'isLogged'						=>	$this->isLogged,
-				'faster_checkout_enabled'		=>	$faster_checkout_enabled,
-				'nimble_credentials'			=>	$nimble_credentials,
-				'ssl'							=>	$ssl,
-				'params'						=>	array()
-				)
-		);
+        } elseif (Tools::isSubmit('ajax')) {
+            $this->errors[] = Tools::displayError('There is no product in your cart.');
+            $this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
+        }
 
-		$this->_assignSummaryInformations();
-        
+
+        $this->context->smarty->assign(
+            array(
+                'checkedTOS'					=>	(int)$this->context->cookie->checkedTOS,
+                'isVirtualCart'					=>	$this->context->cart->isVirtualCart(),
+                'productNumber'					=>	$this->context->cart->nbProducts(),
+                'back'							=>	Tools::safeOutput(Tools::getValue('back')),
+                'isLogged'						=>	$this->isLogged,
+                'faster_checkout_enabled'		=>	$faster_checkout_enabled,
+                'nimble_credentials'			=>	$nimble_credentials,
+                'ssl'							=>	$ssl,
+                'params'						=>	array()
+                )
+        );
+
+        $this->_assignSummaryInformations();
+
         if (Configuration::get('PS_RESTRICT_DELIVERED_COUNTRIES')) {
             $countries = Carrier::getDeliveredCountries($this->context->language->id, true, true);
         } else {
             $countries = Country::getCountries($this->context->language->id, true);
         }
-        
+
         // If a rule offer free-shipping, force hidding shipping prices
         $free_shipping = false;
         foreach ($this->context->cart->getCartRules() as $rule) {
@@ -343,11 +343,11 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 break;
             }
         }
-        
+
         $params	=	array();
         $orderOpcUrl = $this->context->link->getModuleLink('nimblepayment', 'fastercheckout', $params, $ssl);
         $ajaxRandQueryParam = strpos($orderOpcUrl, '?') ? '&rand=' : '?rand=';
-        
+
         $this->context->smarty->assign(array(
             'free_shipping' => $free_shipping,
             'isGuest' => isset($this->context->cookie->is_guest) ? $this->context->cookie->is_guest : 0,
@@ -378,26 +378,26 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         if ($this->isLogged && $this->context->cookie->is_guest) {
             $this->context->smarty->assign('guestInformations', $this->_getGuestInformations());
         }
-        
-		// ADDRESS
+
+        // ADDRESS
         if ($this->isLogged) {
             $this->_assignAddress();
         }
         // CARRIER
-		$this->_getCarrierList();
+        $this->_getCarrierList();
         // PAYMENT
-		$this->_assignPayment();
+        $this->_assignPayment();
         Tools::safePostVars();
-        
+
         $newsletter = Configuration::get('PS_CUSTOMER_NWSL') || (Module::isInstalled('blocknewsletter') && Module::getInstanceByName('blocknewsletter')->active);
         $this->context->smarty->assign('newsletter', $newsletter);
         $this->context->smarty->assign('optin', (bool)Configuration::get('PS_CUSTOMER_OPTIN'));
         $this->context->smarty->assign('field_required', $this->context->customer->validateFieldsRequiredDatabase());
 
         $this->_processAddressFormat();
-        
-		$this->setTemplate('fastercheckout.tpl');
-	}
+
+        $this->setTemplate('fastercheckout.tpl');
+    }
 
     protected function _processAddressFormat()
     {
@@ -441,7 +441,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             ));
         }
     }
-    
+
     protected function _getGuestInformations()
     {
         $customer = $this->context->customer;
@@ -510,99 +510,99 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'invoice_id_state' => (int)$address_invoice->id_state,
         );
     }
-    
-	protected function _assignSummaryInformations()
-	{
-		$summary = $this->context->cart->getSummaryDetails();
-		$customizedDatas = Product::getAllCustomizedDatas($this->context->cart->id);
 
-		// override customization tax rate with real tax (tax rules)
-		if ($customizedDatas) {
-			foreach ($summary['products'] as &$productUpdate) {
-				$productId = (int)isset($productUpdate['id_product']) ? $productUpdate['id_product'] : $productUpdate['product_id'];
-				$productAttributeId = (int)isset($productUpdate['id_product_attribute']) ? $productUpdate['id_product_attribute'] : $productUpdate['product_attribute_id'];
+    protected function _assignSummaryInformations()
+    {
+        $summary = $this->context->cart->getSummaryDetails();
+        $customizedDatas = Product::getAllCustomizedDatas($this->context->cart->id);
 
-				if (isset($customizedDatas[$productId][$productAttributeId])) {
-					$productUpdate['tax_rate'] = Tax::getProductTaxRate($productId, $this->context->cart->{Configuration::get('PS_TAX_ADDRESS_TYPE')});
-				}
-			}
+        // override customization tax rate with real tax (tax rules)
+        if ($customizedDatas) {
+            foreach ($summary['products'] as &$productUpdate) {
+                $productId = (int)isset($productUpdate['id_product']) ? $productUpdate['id_product'] : $productUpdate['product_id'];
+                $productAttributeId = (int)isset($productUpdate['id_product_attribute']) ? $productUpdate['id_product_attribute'] : $productUpdate['product_attribute_id'];
 
-			Product::addCustomizationPrice($summary['products'], $customizedDatas);
-		}
+                if (isset($customizedDatas[$productId][$productAttributeId])) {
+                    $productUpdate['tax_rate'] = Tax::getProductTaxRate($productId, $this->context->cart->{Configuration::get('PS_TAX_ADDRESS_TYPE')});
+                }
+            }
 
-		$cart_product_context = Context::getContext()->cloneContext();
+            Product::addCustomizationPrice($summary['products'], $customizedDatas);
+        }
+
+        $cart_product_context = Context::getContext()->cloneContext();
         $null_value = null;
-		foreach ($summary['products'] as $key => &$product) {
-			$product['quantity'] = $product['cart_quantity'];// for compatibility with 1.2 themes
+        foreach ($summary['products'] as $key => &$product) {
+            $product['quantity'] = $product['cart_quantity'];// for compatibility with 1.2 themes
 
-			if ($cart_product_context->shop->id != $product['id_shop']) {
-				$cart_product_context->shop = new Shop((int)$product['id_shop']);
-			}
-			$product['price_without_specific_price'] = Product::getPriceStatic(
-				$product['id_product'],
-				!Product::getTaxCalculationMethod(),
-				$product['id_product_attribute'],
-				6,
-				null,
-				false,
-				false,
-				1,
-				false,
-				null,
-				null,
-				null,
-				$null_value,
-				true,
-				true,
-				$cart_product_context);
+            if ($cart_product_context->shop->id != $product['id_shop']) {
+                $cart_product_context->shop = new Shop((int)$product['id_shop']);
+            }
+            $product['price_without_specific_price'] = Product::getPriceStatic(
+                $product['id_product'],
+                !Product::getTaxCalculationMethod(),
+                $product['id_product_attribute'],
+                6,
+                null,
+                false,
+                false,
+                1,
+                false,
+                null,
+                null,
+                null,
+                $null_value,
+                true,
+                true,
+                $cart_product_context);
 
-			if (Product::getTaxCalculationMethod()) {
-				$product['is_discounted'] = Tools::ps_round($product['price_without_specific_price'], _PS_PRICE_COMPUTE_PRECISION_) != Tools::ps_round($product['price'], _PS_PRICE_COMPUTE_PRECISION_);
-			} else {
-				$product['is_discounted'] = Tools::ps_round($product['price_without_specific_price'], _PS_PRICE_COMPUTE_PRECISION_) != Tools::ps_round($product['price_wt'], _PS_PRICE_COMPUTE_PRECISION_);
-			}
-		}
+            if (Product::getTaxCalculationMethod()) {
+                $product['is_discounted'] = Tools::ps_round($product['price_without_specific_price'], _PS_PRICE_COMPUTE_PRECISION_) != Tools::ps_round($product['price'], _PS_PRICE_COMPUTE_PRECISION_);
+            } else {
+                $product['is_discounted'] = Tools::ps_round($product['price_without_specific_price'], _PS_PRICE_COMPUTE_PRECISION_) != Tools::ps_round($product['price_wt'], _PS_PRICE_COMPUTE_PRECISION_);
+            }
+        }
 
-		// Get available cart rules and unset the cart rules already in the cart
-		$available_cart_rules = CartRule::getCustomerCartRules($this->context->language->id, (isset($this->context->customer->id) ? $this->context->customer->id : 0), true, true, true, $this->context->cart, false, true);
-		$cart_cart_rules = $this->context->cart->getCartRules();
-		foreach ($available_cart_rules as $key => $available_cart_rule) {
-			foreach ($cart_cart_rules as $cart_cart_rule) {
-				if ($available_cart_rule['id_cart_rule'] == $cart_cart_rule['id_cart_rule']) {
-					unset($available_cart_rules[$key]);
-					continue 2;
-				}
-			}
-		}
+        // Get available cart rules and unset the cart rules already in the cart
+        $available_cart_rules = CartRule::getCustomerCartRules($this->context->language->id, (isset($this->context->customer->id) ? $this->context->customer->id : 0), true, true, true, $this->context->cart, false, true);
+        $cart_cart_rules = $this->context->cart->getCartRules();
+        foreach ($available_cart_rules as $key => $available_cart_rule) {
+            foreach ($cart_cart_rules as $cart_cart_rule) {
+                if ($available_cart_rule['id_cart_rule'] == $cart_cart_rule['id_cart_rule']) {
+                    unset($available_cart_rules[$key]);
+                    continue 2;
+                }
+            }
+        }
 
-		$show_option_allow_separate_package = (!$this->context->cart->isAllProductsInStock(true) && Configuration::get('PS_SHIP_WHEN_AVAILABLE'));
+        $show_option_allow_separate_package = (!$this->context->cart->isAllProductsInStock(true) && Configuration::get('PS_SHIP_WHEN_AVAILABLE'));
 
-		$this->context->smarty->assign($summary);
-		$this->context->smarty->assign(array(
-			'token_cart' => Tools::getToken(false),
-			'isLogged' => $this->isLogged,
-			'isVirtualCart' => $this->context->cart->isVirtualCart(),
-			'productNumber' => $this->context->cart->nbProducts(),
-			'voucherAllowed' => CartRule::isFeatureActive(),
-			'shippingCost' => $this->context->cart->getOrderTotal(true, Cart::ONLY_SHIPPING),
-			'shippingCostTaxExc' => $this->context->cart->getOrderTotal(false, Cart::ONLY_SHIPPING),
-			'customizedDatas' => $customizedDatas,
-			'CUSTOMIZE_FILE' => Product::CUSTOMIZE_FILE,
-			'CUSTOMIZE_TEXTFIELD' => Product::CUSTOMIZE_TEXTFIELD,
-			'lastProductAdded' => $this->context->cart->getLastProduct(),
-			'displayVouchers' => $available_cart_rules,
-			'show_option_allow_separate_package' => $show_option_allow_separate_package,
-			'smallSize' => Image::getSize(ImageType::getFormatedName('small'))
-		));
-        
+        $this->context->smarty->assign($summary);
+        $this->context->smarty->assign(array(
+            'token_cart' => Tools::getToken(false),
+            'isLogged' => $this->isLogged,
+            'isVirtualCart' => $this->context->cart->isVirtualCart(),
+            'productNumber' => $this->context->cart->nbProducts(),
+            'voucherAllowed' => CartRule::isFeatureActive(),
+            'shippingCost' => $this->context->cart->getOrderTotal(true, Cart::ONLY_SHIPPING),
+            'shippingCostTaxExc' => $this->context->cart->getOrderTotal(false, Cart::ONLY_SHIPPING),
+            'customizedDatas' => $customizedDatas,
+            'CUSTOMIZE_FILE' => Product::CUSTOMIZE_FILE,
+            'CUSTOMIZE_TEXTFIELD' => Product::CUSTOMIZE_TEXTFIELD,
+            'lastProductAdded' => $this->context->cart->getLastProduct(),
+            'displayVouchers' => $available_cart_rules,
+            'show_option_allow_separate_package' => $show_option_allow_separate_package,
+            'smallSize' => Image::getSize(ImageType::getFormatedName('small'))
+        ));
+
         $this->context->smarty->assign(array(
             'HOOK_SHOPPING_CART' => Hook::exec('displayShoppingCartFooter', $summary),
             'HOOK_SHOPPING_CART_EXTRA' => Hook::exec('displayShoppingCart', $summary)
         ));
-	}
+    }
 
-	protected function _assignAddress()
-	{
+    protected function _assignAddress()
+    {
         //if guest checkout disabled and flag is_guest  in cookies is actived
         if (Configuration::get('PS_GUEST_CHECKOUT_ENABLED') == 0 && ((int)$this->context->customer->is_guest != Configuration::get('PS_GUEST_CHECKOUT_ENABLED'))) {
             $this->context->customer->logout();
@@ -704,7 +704,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
     }
 
-	public function setMedia()
+    public function setMedia()
     {
         parent::setMedia();
 
@@ -712,10 +712,10 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             // Adding CSS style sheet
             $this->addCSS(_THEME_CSS_DIR_.'addresses.css');
         }
-        
+
         // Adding CSS style sheet
         $this->addCSS(_PS_BASE_URL_.__PS_BASE_URI__. 'modules/nimblepayment/views/css/nimble.css' . $this->version_css, 'all', null, false);
- 
+
         // Adding JS files
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools.js');  // retro compat themes 1.5
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/order-address.js');
@@ -724,7 +724,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/order-carrier.js');
         $this->addJqueryPlugin('typewatch');
         $this->addJS(_PS_ROOT_DIR_. '/modules/nimblepayment/views/js/cart-summary.js');
-        
+
         $this->addJS(array(
             _PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools/vatManagement.js',
             _PS_ROOT_DIR_. '/modules/nimblepayment/views/js/tools/statesManagement.js',
@@ -759,7 +759,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'HOOK_TOP_PAYMENT' => ($this->isLogged ? Hook::exec('displayPaymentTop') : ''),
             'HOOK_PAYMENT' => $this->_getPaymentMethods()
         ));
-        
+
     }
 
     protected function _getCarrierList()
@@ -790,7 +790,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
 
         $this->context->smarty->assign('isVirtualCart', $this->context->cart->isVirtualCart());
-        
+
         $vars = array(
             'free_shipping' => $free_shipping,
             'checkedTOS' => (int)$this->context->cookie->checkedTOS,
@@ -910,7 +910,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         $params['cart'] = $this->context->cart;
         $nimble_payment =  new NimblePayment();
         $return = $nimble_payment->hookPayment($params);
-        
+
         if (!$return) {
             return '<p class="warning">'.Tools::displayError('No payment method is available for use at this time. ').'</p>';
         }
@@ -950,7 +950,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 $this->context->cart->gift_message = strip_tags(Tools::getValue('gift_message'));
             }
         }
-		
+
         if (isset($this->context->customer->id) && $this->context->customer->id) {
             $address = new Address((int)$this->context->cart->id_address_delivery);
             if (!($id_zone = Address::getZoneById($address->id))) {
@@ -959,7 +959,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         } else {
             $id_zone = (int)Country::getIdZone((int)Tools::getCountry());
         }
-		
+
         if (Tools::getIsset('delivery_option')) {
             if ($this->validateDeliveryOption(Tools::getValue('delivery_option'))) {
                 $this->context->cart->setDeliveryOption(Tools::getValue('delivery_option'));
@@ -997,7 +997,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
 
         return true;
     }
-    
+
     protected function getFormatedSummaryDetail()
     {
         $result = array('summary' => $this->context->cart->getSummaryDetails(),
@@ -1021,7 +1021,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
         return $result;
     }
-    
+
     protected function _updateMessage($messageContent)
     {
         if ($messageContent) {
@@ -1046,7 +1046,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
         return true;
     }
-    
+
     /**
      * Check if order is free
      * @return bool
@@ -1061,7 +1061,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         }
         return false;
     }
-    
+
     protected function _assignWrappingAndTOS()
     {
         // Wrapping fees
