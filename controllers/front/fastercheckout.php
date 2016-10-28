@@ -90,7 +90,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                 $this->_assignWrappingAndTOS();
                                 if ($this->_processCarrier()) {
                                     $carriers = $this->context->cart->simulateCarriersOutput();
-                                    $return = array_merge(array(
+                                    $return = array_merge(
+                                         array(
                                         'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
                                         'HOOK_PAYMENT' => $this->_getPaymentMethods(),
                                         'carrier_data' => $this->_getCarrierList(),
@@ -189,7 +190,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                     $tpl = 'order-address.tpl';
                                 }
 
-                                $return = array_merge(array(
+                                $return = array_merge(
+                                    array(
                                     'order_opc_adress' => $this->context->smarty->fetch(_PS_THEME_DIR_.$tpl),
                                     'block_user_info' => (isset($block_user_info) ? $block_user_info->hookDisplayTop(array()) : ''),
                                     'block_user_info_nav' => (isset($block_user_info) ? $block_user_info->hookDisplayNav(array()) : ''),
@@ -198,9 +200,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                     'HOOK_TOP_PAYMENT' => ($is_adv_api ? '' : Hook::exec('displayPaymentTop')),
                                     'HOOK_PAYMENT' => ($is_adv_api ? '' : $this->_getPaymentMethods()),
                                     'no_address' => 0,
-                                    'gift_price' => Tools::displayPrice(Tools::convertPrice(
-                                    Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc, new Currency((int)$this->context->cookie->id_currency)))
-                                    ),
+                                    'gift_price' => Tools::displayPrice(Tools::convertPrice(Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc, new Currency((int)$this->context->cookie->id_currency)))),
                                     $this->getFormatedSummaryDetail()
                                 );
                                 $this->ajaxDie(Tools::jsonEncode($return));
@@ -277,7 +277,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                         // Wrapping fees
                                         $wrapping_fees = $this->context->cart->getGiftWrappingPrice(false);
                                         $wrapping_fees_tax_inc = $this->context->cart->getGiftWrappingPrice();
-                                        $result = array_merge($result,
+                                        $result = array_merge(
+                                            $result,
                                             array(
                                             'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
                                             'HOOK_PAYMENT' => $this->_getPaymentMethods(),
@@ -299,7 +300,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                             die(Tools::displayError());
                             break;
                             
-                            default:
+                            default:        
                                 throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
                     }
                 } else {
@@ -553,7 +554,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 $null_value,
                 true,
                 true,
-                $cart_product_context);
+                $cart_product_context
+                );
 
             if (Product::getTaxCalculationMethod()) {
                 $product['is_discounted'] = Tools::ps_round($product['price_without_specific_price'], _PS_PRICE_COMPUTE_PRECISION_) != Tools::ps_round($product['price'], _PS_PRICE_COMPUTE_PRECISION_);
@@ -893,7 +895,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         if ($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS) < $minimal_purchase) {
             return '<p class="warning">'.sprintf(
                 Tools::displayError('A minimum purchase total of %1s (tax excl.) is required to validate your order, current purchase total is %2s (tax excl.).'),
-                Tools::displayPrice($minimal_purchase, $currency), Tools::displayPrice($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS), $currency)
+                Tools::displayPrice($minimal_purchase, $currency), 
+                Tools::displayPrice($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS), $currency)
             ).'</p>';
         }
 
