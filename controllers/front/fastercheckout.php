@@ -199,8 +199,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                     'HOOK_PAYMENT' => ($is_adv_api ? '' : $this->_getPaymentMethods()),
                                     'no_address' => 0,
                                     'gift_price' => Tools::displayPrice(Tools::convertPrice(
-                                        Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc,
-                                        new Currency((int)$this->context->cookie->id_currency)))
+                                    Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc, new Currency((int)$this->context->cookie->id_currency)))
                                     ),
                                     $this->getFormatedSummaryDetail()
                                 );
@@ -278,7 +277,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                         // Wrapping fees
                                         $wrapping_fees = $this->context->cart->getGiftWrappingPrice(false);
                                         $wrapping_fees_tax_inc = $this->context->cart->getGiftWrappingPrice();
-                                        $result = array_merge($result, array(
+                                        $result = array_merge($result,
+                                            array(
                                             'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
                                             'HOOK_PAYMENT' => $this->_getPaymentMethods(),
                                             'gift_price' => Tools::displayPrice(Tools::convertPrice(Product::getTaxCalculationMethod() == 1 ? $wrapping_fees : $wrapping_fees_tax_inc, new Currency((int)$this->context->cookie->id_currency))),
@@ -299,14 +299,13 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                             die(Tools::displayError());
                             break;
                             
-                            
-						default:
-							throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
-					}
-				} else {
-					throw new PrestaShopException('Method is not defined');
-				}
-			}
+                            default:
+                                throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
+                    }
+                } else {
+                    throw new PrestaShopException('Method is not defined');
+                }
+            }
         } elseif (Tools::isSubmit('ajax')) {
             $this->errors[] = Tools::displayError('There is no product in your cart.');
             $this->ajaxDie('{"hasError" : true, "errors" : ["'.implode('\',\'', $this->errors).'"]}');
@@ -626,9 +625,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 }
                 $tmpAddress = new Address($address['id_address']);
                 $formatedAddressFieldsValuesList[$address['id_address']]['ordered_fields'] = AddressFormat::getOrderedAddressFields($address['id_country']);
-                $formatedAddressFieldsValuesList[$address['id_address']]['formated_fields_values'] = AddressFormat::getFormattedAddressFieldsValues(
-                    $tmpAddress,
-                    $formatedAddressFieldsValuesList[$address['id_address']]['ordered_fields']);
+                $formatedAddressFieldsValuesList[$address['id_address']]['formated_fields_values'] = AddressFormat::getFormattedAddressFieldsValues($tmpAddress, $formatedAddressFieldsValuesList[$address['id_address']]['ordered_fields']);
 
                 unset($tmpAddress);
             }
@@ -1103,5 +1100,4 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
             'override_tos_display' => Hook::exec('overrideTOSDisplay'),
             'total_wrapping_tax_exc_cost' => Tools::convertPrice($wrapping_fees, $this->context->currency)));
     }
-
 }
