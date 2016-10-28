@@ -91,7 +91,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                                 if ($this->_processCarrier()) {
                                     $carriers = $this->context->cart->simulateCarriersOutput();
                                     $return = array_merge(
-                                         array(
+                                        array(
                                         'HOOK_TOP_PAYMENT' => Hook::exec('displayPaymentTop'),
                                         'HOOK_PAYMENT' => $this->_getPaymentMethods(),
                                         'carrier_data' => $this->_getCarrierList(),
@@ -300,8 +300,8 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                             die(Tools::displayError());
                             break;
                             
-                            default:        
-                                throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
+                        default:
+                            throw new PrestaShopException('Unknown method "'.Tools::getValue('method').'"');
                     }
                 } else {
                     throw new PrestaShopException('Method is not defined');
@@ -555,7 +555,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                 true,
                 true,
                 $cart_product_context
-                );
+            );
 
             if (Product::getTaxCalculationMethod()) {
                 $product['is_discounted'] = Tools::ps_round($product['price_without_specific_price'], _PS_PRICE_COMPUTE_PRECISION_) != Tools::ps_round($product['price'], _PS_PRICE_COMPUTE_PRECISION_);
@@ -654,10 +654,12 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                     Tools::redirect($this->context->link->getPageLink('address', true, (int)$this->context->language->id, $params));
                 }
             }
-            $this->context->smarty->assign(array(
-                'addresses' => $customerAddresses,
-                'formatedAddressFieldsValuesList' => $formatedAddressFieldsValuesList)
-            );
+            $this->context->smarty->assign(
+                array(
+                    'addresses' => $customerAddresses,
+                    'formatedAddressFieldsValuesList' => $formatedAddressFieldsValuesList
+                    )
+                );
 
             /* Setting default addresses for cart */
             if (count($customerAddresses)) {
@@ -895,7 +897,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
         if ($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS) < $minimal_purchase) {
             return '<p class="warning">'.sprintf(
                 Tools::displayError('A minimum purchase total of %1s (tax excl.) is required to validate your order, current purchase total is %2s (tax excl.).'),
-                Tools::displayPrice($minimal_purchase, $currency), 
+                Tools::displayPrice($minimal_purchase, $currency),
                 Tools::displayPrice($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS), $currency)
             ).'</p>';
         }
