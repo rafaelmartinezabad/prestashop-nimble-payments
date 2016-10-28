@@ -83,19 +83,19 @@ class NimblePayment extends PaymentModule
         //process news tab
         $this->installTab();
 
-        if (!parent::install() ) {
+        if (!parent::install()) {
             return false;
         }
 
         // Register hooks
-        foreach ($this->hooks as $hook){
-            if ( ! $this->registerHook($hook) ){
+        foreach ($this->hooks as $hook) {
+            if (!$this->registerHook($hook)) {
                 return false;
             }
         }
 
-		//Enabled Faster Checkout
-		Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
+        //Enabled Faster Checkout
+        Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
 
         return true;
     }
@@ -103,7 +103,7 @@ class NimblePayment extends PaymentModule
     public function uninstall()
     {
         // Unregister hooks
-        foreach ($this->hooks as $hook){
+        foreach ($this->hooks as $hook) {
             $this->unregisterHook($hook);
         }
 
@@ -114,17 +114,17 @@ class NimblePayment extends PaymentModule
             $this->uninstallModuleTab($className);
         }
 
-		// Remove system variables
-		Configuration::deleteByName('PS_ADMIN_NIMBLE_TABS');
+        // Remove system variables
+        Configuration::deleteByName('PS_ADMIN_NIMBLE_TABS');
 
         if (!Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_ID') || !Configuration::deleteByName('NIMBLEPAYMENT_CLIENT_SECRET') || !Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN')
-		|| !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !Configuration::deleteByName('NIMBLEPAYMENTS_REFUND_INFO') 
-		|| !Configuration::deleteByName('FASTER_CHECKOUT_NIMBLE') || !parent::uninstall()
+        || !Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN') || !Configuration::deleteByName('PS_NIMBLE_CREDENTIALS') || !Configuration::deleteByName('NIMBLEPAYMENTS_REFUND_INFO')
+        || !Configuration::deleteByName('FASTER_CHECKOUT_NIMBLE') || !parent::uninstall()
         ) {
             return false;
         }
 
-        return true;
+return true;
     }
 
     /**
@@ -138,7 +138,8 @@ class NimblePayment extends PaymentModule
         $this->context->controller->addJS($this->_path . 'views/js/nimblebackend.js' . $this->version_css, false);
     }
     
-    public function hookDisplayAdminHomeInfos(){
+    public function hookDisplayAdminHomeInfos()
+    {
         return '<div class="table_info">' . $this->hookDashboardZoneOne(array()) . '</div>';
     }
     /**
@@ -151,7 +152,7 @@ class NimblePayment extends PaymentModule
         $admin_url = $this->getConfigUrl();
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
-            if ( ! Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ){
+            if (!Configuration::get('PS_NIMBLE_ACCESS_TOKEN')) {
                 $this->context->smarty->assign(
                     array(
                         'data' => "",
@@ -170,11 +171,11 @@ class NimblePayment extends PaymentModule
                     );
                     $nimble = new NimbleAPI($params);
                     $summary = NimbleAPIAccount::balanceSummary($nimble);
-                    if ( !isset($summary['result']) || ! isset($summary['result']['code']) || 200 != $summary['result']['code'] || !isset($summary['data'])){
+                    if (!isset($summary['result']) || ! isset($summary['result']['code']) || 200 != $summary['result']['code'] || !isset($summary['data'])) {
                         //error
-                    } else{
+                    } else {
                         $totalavailable = $summary['data']['available'] / 100;
-                        $total_str = Tools::displayPrice($totalavailable, $this->context->currency);                        
+                        $total_str = Tools::displayPrice($totalavailable, $this->context->currency);
                         $balance = $summary['data']['accountBalance'] / 100;
                         $balance_str = Tools::displayPrice($balance, $this->context->currency);
                         $holdback = $summary['data']['hold'] / 100;
@@ -195,8 +196,8 @@ class NimblePayment extends PaymentModule
                 } catch (Exception $e) {
                     //to do
                 }
-            }         
-        }  
+            }
+        }
     }
     
     /**
@@ -211,9 +212,9 @@ class NimblePayment extends PaymentModule
         $new_refund_message_class = '';
         $new_refund_message = '';
         $new_refund = Tools::getValue('np_refund', false) ? true : false;
-        if ($new_refund){
-            $new_refund_message_class = Tools::getValue('np_refund') == 'OK' ? 'success' : 'danger'; 
-            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('The refund was succesful.') : $this->l('It was not possible to make the refund.'); 
+        if ($new_refund) {
+            $new_refund_message_class = Tools::getValue('np_refund') == 'OK' ? 'success' : 'danger';
+            $new_refund_message = Tools::getValue('np_refund') == 'OK' ? $this->l('The refund was succesful.') : $this->l('It was not possible to make the refund.');
         }
         $refunded = 0;
 
@@ -233,18 +234,18 @@ class NimblePayment extends PaymentModule
 
         if ($this->_canRefund((int)$params['id_order'])) {
             $transaction = $this->_getIdTransaction($params['id_order']);
-            if( !empty($transaction) ){
+            if(!empty($transaction)) {
                 $admin_templates[] = 'refund';
                 // Set params
                 $refunds = $this->getListRefunds($transaction);
-            }    
+            }
             // Check if total refunds exceed total amount
-            if (is_array($refunds)){
+            if (is_array($refunds)) {
                 foreach ($refunds as $refund) {
                     $refunded += ($refund['refund']['amount']) / 100 ;
                 }
             }
-        } else{
+        } else {
             $admin_templates[] = 'authorize';
         }
 
@@ -257,7 +258,7 @@ class NimblePayment extends PaymentModule
             $order_state = OrderHistory::getLastOrderState($params['id_order']);
         }
 
-    // Set tpl data
+        // Set tpl data
         $this->context->smarty->assign(
             array(
                 'base_url' => _PS_BASE_URL_.__PS_BASE_URI__,
@@ -283,7 +284,7 @@ class NimblePayment extends PaymentModule
             $this->_html .= $this->fetchTemplate('/views/templates/admin/admin_order/'.$admin_template.'.tpl');
         }
 
-        return $this->_html; 
+        return $this->_html;
     }
 
     
@@ -292,10 +293,10 @@ class NimblePayment extends PaymentModule
         $this->refreshToken();
     }
 
-	public function HookDisplayShoppingCartFooter($summary)
-	{
+    public function HookDisplayShoppingCartFooter($summary)
+    {
         $faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
-        if($faster_checkout_enabled){
+        if ($faster_checkout_enabled) {
             $order_process_type = Configuration::get('PS_ORDER_PROCESS_TYPE');
             $ssl    = Configuration::get('PS_SSL_ENABLED');
             $params	=	array();
@@ -310,12 +311,12 @@ class NimblePayment extends PaymentModule
 
             return $this->display(__FILE__, 'shopping_cart.tpl');
         }
-	}
+    }
 
-	public function HookDisplayProductButtons($params)
-	{
+    public function HookDisplayProductButtons($params)
+    {
         $faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
-        if($faster_checkout_enabled){
+        if ($faster_checkout_enabled) {
             $this->product = $params['product'];
             $ssl    = Configuration::get('PS_SSL_ENABLED');
             $params	=	array();
@@ -332,7 +333,7 @@ class NimblePayment extends PaymentModule
             return $this->display(__FILE__, 'product_buttons.tpl');
         }
 
-	}
+    }
 
     public function hookDisplayTop()
     {
@@ -385,7 +386,7 @@ class NimblePayment extends PaymentModule
         } else if ($this->checkCredentials()) {
             $this->confirmations[] = $this->l('Settings saved successfully!');
         }
-        if (Tools::getValue("fasterCheckout") == 0){
+        if (Tools::getValue("fasterCheckout") == 0) {
             Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 0);
         } else {
             Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
@@ -402,7 +403,7 @@ class NimblePayment extends PaymentModule
         $error_message = (count($this->post_errors)) ? 1 : 0;
         $success_message = (count($this->confirmations)) ? 1 : 0;
         $authorized = ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ) ? 1 : 0;
-		$faster_checkout = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+        $faster_checkout = Configuration::get('FASTER_CHECKOUT_NIMBLE');
         $this->smarty->assign(
             array(
                 'url_nimble' => $url_nimble,
@@ -414,7 +415,7 @@ class NimblePayment extends PaymentModule
                 'error_message' => $error_message,
                 'authorized' => $authorized,
                 'Oauth3Url' => $this->getAurhotizeUrl(),
-				'faster_checkout' => $faster_checkout,
+                'faster_checkout' => $faster_checkout,
                 'success_message' => $success_message
             )
         );
@@ -430,7 +431,7 @@ class NimblePayment extends PaymentModule
     {
         $output = null;
 
-        if (Tools::getIsset('authorize')){
+        if (Tools::getIsset('authorize')) {
             //Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', dirname($_SERVER['REQUEST_URI']) . '/' . $this->getConfigUrl());
             Configuration::updateValue('NIMBLE_REQUEST_URI_ADMIN', $_SERVER['HTTP_REFERER']);
             Tools::redirect($this->getOauth3Url());
@@ -475,7 +476,7 @@ class NimblePayment extends PaymentModule
         }
 
         $cards = $this->getListStoredCards();
-        if($cards){
+        if ($cards) {
             $hideCards = $this->checkStoredCard();
         }
 
@@ -487,23 +488,23 @@ class NimblePayment extends PaymentModule
         }
         $ssl = Configuration::get('PS_SSL_ENABLED');
         $this->smarty->assign(
-                array(
-                        'ssl'				=>	$ssl,
-                        'params'			=>	array(),
-                        'this_path'			=>	$this->_path,
-                        'this_path_bw'		=>	$this->_path,
-                        'this_path_ssl'		=>	Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-                        'hideCards'			=>	$hideCards,
-                        'cards'				=>	$cards,
-                        'fastercheckout'    =>  $fastercheckout,
-                        'version_css'       =>  $this->version_css
-                        )
+            array(
+                'ssl'				=>	$ssl,
+                'params'			=>	array(),
+                'this_path'			=>	$this->_path,
+                'this_path_bw'		=>	$this->_path,
+                'this_path_ssl'		=>	Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+                'hideCards'			=>	$hideCards,
+                'cards'				=>	$cards,
+                'fastercheckout'    =>  $fastercheckout,
+                'version_css'       =>  $this->version_css
+                )
         );
 
         $nimble_credentials = Configuration::get('PS_NIMBLE_CREDENTIALS');
         if (isset($nimble_credentials) && $nimble_credentials == 1) {
             return $this->display(__FILE__, 'payment.tpl');
-        }  
+        }
     }
 
     public function hookPaymentReturn($params)
@@ -529,7 +530,7 @@ class NimblePayment extends PaymentModule
 
                     $nimbleApi = new NimbleAPI($params);
                     $updateCustomer = NimbleAPIPayments::updateCustomerData($nimbleApi, $transaction, $reference);
-                    if ( !isset($updateCustomer['result']) || ! isset($updateCustomer['result']['code']) || 200 != $updateCustomer['result']['code'] || !isset($updateCustomer['info']) || 'OK' != $updateCustomer['info'] ){
+                    if (!isset($updateCustomer['result']) || ! isset($updateCustomer['result']['code']) || 200 != $updateCustomer['result']['code'] || !isset($updateCustomer['info']) || 'OK' != $updateCustomer['info']) {
                         //to do
                     }
                 } catch (Exception $e) {
@@ -625,17 +626,17 @@ class NimblePayment extends PaymentModule
         $removeCards = false;
 
         $i = 0;
-        while(!$found_module && $orderByCustomer && count($orderByCustomer[$i])>0){
-                if($orderByCustomer[$i]['module'] == 'nimblepayment'){
+        while (!$found_module && $orderByCustomer && count($orderByCustomer[$i])>0) {
+                if ($orderByCustomer[$i]['module'] == 'nimblepayment') {
                         $found_module = true;
-                        if($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery){
+                        if ($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery) {
                                 $found_delivery = true;
                         }
                 }
                 $i++;
         }
 
-        if($found_module && !$found_delivery){
+        if ($found_module && !$found_delivery) {
                 $removeCards = true;
         }
 
@@ -711,7 +712,7 @@ class NimblePayment extends PaymentModule
      */
     public function getOauth3Url()
     {
-        $validator = false;    
+        $validator = false;
         try {
             $params = array(
             'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
@@ -770,7 +771,8 @@ class NimblePayment extends PaymentModule
     }
     
     
-    public function redirectNimbleUrlAdmin($oauth){
+    public function redirectNimbleUrlAdmin($oauth)
+    {
         $nimbleUrlAdmin = Configuration::get('NIMBLE_REQUEST_URI_ADMIN');
         Configuration::deleteByName('NIMBLE_REQUEST_URI_ADMIN');
         Tools::redirectAdmin($nimbleUrlAdmin.'&oauth2callback='.$oauth);
@@ -798,7 +800,7 @@ class NimblePayment extends PaymentModule
                     'token' => $nimble_api->authorization->getAccessToken(),
                     'refreshToken' => $nimble_api->authorization->getRefreshToken()
                 );
-                if ( empty($options['token']) || empty($options['refreshToken']) ){
+                if (empty($options['token']) || empty($options['refreshToken'])) {
                     Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN');
                     Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
                 } else {
@@ -877,7 +879,7 @@ class NimblePayment extends PaymentModule
 
         //OPEN OPT
         if (isset($response['result']) && isset($response['result']['code']) && 428 == $response['result']['code']
-                && isset($response['data']) && isset($response['data']['ticket']) && isset($response['data']['token']) ){
+                && isset($response['data']) && isset($response['data']['ticket']) && isset($response['data']['token'])) {
             $ticket = $response['data']['ticket'];
             $url_return = $_SERVER['REQUEST_URI'] . Context::getContext()->link->getAdminLink('AdminOrders'). '&id_order=' . $id_order . '&vieworder';
             $stateRefund = ( Tools::getValue("stateRefund") == 'refund' ) ? true : false;
@@ -1026,11 +1028,11 @@ class NimblePayment extends PaymentModule
         } catch (Exception $e) {
             return false;
         }
-        if (!isset($response['data']) || !isset($response['data']['refundId'])){
+        if (!isset($response['data']) || !isset($response['data']['refundId'])) {
             //LANG: ERROR_REFUND_1
             Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=error#nimble-refund-panel');
-        } else {     
-            if( $refund_info['refundType'] == 'refundTotal' ){
+        } else {
+            if ($refund_info['refundType'] == 'refundTotal') {
                 // Register refund on order history and save history
                 $history = new OrderHistory();
                 $history->id_order = (int)$refund_info['order_id'];
@@ -1038,7 +1040,7 @@ class NimblePayment extends PaymentModule
                 $history->addWithemail();
                 $history->save();
             }
-        }   
+        }
         
        Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=OK#nimble-refund-panel');
     }
@@ -1072,41 +1074,43 @@ class NimblePayment extends PaymentModule
         }
 
         return $this->display(__FILE__, $name);
-    }  
+    }
      
     /*
      * Get all stored customer cards
      */
-	public function getListStoredCards()
-	{
+    public function getListStoredCards()
+    {
         if (!$this->context->customer->isLogged())
-			return array();
-        
-		$userId = $this->context->customer->id;
-		$cards = array();
-		try{
-			$params = array(
-				'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-				'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
-			);
+            return array();
 
-			$nimbleApi = new NimbleAPI($params);
-			$result = NimbleAPIStoredCards::getStoredCards($nimbleApi, $userId);
-			if(isset($result['data']) && isset($result['data']['storedCards'])){
-				$cards = $result['data']['storedCards'];
-			}
-		} catch (Exception $e){
-			// getStoredCard failed.
-		}
-		return $cards;
-	}
-    
-    public function getConfigUrl(){
+        $userId = $this->context->customer->id;
+        $cards = array();
+        try {
+            $params = array(
+                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET')
+            );
+
+            $nimbleApi = new NimbleAPI($params);
+            $result = NimbleAPIStoredCards::getStoredCards($nimbleApi, $userId);
+            if (isset($result['data']) && isset($result['data']['storedCards'])) {
+                $cards = $result['data']['storedCards'];
+            }
+        } catch (Exception $e) {
+            // getStoredCard failed.
+        }
+        return $cards;
+    }
+
+    public function getConfigUrl()
+    {
         $url = $this->context->link->getAdminLink('AdminModules') . '&configure='.$this->name.'&module_name='.$this->name;
         return $url;
     }
-    
-    public function getAurhotizeUrl(){
+
+    public function getAurhotizeUrl()
+    {
         $url = $this->getConfigUrl().'&authorize=true';
         return $url;
     }
@@ -1134,7 +1138,7 @@ class NimblePayment extends PaymentModule
         return $tab->save();
 
     }
-    
+
      /**
      * PS module tab uninstallation callback implementation
      * @param  string $tabClass    tab class
@@ -1142,7 +1146,6 @@ class NimblePayment extends PaymentModule
      */
     private function uninstallModuleTab($tabClass)
     {
-
         $idTab = Tab::getIdFromClassName($tabClass);
         if ($idTab != 0) {
             $tab = new Tab($idTab);
@@ -1151,5 +1154,4 @@ class NimblePayment extends PaymentModule
         }
         return false;
     }
-
 }

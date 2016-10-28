@@ -37,8 +37,7 @@ class AdminNimbleConfig extends AdminTab
      */
     public function __construct()
     {
-        
-        try {  
+        try {
             $nimblepayment = new NimblePayment();
             Tools::redirectAdmin($nimblepayment->getConfigUrl());
         } catch (Exception $e) {

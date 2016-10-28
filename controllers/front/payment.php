@@ -78,7 +78,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $order_num = str_pad($cart->id, 8, '0', STR_PAD_LEFT);
         $paramurl = $order_num.md5($order_num.$this->nimblepayment_client_secret.$total);
         $storedCard = Tools::getValue('nimblepayment_storedcard');
-        if ( isset($storedCard) && !empty($storedCard) ) {
+        if (isset($storedCard) && !empty($storedCard)) {
             $this->storedCardPayment($total, $paramurl);
         } else {
             $this->sendPayment($total, $paramurl);
@@ -116,19 +116,18 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 
             $preorder = NimbleAPIStoredCards::preorderPayment($nimbleApi, $storedCardPaymentInfo);
 
-            if ( isset($preorder["data"]) && isset($preorder["data"]["id"]) ) {
+            if (isset($preorder["data"]) && isset($preorder["data"]["id"])) {
                 //Save transaction_id to this order
                 $this->context->cookie->__set('nimble_transaction_id', $preorder['data']['id']);
                 $response = NimbleAPIStoredCards::confirmPayment($nimbleApi, $preorder["data"]);
                 //Check confirmPayment
                 $this->checkConfirmPayment($nimbleApi, $preorder['data']['id'], $paramurl);
-            } else if ( isset($preorder["result"]) && isset($preorder["result"]["code"]) &&  (200 == $preorder["result"]["code"]) && isset($preorder["result"]["internal_code"]) && ("NIM001" == $preorder["result"]["internal_code"]) ) {
+            } else if (isset($preorder["result"]) && isset($preorder["result"]["code"]) &&  (200 == $preorder["result"]["code"]) && isset($preorder["result"]["internal_code"]) && ("NIM001" == $preorder["result"]["internal_code"])) {
                 $this->sendPayment($total, $paramurl);
             } else {
                 $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
         }
     }
@@ -137,11 +136,11 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
     {
         $state = 'PENDING';
         $i=0;
-        while ( ($state == 'PENDING') && ($i<$this->iterator_confirm_payment) ) {
+        while (($state == 'PENDING') && ($i<$this->iterator_confirm_payment)) {
             $getPaymentStatus = NimbleAPIPayments::getPaymentStatus($nimbleApi, $transaction_id);
-            if ( isset($getPaymentStatus['data']) && isset($getPaymentStatus['data']['details']) && count($getPaymentStatus['data']['details']) ) {
+            if (isset($getPaymentStatus['data']) && isset($getPaymentStatus['data']['details']) && count($getPaymentStatus['data']['details'])) {
                 $state = $getPaymentStatus['data']['details'][0]['state'];
-            } elseif ( isset($getPaymentStatus['result']) && isset($getPaymentStatus['result']['code']) && 404 == $getPaymentStatus['result']['code'] ) {
+            } elseif (isset($getPaymentStatus['result']) && isset($getPaymentStatus['result']['code']) && 404 == $getPaymentStatus['result']['code']) {
                 $state = 'NOT_FOUND';
             } else if ($state == 'PENDING') {
                 sleep(1);
