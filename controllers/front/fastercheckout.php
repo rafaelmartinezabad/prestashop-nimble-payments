@@ -659,7 +659,7 @@ class NimblePaymentFasterCheckoutModuleFrontController extends ModuleFrontContro
                     'addresses' => $customerAddresses,
                     'formatedAddressFieldsValuesList' => $formatedAddressFieldsValuesList
                     )
-                );
+            );
 
             /* Setting default addresses for cart */
             if (count($customerAddresses)) {
