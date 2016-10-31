@@ -124,7 +124,7 @@ class NimblePayment extends PaymentModule
             return false;
         }
 
-return true;
+        return true;
     }
 
     /**
@@ -234,7 +234,7 @@ return true;
 
         if ($this->_canRefund((int)$params['id_order'])) {
             $transaction = $this->_getIdTransaction($params['id_order']);
-            if(!empty($transaction)) {
+            if (!empty($transaction)) {
                 $admin_templates[] = 'refund';
                 // Set params
                 $refunds = $this->getListRefunds($transaction);
@@ -293,7 +293,7 @@ return true;
         $this->refreshToken();
     }
 
-    public function HookDisplayShoppingCartFooter($summary)
+    public function hookDisplayShoppingCartFooter($summary)
     {
         $faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
         if ($faster_checkout_enabled) {
@@ -313,7 +313,7 @@ return true;
         }
     }
 
-    public function HookDisplayProductButtons($params)
+    public function hookDisplayProductButtons($params)
     {
         $faster_checkout_enabled = Configuration::get('FASTER_CHECKOUT_NIMBLE');
         if ($faster_checkout_enabled) {
@@ -620,20 +620,20 @@ return true;
     {
         $cart_id_delivery = $this->context->cart->id_address_delivery;
         $userId = $this->context->customer->id;
-        $orderByCustomer = Order::getCustomerOrders($userId,true);
+        $orderByCustomer = Order::getCustomerOrders($userId, true);
         $found_module = false;
         $found_delivery = false;
         $removeCards = false;
 
         $i = 0;
         while (!$found_module && $orderByCustomer && count($orderByCustomer[$i])>0) {
-                if ($orderByCustomer[$i]['module'] == 'nimblepayment') {
-                        $found_module = true;
-                        if ($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery) {
-                                $found_delivery = true;
-                        }
-                }
-                $i++;
+            if ($orderByCustomer[$i]['module'] == 'nimblepayment') {
+                    $found_module = true;
+                    if ($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery) {
+                        $found_delivery = true;
+                    }
+            }
+            $i++;
         }
 
         if ($found_module && !$found_delivery) {
@@ -789,24 +789,24 @@ return true;
     public function refreshToken()
     {
         try {
-                $params = array(
-                    'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-                    'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
-                    'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN'),
-                    'refreshToken' => Configuration::get('PS_NIMBLE_REFRESH_TOKEN')
-                 );
-                $nimble_api = new NimbleAPI($params);
-                $options = array(
-                    'token' => $nimble_api->authorization->getAccessToken(),
-                    'refreshToken' => $nimble_api->authorization->getRefreshToken()
-                );
-                if (empty($options['token']) || empty($options['refreshToken'])) {
-                    Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN');
-                    Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
-                } else {
-                    Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $options['token']);
-                    Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $options['refreshToken']);
-                }
+            $params = array(
+                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+                'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN'),
+                'refreshToken' => Configuration::get('PS_NIMBLE_REFRESH_TOKEN')
+            );
+            $nimble_api = new NimbleAPI($params);
+            $options = array(
+                'token' => $nimble_api->authorization->getAccessToken(),
+                'refreshToken' => $nimble_api->authorization->getRefreshToken()
+            );
+            if (empty($options['token']) || empty($options['refreshToken'])) {
+                Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN');
+                Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
+            } else {
+                Configuration::updateValue('PS_NIMBLE_ACCESS_TOKEN', $options['token']);
+                Configuration::updateValue('PS_NIMBLE_REFRESH_TOKEN', $options['refreshToken']);
+            }
         } catch (Exception $e) {
             Configuration::deleteByName('PS_NIMBLE_ACCESS_TOKEN');
             Configuration::deleteByName('PS_NIMBLE_REFRESH_TOKEN');
@@ -956,16 +956,16 @@ return true;
         }
 
         $refund_params = array(
-                 'amount' => (float)$amt * 100,
-                 'concept' => $description,
-                 'reason' => $reason,
-                );
+            'amount' => (float)$amt * 100,
+            'concept' => $description,
+            'reason' => $reason,
+        );
 
         $params = array(
-                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
-                'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
-            );
+            'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+            'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+            'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
+        );
 
         $nimble = new NimbleAPI($params);
 
@@ -987,10 +987,10 @@ return true;
     {
 
         $params = array(
-                'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
-                'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
-                'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
-            );
+            'clientId' => Configuration::get('NIMBLEPAYMENT_CLIENT_ID'),
+            'clientSecret' => Configuration::get('NIMBLEPAYMENT_CLIENT_SECRET'),
+            'token' => Configuration::get('PS_NIMBLE_ACCESS_TOKEN')
+        );
 
         $nimble = new NimbleAPI($params);
 
@@ -1042,7 +1042,7 @@ return true;
             }
         }
         
-       Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=OK#nimble-refund-panel');
+        Tools::redirectAdmin($refund_info['url_return'] . '&np_refund=OK#nimble-refund-panel');
     }
     
    /**
@@ -1081,8 +1081,9 @@ return true;
      */
     public function getListStoredCards()
     {
-        if (!$this->context->customer->isLogged())
+        if (!$this->context->customer->isLogged()) {
             return array();
+        }
 
         $userId = $this->context->customer->id;
         $cards = array();
