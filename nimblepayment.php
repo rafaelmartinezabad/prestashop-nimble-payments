@@ -57,6 +57,7 @@ class NimblePayment extends PaymentModule
         $this->post_errors = array();
         $this->confirmations = array();
         $this->version_css = '?version=20161010';
+        $this->limit_ps_version = '1.6.1.0';
         $this->hooks = array(
             'adminOrder',
             'payment',
@@ -94,8 +95,9 @@ class NimblePayment extends PaymentModule
             }
         }
 
-        //Enabled Faster Checkout
-        Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', 1);
+        // Prestashop 1.6.1.0
+        $canFasterCheckout = $this->canFasterCheckout();
+        Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', $canFasterCheckout);
 
         return true;
     }
@@ -416,6 +418,7 @@ class NimblePayment extends PaymentModule
                 'authorized' => $authorized,
                 'Oauth3Url' => $this->getAurhotizeUrl(),
                 'faster_checkout' => $faster_checkout,
+                'canFasterCheckout' => $this->canFasterCheckout(),
                 'success_message' => $success_message
             )
         );
@@ -699,6 +702,11 @@ class NimblePayment extends PaymentModule
         $storeURL = _PS_BASE_URL_ . __PS_BASE_URI__;
         $redirectURL = _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/nimblepayment/oauth2callback.php';
         return NimbleAPI::getGatewayUrl($platform, $storeName, $storeURL, $redirectURL);
+    }
+
+    public function canFasterCheckout()
+    {
+        return version_compare(_PS_VERSION_, $this->limit_ps_version, '>=');
     }
 
     public function getVersionPlugin()

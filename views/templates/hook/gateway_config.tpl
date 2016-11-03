@@ -77,6 +77,7 @@
             <div id="faster-div" class="form-group">
                 <div>{l s='Quick pay option' mod='nimblepayment'}:</div>
                 <div class="radio col">
+                	{if $canFasterCheckout}
                     <input name="fasterCheckout" value="1" {if $faster_checkout} checked="checked" {/if} id="fasterCheckout_on" type="radio">
                     <label for="fasterCheckout_on" class="label-text">
                         <span>{l s='Yes'}</span>
@@ -85,14 +86,20 @@
                     <label for="fasterCheckout_off" class="label-text">
                         <span>{l s='No'}</span>
                     </label>
+                    {else}
+                        <span style="padding-left: 20px;">{l s='No'}</span>
+                    {/if}
                 </div>
                 <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
             </div>
             <input type="hidden" value="1" name="saveFaster">
-						
+
 			<div class="form-footer">
 				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'}</button>
 			</div>
+			{if !$canFasterCheckout}
+                <div id="notfastercheckout">{l s='*Quick pay option only allows to prestashop 1.6.1 or higher' mod='nimblepayment'}</div>
+            {/if}
 		</form>
 	</div>
 </div>

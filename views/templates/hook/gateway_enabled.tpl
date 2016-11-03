@@ -76,6 +76,7 @@
                 <div id="faster-div" class="form-group">
                     <div>{l s='Quick pay option' mod='nimblepayment'}:</div>
                     <div class="radio col">
+                        {if $canFasterCheckout}
                         <input name="fasterCheckout" value="1" {if $faster_checkout} checked="checked" {/if} id="fasterCheckout_on" type="radio">
                         <label for="fasterCheckout_on" class="label-text">
                             <span>{l s='Yes'}</span>
@@ -84,9 +85,15 @@
                         <label for="fasterCheckout_off" class="label-text">
                             <span>{l s='No'}</span>
                         </label>
+                        {else}
+                            <span style="padding-left: 20px; padding-right: 11px">{l s='No'}</span>
+                        {/if}
                     </div>
                     <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
                 </div>
+                {if !$canFasterCheckout}
+                    </br><div>{l s='*Quick pay option only allows to prestashop 1.6.1 or higher' mod='nimblepayment'}</div>
+                {/if}
             </div>
 			<div class="form-footer-2">
                 <button name="cancelCredentials" id="module_form_cancel_btn" value="1" type="cancel">{l s='Cancel'}</button>
@@ -123,14 +130,21 @@
                 <div id="faster-div" class="form-group">
                     <div>{l s='Quick pay option' mod='nimblepayment'}:</div>
                     <div class="radio col fastercheckout-enable-page">
-                        {if $faster_checkout}
-                            <span>{l s='Yes'}</span>
+                        {if $canFasterCheckout}
+                            {if $faster_checkout}
+                                <span>{l s='Yes'}</span>
+                            {else}
+                                <span>{l s='No'}</span>
+                            {/if}
                         {else}
-                            <span>{l s='No'}</span>
+                            <span style="padding-right: 11px">{l s='No'}</span>
                         {/if}
                     </div>
                     <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
                 </div>
+                {if !$canFasterCheckout}
+                    </br><div id="notfastercheckout">{l s='*Quick pay option only allows to prestashop 1.6.1 or higher' mod='nimblepayment'}</div>
+                {/if}
             </div>
             <div class="form-footer-2">
                 <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png">
