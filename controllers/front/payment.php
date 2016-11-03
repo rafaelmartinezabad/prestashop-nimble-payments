@@ -94,42 +94,41 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
         $cart = $this->context->cart;
         $userId = $this->context->customer->id;
 
-        try {
-            $params = array(
-            'clientId' => $this->nimblepayment_client_id,
-            'clientSecret' => $this->nimblepayment_client_secret
-            );
+        try{
+			$params = array(
+			'clientId' => $this->nimblepayment_client_id,
+			'clientSecret' => $this->nimblepayment_client_secret
+			);
 
-            $nimbleApi = new NimbleAPI($params);
+			$nimbleApi = new NimbleAPI($params);
 
-            //ADD HEADER SOURCE CALLER
-            $nimblePayment = new NimblePayment();
-            $version = $nimblePayment->getVersionPlugin();
-            $nimbleApi->authorization->addHeader('source-caller', 'PRESTASHOP_'.$version);
+			//ADD HEADER SOURCE CALLER
+			$nimblePayment = new NimblePayment();
+			$version = $nimblePayment->getVersionPlugin();
+			$nimbleApi->authorization->addHeader('source-caller', 'PRESTASHOP_'.$version);
 
-            $storedCardPaymentInfo = array(
-                'amount'			=>	$total,
-                'currency'			=>	$this->getCurrency(),
-                'merchantOrderId'	=>	$cart->id,
-                "cardHolderId"		=>	$userId
-            );
+			$storedCardPaymentInfo = array(
+				'amount'			=>	$total,
+				'currency'			=>	$this->getCurrency(),
+				'merchantOrderId'	=>	$cart->id,
+				"cardHolderId"		=>	$userId
+			);
 
-            $preorder = NimbleAPIStoredCards::preorderPayment($nimbleApi, $storedCardPaymentInfo);
+			$preorder = NimbleAPIStoredCards::preorderPayment($nimbleApi, $storedCardPaymentInfo);
 
-            if (isset($preorder["data"]) && isset($preorder["data"]["id"])) {
-                //Save transaction_id to this order
-                $this->context->cookie->__set('nimble_transaction_id', $preorder['data']['id']);
-                $response = NimbleAPIStoredCards::confirmPayment($nimbleApi, $preorder["data"]);
+			if ( isset($preorder["data"]) && isset($preorder["data"]["id"])){
+				//Save transaction_id to this order
+				$this->context->cookie->__set('nimble_transaction_id', $preorder['data']['id']);
+				$response = NimbleAPIStoredCards::confirmPayment($nimbleApi, $preorder["data"]);
                 //Check confirmPayment
                 $this->checkConfirmPayment($nimbleApi, $preorder['data']['id'], $paramurl);
-            } else if (isset($preorder["result"]) && isset($preorder["result"]["code"]) &&  (200 == $preorder["result"]["code"]) && isset($preorder["result"]["internal_code"]) && ("NIM001" == $preorder["result"]["internal_code"])) {
-                $this->sendPayment($total, $paramurl);
-            } else {
-                $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
-            }
-        } catch (Exception $e) {
+			} else {
+				$this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
+			}
+		}
+		catch (Exception $e) {
             $this->result['redirect'] = $this->context->link->getModuleLink('nimblepayment', 'paymentko', array('paymentcode' => $paramurl));
-        }
+		}
     }
 
     public function checkConfirmPayment($nimbleApi, $transaction_id, $paramurl)
