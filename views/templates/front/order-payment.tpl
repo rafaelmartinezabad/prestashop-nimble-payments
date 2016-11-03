@@ -27,4 +27,4 @@
 	<div id="opc_payment_methods" class="opc-main-block">
 		<div id="opc_payment_methods-overlay" class="opc-overlay" style="display: none;"></div>
 
-{include file = "$tpl_dir./order-payment-classic.tpl"}
+{include file = "./order-payment-classic.tpl"}
