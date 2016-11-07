@@ -146,9 +146,10 @@
 
 #nimble-step-2-form {
   padding: 3%;
-  margin-left: 6%;
-  margin-right: 6%;
+  margin-left: 5%;
+  margin-right: 5%;
   background-color: #EFF1F2;
+  width: 91%;
 }
 
 div#nimble-content-form, div#nimble-content-form-2 {

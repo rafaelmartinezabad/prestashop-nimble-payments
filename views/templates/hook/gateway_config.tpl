@@ -87,7 +87,7 @@
                         <span>{l s='No'}</span>
                     </label>
                     {else}
-                        <span style="padding-left: 20px;">{l s='No'}</span>
+                        <span style="padding-left: 10px; font-style: italic">{l s='Disponible para versiones 1.6.1 o superiores' mod='nimblepayment'}</span>
                     {/if}
                 </div>
                 <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
@@ -97,9 +97,6 @@
 			<div class="form-footer">
 				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'}</button>
 			</div>
-			{if !$canFasterCheckout}
-                <div id="notfastercheckout">{l s='*Quick pay option only allows to prestashop 1.6.1 or higher' mod='nimblepayment'}</div>
-            {/if}
 		</form>
 	</div>
 </div>

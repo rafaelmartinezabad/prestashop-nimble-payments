@@ -45,7 +45,7 @@
 				<button data-dismiss="alert" class="close" type="button">×</button>{l s='Payment gateway data not valid to accept payments.' mod='nimblepayment'}
 			</div>
 		{/if}
-		<form id="nimble-step-2-form-enable" class="form" style="display: none;" method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
+		<form id="nimble-step-2-form-enable" class="form" method="post" action="{$post_url|escape:'htmlall':'UTF-8'}">
             <div id="nimble-content-form">
                 <h3>{l s='Your nimble payments credentials' mod='nimblepayment'}</h3>
                 <input type="hidden" value="1" name="saveCredentials">
@@ -86,71 +86,16 @@
                             <span>{l s='No'}</span>
                         </label>
                         {else}
-                            <span style="padding-left: 20px; padding-right: 11px">{l s='No'}</span>
+                            <span style="padding-left: 10px; font-style: italic">{l s='Disponible para versiones 1.6.1 o superiores' mod='nimblepayment'}</span>
                         {/if}
                     </div>
                     <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
                 </div>
-                {if !$canFasterCheckout}
-                    </br><div>{l s='*Quick pay option only allows to prestashop 1.6.1 or higher' mod='nimblepayment'}</div>
-                {/if}
             </div>
 			<div class="form-footer-2">
-                <button name="cancelCredentials" id="module_form_cancel_btn" value="1" type="cancel">{l s='Cancel'}</button>
 				<button name="saveCredentials" id="module_form_submit_btn" value="1" type="submit">{l s='Save'}</button>
 			</div>
 		</form>
-        <div id="nimble-step-2-div-enable" class="form">
-            <div id="nimble-content-form">
-                <h3>{l s='Your nimble payments credentials' mod='nimblepayment'}</h3>
-                <div class="form-group form-group-enabled">
-                    <table>
-                        <tr>
-                            <td class="label-nimble-table">
-                                <label>{l s='API client id' mod='nimblepayment'}</label>
-                            </td>
-                            <td class="input-nimble-table">
-                                <strong>{$clientId|escape:'htmlall':'UTF-8'}</strong>
-                            </td> 
-                        </tr>
-                        <tr>
-                            <td class="label-nimble-table">
-                                <label>{l s='Client secret' mod='nimblepayment'}</label>
-                            </td>
-                            <td class="input-nimble-table">
-                                <strong>**************************************************</strong>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <input type="hidden" value="1" name="saveFaster">
-            </div>
-            <div id="nimble-content-form-2">
-                <h3>{l s='Payment options' mod='nimblepayment'}</h3>
-                <div id="faster-div" class="form-group">
-                    <div>{l s='Quick pay option' mod='nimblepayment'}:</div>
-                    <div class="radio col fastercheckout-enable-page">
-                        {if $canFasterCheckout}
-                            {if $faster_checkout}
-                                <span>{l s='Yes'}</span>
-                            {else}
-                                <span>{l s='No'}</span>
-                            {/if}
-                        {else}
-                            <span style="padding-right: 11px">{l s='No'}</span>
-                        {/if}
-                    </div>
-                    <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
-                </div>
-                {if !$canFasterCheckout}
-                    </br><div id="notfastercheckout">{l s='*Quick pay option only allows to prestashop 1.6.1 or higher' mod='nimblepayment'}</div>
-                {/if}
-            </div>
-            <div class="form-footer-2">
-                <img class="link" alt="logo-alta-link" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/icono_registrate_cuadrado.png">
-                <a id="modifyGateway-js" class="btn" href="#" target="_blank">{l s='Update your gateway credetials' mod='nimblepayment'}</a>
-            </div>
-        </div>
 	</div>
 </div>
 
