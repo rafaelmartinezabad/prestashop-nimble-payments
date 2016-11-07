@@ -44,7 +44,7 @@ class NimblePayment extends PaymentModule
     {
         $this->name = 'nimblepayment';
         $this->tab = 'payments_gateways';
-        $this->version = '3.0.0';
+        $this->version = '3.0.1';
         $this->author = 'BBVA';
         $this->bootstrap = true;
         $this->module_key = 'd291bda88fcbcc4ef4b764f3cb3d4613';
@@ -406,6 +406,10 @@ class NimblePayment extends PaymentModule
         $success_message = (count($this->confirmations)) ? 1 : 0;
         $authorized = ( $this->enabled && Configuration::get('PS_NIMBLE_ACCESS_TOKEN') ) ? 1 : 0;
         $faster_checkout = Configuration::get('FASTER_CHECKOUT_NIMBLE');
+        $canFasterCheckout = $this->canFasterCheckout();
+        if (!$canFasterCheckout) {
+            Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', $faster_checkout = false);
+        }
         $this->smarty->assign(
             array(
                 'url_nimble' => $url_nimble,
@@ -418,7 +422,7 @@ class NimblePayment extends PaymentModule
                 'authorized' => $authorized,
                 'Oauth3Url' => $this->getAurhotizeUrl(),
                 'faster_checkout' => $faster_checkout,
-                'canFasterCheckout' => $this->canFasterCheckout(),
+                'canFasterCheckout' => $canFasterCheckout,
                 'success_message' => $success_message
             )
         );
