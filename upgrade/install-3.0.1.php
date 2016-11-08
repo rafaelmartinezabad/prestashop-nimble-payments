@@ -30,6 +30,6 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_3_0_1($object)
 {
-	$canFasterCheckout = version_compare(_PS_VERSION_, '1.6.1.0', '>=');
+    $canFasterCheckout = version_compare(_PS_VERSION_, '1.6.1.0', '>=');
     return Configuration::updateValue('FASTER_CHECKOUT_NIMBLE', $canFasterCheckout);
 }

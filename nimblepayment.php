@@ -634,10 +634,10 @@ class NimblePayment extends PaymentModule
         $i = 0;
         while (!$found_module && $orderByCustomer && count($orderByCustomer[$i])>0) {
             if ($orderByCustomer[$i]['module'] == 'nimblepayment') {
-                    $found_module = true;
-                        if ($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery) {
-                            $found_delivery = true;
-                        }
+                $found_module = true;
+                if ($orderByCustomer[$i]['id_address_delivery'] == $cart_id_delivery) {
+                    $found_delivery = true;
+                }
             }
             $i++;
         }
