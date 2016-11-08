@@ -23,7 +23,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 <div class="paiement_block">
-    <div id="HOOK_TOP_PAYMENT">{$HOOK_TOP_PAYMENT}</div>
+    <div id="HOOK_TOP_PAYMENT">{$HOOK_TOP_PAYMENT|escape:'htmlall':'UTF-8'}</div>
     {if $HOOK_PAYMENT}
         {if !$opc}
             <div id="order-detail-content" class="table_block table-responsive">
@@ -148,7 +148,7 @@
                         <tr class="cart_total_price">
                             <td colspan="4" class="total_price_container text-right"><span>{l s='Total'}</span></td>
                             <td colspan="2" class="price" id="total_price_container">
-                                <span id="total_price" data-selenium-total-price="{$total_price}">{displayPrice price=$total_price}</span>
+                                <span id="total_price" data-selenium-total-price="{$total_price|escape:'htmlall':'UTF-8'}">{displayPrice price=$total_price}</span>
                             </td>
                         </tr>
                     {else}
@@ -157,17 +157,17 @@
                                 <td colspan="2" id="cart_voucher" class="cart_voucher">
                                     <div id="cart_voucher" class="table_block">
                                         {if $voucherAllowed}
-                                            <form action="{if $opc}{$link->getPageLink('order-opc', true)}{else}{$link->getPageLink('order', true)}{/if}" method="post" id="voucher">
+                                            <form action="{if $opc}{$link->getPageLink('order-opc', true)|escape:'htmlall':'UTF-8'}{else}{$link->getPageLink('order', true)|escape:'htmlall':'UTF-8'}{/if}" method="post" id="voucher">
                                                 <fieldset>
                                                     <h4>{l s='Vouchers'}</h4>
-                                                    <input type="text" id="discount_name" class="form-control" name="discount_name" value="{if isset($discount_name) && $discount_name}{$discount_name}{/if}" />
+                                                    <input type="text" id="discount_name" class="form-control" name="discount_name" value="{if isset($discount_name) && $discount_name}{$discount_name|escape:'htmlall':'UTF-8'}{/if}" />
                                                     <input type="hidden" name="submitDiscount" />
                                                     <button type="submit" name="submitAddDiscount" class="button btn btn-default button-small"><span>{l s='ok'}</span></button>
                                                     {if $displayVouchers}
                                                         <p id="title" class="title_offers">{l s='Take advantage of our offers:'}</p>
                                                         <div id="display_cart_vouchers">
                                                             {foreach from=$displayVouchers item=voucher}
-                                                                <span onclick="$('#discount_name').val('{$voucher.name}');return false;" class="voucher_name">{$voucher.name}</span> - {$voucher.description} <br />
+                                                                <span onclick="$('#discount_name').val('{$voucher.name|escape:'htmlall':'UTF-8'}');return false;" class="voucher_name">{$voucher.name|escape:'htmlall':'UTF-8'}</span> - {$voucher.description|escape:'htmlall':'UTF-8'} <br />
                                                             {/foreach}
                                                         </div>
                                                     {/if}
@@ -181,7 +181,7 @@
                                 <span>{l s='Total'}</span>
                             </td>
                             <td colspan="2" class="price total_price_container" id="total_price_container">
-                                <span id="total_price" data-selenium-total-price="{$total_price_without_tax}">{displayPrice price=$total_price_without_tax}</span>
+                                <span id="total_price" data-selenium-total-price="{$total_price_without_tax|escape:'htmlall':'UTF-8'}">{displayPrice price=$total_price_without_tax}</span>
                             </td>
                         </tr>
                     {/if}
@@ -202,7 +202,7 @@
                         {* Then the customized datas ones*}
                         {if isset($customizedDatas.$productId.$productAttributeId)}
                             {foreach from=$customizedDatas.$productId.$productAttributeId[$product.id_address_delivery] key='id_customization' item='customization'}
-                                <tr id="product_{$product.id_product}_{$product.id_product_attribute}_{$id_customization}" class="alternate_item cart_item">
+                                <tr id="product_{$product.id_product|escape:'htmlall':'UTF-8'}_{$product.id_product_attribute|escape:'htmlall':'UTF-8'}_{$id_customization|escape:'htmlall':'UTF-8'}" class="alternate_item cart_item">
                                     <td colspan="4">
                                         {foreach from=$customization.datas key='type' item='datas'}
                                             {if $type == $CUSTOMIZE_FILE}
@@ -210,7 +210,7 @@
                                                     <ul class="customizationUploaded">
                                                         {foreach from=$datas item='picture'}
                                                             <li>
-                                                                <img src="{$pic_dir}{$picture.value}_small" alt="" class="customizationUploaded" />
+                                                                <img src="{$pic_dir|escape:'htmlall':'UTF-8'}{$picture.value|escape:'htmlall':'UTF-8'}_small" alt="" class="customizationUploaded" />
                                                             </li>
                                                         {/foreach}
                                                     </ul>
@@ -224,7 +224,7 @@
                                                             {else}
                                                                 {l s='Text #%s:' sprintf=$smarty.foreach.typedText.index+1}
                                                             {/if}
-                                                            {$textField.value}
+                                                            {$textField.value|escape:'htmlall':'UTF-8'}
                                                         </li>
                                                     {/foreach}
                                                 </ul>
@@ -232,7 +232,7 @@
                                         {/foreach}
                                     </td>
                                     <td class="cart_quantity text-center">
-                                        {$customization.quantity}
+                                        {$customization.quantity|escape:'htmlall':'UTF-8'}
                                     </td>
                                     <td class="cart_total"></td>
                                 </tr>
@@ -261,8 +261,8 @@
                             {if (float)$discount.value_real == 0}
                                 {continue}
                             {/if}
-                            <tr class="cart_discount {if $smarty.foreach.discountLoop.last}last_item{elseif $smarty.foreach.discountLoop.first}first_item{else}item{/if}" id="cart_discount_{$discount.id_discount}">
-                                <td class="cart_discount_name" colspan="{if $PS_STOCK_MANAGEMENT}3{else}2{/if}">{$discount.name}</td>
+                            <tr class="cart_discount {if $smarty.foreach.discountLoop.last}last_item{elseif $smarty.foreach.discountLoop.first}first_item{else}item{/if}" id="cart_discount_{$discount.id_discount|escape:'htmlall':'UTF-8'}">
+                                <td class="cart_discount_name" colspan="{if $PS_STOCK_MANAGEMENT}3{else}2{/if}">{$discount.name|escape:'htmlall':'UTF-8'}</td>
                                 <td class="cart_discount_price">
 													<span class="price-discount">
 														{if $discount.value_real > 0}
@@ -297,7 +297,7 @@
             <div id="opc_payment_methods-content">
         {/if}
         <div id="HOOK_PAYMENT">
-            {$HOOK_PAYMENT}
+            {$HOOK_PAYMENT|escape:'htmlall':'UTF-8'}
         </div>
         {if $opc}
             </div> <!-- end opc_payment_methods-content -->
