@@ -22,9 +22,9 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
+<input id="nimblepayments-redirect" type="hidden" data-href="{$payment_redirect|escape:'htmlall':'UTF-8'}"  value="nimblepayments-redirect"/>
 <script type="text/javascript">
 <!--
-    window.location=nimblepayment_url;
+    window.location=$('#nimblepayments-redirect').data('href');
 //-->
 </script>
-{addJsDef nimblepayment_url=$payment_redirect}
