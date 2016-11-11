@@ -156,7 +156,7 @@
                     $('#nimblepayment_gateway').data('clicked', true);
                 }
             });
-        }).click(function(){
+        }).click(function(event){
             if ( ! $(this).data('clicked') ){
                 event.preventDefault();
             }

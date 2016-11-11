@@ -326,6 +326,7 @@ function updatePaymentMethods(json)
 
 function updatePaymentMethodsDisplay()
 {
+    //TODO: Checkbox disables & enables
     //$('#cgv').attr('disabled', 'true');
 	var checked = '';
 	if ($('#cgv:checked').length !== 0)
