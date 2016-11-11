@@ -75,22 +75,26 @@
 				</div>
 			</div>
             <div id="faster-div" class="form-group">
-                <div>{l s='Quick pay option' mod='nimblepayment'}:</div>
-                <div class="radio col">
-                	{if $canFasterCheckout}
-                    <input name="fasterCheckout" value="1" {if $faster_checkout} checked="checked" {/if} id="fasterCheckout_on" type="radio">
-                    <label for="fasterCheckout_on" class="label-text">
-                        <span>{l s='Yes'}</span>
-                    </label>
-                    <input name="fasterCheckout" value="0" {if !$faster_checkout} checked="checked" {/if} id="fasterCheckout_off" type="radio">
-                    <label for="fasterCheckout_off" class="label-text">
-                        <span>{l s='No'}</span>
-                    </label>
-                    {else}
-                        <span style="padding-left: 10px; font-style: italic">{l s='Disponible para versiones 1.6.1 o superiores' mod='nimblepayment'}</span>
-                    {/if}
-                </div>
-                <div><span id="question-icon"></span> {l s='This option allows to buy with only one click' mod='nimblepayment'}</div>
+				<div id="nimble-content-info">
+					<div id="nimble-label-option">{l s='Quick pay option' mod='nimblepayment'}:</div>
+					<div class="radio col">
+						{if $canFasterCheckout}
+						<input name="fasterCheckout" value="1" {if $faster_checkout} checked="checked" {/if} id="fasterCheckout_on" type="radio">
+						<label for="fasterCheckout_on" class="label-text">
+							<span>{l s='Yes'}</span>
+						</label>
+						<input name="fasterCheckout" value="0" {if !$faster_checkout} checked="checked" {/if} id="fasterCheckout_off" type="radio">
+						<label for="fasterCheckout_off" class="label-text">
+							<span>{l s='No'}</span>
+						</label>
+						{else}
+							<span style="padding-left: 10px; font-style: italic">{l s='Available for versions 1.6.1 or higher' mod='nimblepayment'}</span>
+						{/if}
+					</div>
+				</div>
+				<div><span id="question-icon"></span> {l s='Switching on this option avoids your customers useless steps to checkout.' mod='nimblepayment'}
+				</br></br><span id="question-icon"></span> {l s='You can also allow your customers to buy several times with only one click, storing their credit/debit cards securely in Nimble Payments. (It is mandatory switch on this functionality in Nimble Payments control pannel).' mod='nimblepayment'}
+				</div>
             </div>
             <input type="hidden" value="1" name="saveFaster">
 

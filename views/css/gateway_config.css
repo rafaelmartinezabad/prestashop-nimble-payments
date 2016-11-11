@@ -159,7 +159,7 @@ div#nimble-content-form, div#nimble-content-form-2 {
 }
 
 div#nimble-content-form-2 {
-  height: 60px;
+  height: 170px;
 }
 
 div#nimble-content-form-2 #faster-div {
@@ -235,7 +235,6 @@ div#nimble-content-form table tr:last-child {
 }
 
 #faster-div > div {
-  float: left;
   font-weight: bold;
 }
 
@@ -244,13 +243,13 @@ div#nimble-content-form table tr:last-child {
 }
 
 #faster-div > div:last-child {
-  padding-left: 10px;
+  padding-left: 55%;
   font-weight: normal;
   font-style: italic;
-  float: right;
 }
 
 #faster-div .radio {
+  float: right;
   margin-top: 0px;
   margin-bottom: 0px;
 }
@@ -299,4 +298,12 @@ span#question-icon::before {
 
 .fastercheckout-enable-page span {
     padding-left: 20px;
+}
+
+#nimble-content-info {
+	float: left;
+}
+
+#nimble-label-option {
+	float:left;
 }
