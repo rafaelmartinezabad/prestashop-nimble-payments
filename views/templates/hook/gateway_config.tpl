@@ -88,7 +88,7 @@
 							<span>{l s='No'}</span>
 						</label>
 						{else}
-							<span style="padding-left: 10px; font-style: italic">{l s='Available for versions 1.6.1 or higher' mod='nimblepayment'}</span>
+							<span>{l s='Available for versions 1.6.1 or higher' mod='nimblepayment'}</span>
 						{/if}
 					</div>
 				</div>
