@@ -325,3 +325,10 @@ span#question-icon::before {
 		height: 200px;
 	}
 }
+
+span#nimble-version-available {
+	margin-right: 5px;
+    margin-left: 5px;
+    font: bold 90% monospace;
+    color: #888383;
+}

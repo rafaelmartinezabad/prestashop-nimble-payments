@@ -87,7 +87,7 @@
 								<span>{l s='No'}</span>
 							</label>
 							{else}
-								<span>{l s='Available for versions 1.6.1 or higher' mod='nimblepayment'}</span>
+								<span id='nimble-version-available'>{l s='Available for versions 1.6.1 or higher' mod='nimblepayment'}</span>
 							{/if}
 						</div>
 					</div>
