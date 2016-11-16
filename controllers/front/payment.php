@@ -86,11 +86,7 @@ class NimblePaymentPaymentModuleFrontController extends ModuleFrontController
 		if (Tools::getIsset('action')) {
 			die(Tools::jsonEncode($this->result));
 		}
-		//Tools::redirect($this->result['redirect']);
-        $this->context->smarty->assign(
-            array('payment_redirect' => $this->result['redirect'])
-        );
-        $this->setTemplate('payment-redirect.tpl');
+		Tools::redirect($this->result['redirect']);
 	}
 
     public function storedCardPayment($total, $paramurl)
