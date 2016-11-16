@@ -77,8 +77,8 @@ $_MODULE['<{nimblepayment}prestashop>gateway_config_eae4c6c8dce6a00ff9af3ac60e98
 $_MODULE['<{nimblepayment}prestashop>gateway_config_1b4739e491387ef5d8a546854308e5fe'] = 'Client secret';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_be8d90fbf953b0ae6b0434775020aff1'] = 'Opción compra rápida';
 $_MODULE['<{nimblepayment}prestashop>gateway_config_4ca8570381c1854f585edbdede553c3a'] = 'Disponible para versiones 1.6.1 o superior';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_eba13bdca1e505b06c30c6c1d499c72d'] = 'Activando esta opción evita a tus clientes pasos innecesarios para llegar al checkout.';
-$_MODULE['<{nimblepayment}prestashop>gateway_config_ef2f165a694c28c1cc6c9c488874818f'] = 'Permite además a tus clientes que realicen compras recurrentes con sólo 1-clic, almacenando sus tarjetas de forma segura en Nimble Payments.  (Es necesario activar esta funcionalidad desde el Panel de Control de Nimble Payments). ';
+$_MODULE['<{nimblepayment}prestashop>gateway_config_e963e31f80e273f6e57bf4c344d71a1c'] = 'Activa esta opción para evitar a tus clientes pasos innecesarios para llegar a la página de pago y mejora así la conversión.';
+$_MODULE['<{nimblepayment}prestashop>gateway_config_b565b66be0b66d7401b1d5f8d1fc6412'] = 'Para habilitar la opción 1-clic y que tus clientes puedan hacer compras recurrentes sin necesidad de introducir los datos de sus tarjetas en cada compra, activa la opción de \"Pago con tarjeta almacenada\" en el Panel de Control de Nimble Payments.';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_fc724a540ce30b0b634163c922d60bed'] = 'La configuración se guardó correctamente!';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_0b1c75928d34b395330fab1450a19fc0'] = 'Bienvenido al cambio';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_6b4dab8417811fcfb4d8c66fa5f95c21'] = '¡Tu módule de pago nimble payments está listo para vender!';
@@ -89,8 +89,8 @@ $_MODULE['<{nimblepayment}prestashop>gateway_enabled_1b4739e491387ef5d8a54685430
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_e3135e5c28bd4c70a9bb3c50b0d278aa'] = 'Opciones de pago';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_be8d90fbf953b0ae6b0434775020aff1'] = 'Opción compra rápida';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_4ca8570381c1854f585edbdede553c3a'] = 'Disponible para versiones 1.6.1 o superior';
-$_MODULE['<{nimblepayment}prestashop>gateway_enabled_eba13bdca1e505b06c30c6c1d499c72d'] = 'Activando esta opción evita a tus clientes pasos innecesarios para llegar al checkout.';
-$_MODULE['<{nimblepayment}prestashop>gateway_enabled_ef2f165a694c28c1cc6c9c488874818f'] = 'Permite además a tus clientes que realicen compras recurrentes con sólo 1-clic, almacenando sus tarjetas de forma segura en Nimble Payments.  (Es necesario activar esta funcionalidad desde el Panel de Control de Nimble Payments). ';
+$_MODULE['<{nimblepayment}prestashop>gateway_enabled_e963e31f80e273f6e57bf4c344d71a1c'] = 'Activa esta opción para evitar a tus clientes pasos innecesarios para llegar a la página de pago y mejora así la conversión.';
+$_MODULE['<{nimblepayment}prestashop>gateway_enabled_b565b66be0b66d7401b1d5f8d1fc6412'] = 'Para habilitar la opción 1-clic y que tus clientes puedan hacer compras recurrentes sin necesidad de introducir los datos de sus tarjetas en cada compra, activa la opción de \"Pago con tarjeta almacenada\" en el Panel de Control de Nimble Payments.';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_60b026ec5abee5ab35b78c4977f76fd9'] = 'Hazlo todo sin salir de prestashop';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_cf5f28fb1f6c6bd388dc2f911881f1a8'] = 'gestionar ventas, ver movimientos de tu cuenta, hacer devoluciones...';
 $_MODULE['<{nimblepayment}prestashop>gateway_enabled_59d5e4154768f5b3860c963ab7ae986c'] = 'para ello necesitaremos que te identifiques y nos des permiso para acceder a tus datos';

@@ -92,8 +92,8 @@
 						{/if}
 					</div>
 				</div>
-				<div><span id="question-icon"></span> {l s='Switching on this option avoids your customers useless steps to checkout.' mod='nimblepayment'}
-				</br></br><span id="question-icon"></span> {l s='You can also allow your customers to buy several times with only one click, storing their credit/debit cards securely in Nimble Payments. (It is mandatory switch on this functionality in Nimble Payments control pannel).' mod='nimblepayment'}
+				<div><span id="question-icon"></span> {l s='Switching on this option avoids your customers useless steps to checkout and improve your conversion rate.' mod='nimblepayment'}
+				</br></br><span id="question-icon"></span> {l s='In order to use the 1-clic option and let your customers buy several times without introducing their cards information on every purchase  just switch on the option "Pay with stored card" in  Nimble Payments control pannel.' mod='nimblepayment'}
 				</div>
             </div>
             <input type="hidden" value="1" name="saveFaster">
