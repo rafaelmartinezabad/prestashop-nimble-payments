@@ -465,7 +465,7 @@ class NimblePayment extends PaymentModule
         $newOption->setCallToActionText($this->l('Pay by Credit card'))
                   ->setAction($payment_action)
                   ->setInputs(array())
-                  ->setLogo($this->context->link->getMediaLink('/modules/nimblepayment/views/img/logo-credit-card.jpg'));
+                  ->setLogo($this->context->link->getMediaLink(__PS_BASE_URI__. 'modules/nimblepayment/views/img/logo-credit-card.jpg'));
 
         $newOptions[] = $newOption;
         return $newOptions;
