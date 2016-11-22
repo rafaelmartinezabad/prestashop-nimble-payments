@@ -92,9 +92,16 @@
 						{/if}
 					</div>
 				</div>
-				<div><span id="question-icon"></span> {l s='Switching on this option avoids your customers useless steps to checkout and improve your conversion rate.' mod='nimblepayment'}
-				</br></br><span id="question-icon"></span> {l s='In order to use the 1-clic option and let your customers buy several times without introducing their cards information on every purchase  just switch on the option "Pay with stored card" in  Nimble Payments control pannel.' mod='nimblepayment'}
-				</div>
+				{if $canFasterCheckout}
+					<div id="nimble-question-icon">
+						<span id="question-icon"></span> {l s='Switching on this option avoids your customers useless steps to checkout and improve your conversion rate.' mod='nimblepayment'}</br></br>
+						<span id="question-icon"></span> {l s='In order to use the 1-clic option and let your customers buy several times without introducing their cards information on every purchase  just switch on the option "Pay with stored card" in  Nimble Payments control pannel.' mod='nimblepayment'}
+					</div>
+				{else}
+					<div id="nimble-question-icon2">
+						<span id="question-icon"></span> {l s='In order to use the 1-clic option and let your customers buy several times without introducing their cards information on every purchase  just switch on the option "Pay with stored card" in  Nimble Payments control pannel.' mod='nimblepayment'}
+					</div>
+				{/if}
             </div>
             <input type="hidden" value="1" name="saveFaster">
 

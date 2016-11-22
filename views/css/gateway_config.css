@@ -243,9 +243,17 @@ div#nimble-content-form table tr:last-child {
 }
 
 #faster-div > div:last-child {
-  padding-left: 55%;
   font-weight: normal;
   font-style: italic;
+}
+
+#faster-div > #nimble-question-icon {
+  padding-left: 55%;
+}
+
+#faster-div > #nimble-question-icon2 {
+  float: left;
+  margin-top: 15px;
 }
 
 #faster-div .radio {
@@ -316,7 +324,7 @@ span#question-icon::before {
 }
 
 @media (max-width: 980px) {
-	#faster-div > div:last-child {
+	#faster-div > #nimble-question-icon {
 		float: left;
 		padding-left: 0px;
 		margin-top: 15px;
